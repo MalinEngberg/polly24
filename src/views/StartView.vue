@@ -28,7 +28,7 @@
     {{ uiLabels.participatePoll }}
   </router-link>
   <br>
-  <router-link to="/create/">
+  <router-link to="/create-new-game">
     {{ uiLabels.createPoll }}
   </router-link>
 </template>
