@@ -1,11 +1,12 @@
 <template>
-    <body>
+    <header>
+        You are Creating a New Game
+    </header>
+    <main>
         <div>
-        <h1>
-            Create New Game
-        </h1>
-    </div>
-    </body>
+            <h1>You are creating a new game!</h1>
+        </div>
+    </main>
 </template>
 
 <script>
@@ -13,7 +14,7 @@
 </script>
 
 <style scoped>
-    body {
-        background-color: #AA87BF;
-    }
+   h1 {
+    font-size: 36pt;
+   }
 </style>
