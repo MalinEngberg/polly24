@@ -1,15 +1,27 @@
 <template>
-  <div>
-    {{gamePin}}
-    <div v-if="!joined">
-      <input type="text" v-model="userName">
+  <div class="lobby-view">
+
+    <div class="input-field" v-if="!joined">
+      <h1>{{ uiLabels.enterGame }}</h1>
+
+      <input
+        type="text"
+        v-bind:placeholder= "uiLabels.nameInsert"
+        v-model="userName">
+
+      <input 
+        type="text"
+        placeholder="Game Pin"
+        v-model="gamePin">
+
+      <br>
       <button v-on:click="participateInPoll">
         {{ this.uiLabels.participateInGame }}
       </button>
     </div>
   <div v-if="joined">
-    <!--<p>Waiting for host to start poll</p>
-    {{ participants }}-->
+    <h1>Waiting for host to start game!</h1>
+    {{ participants }}
   </div>
   </div>
 </template>
@@ -23,7 +35,8 @@ export default {
   data: function () {
     return {
       userName: "",
-      gamePin: "inactive poll",
+      gamePin: "",
+      pollId: "inactive poll",
       uiLabels: {},
       joined: false,
       lang: localStorage.getItem("lang") || "en",
@@ -34,13 +47,13 @@ export default {
     this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
-    socket.on( "startPoll", () => this.$router.push("/poll/" + this.gamePin) );
-    socket.emit( "joinPoll", this.gamePin );
+    socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
+    socket.emit( "joinPoll", this.pollId );
     socket.emit( "getUILabels", this.lang );
   },
   methods: {
     participateInPoll: function () {
-      socket.emit( "participateInPoll", {gamePin: this.gamePin, name: this.userName} )
+      socket.emit( "participateInPoll", {pollId: this.gamePin, name: this.userName} )
       this.joined = true;
     } 
   }
@@ -86,13 +99,15 @@ export default {
 }
 .input-field button {
   background-color: #514ace;
-  color: black;
-  font-size: 1.5rem;
-  font-family: 'Caveat', cursive;
-  width: 15rem;;
-  padding: 0.5rem 2rem;
-  border: 3px solid rgb(213, 69, 206);
-  border-radius: 50%; /*är det snyggare med mer fyrkantigt men rundade hörn? kanske mer likt en knapp?*/
+  border: 2px solid #FF1493;
+  padding: 20px 90px;
+  border-radius: 100px;
   cursor: pointer;
+  gap: 10px;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap:10px;
+  font-weight: bold;
 }
 </style>

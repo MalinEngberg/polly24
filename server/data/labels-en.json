@@ -9,5 +9,7 @@
 	"startButton": "Start Game!",
 	"chooseCharacter": "Choose your character!",
 	"about": "About",
-	"participateInGame": "Join Game"
+	"participateInGame": "Join Game",
+	"enterGame": "Enter name and Game Pin:",
+	"nameInsert": "Name"
 }

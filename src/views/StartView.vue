@@ -24,7 +24,7 @@
   <h2>{{ uiLabels.subHeading }}</h2>
 
   <div>
-    <router-link to="'/lobby/' + newgamePin" id="new-game-link">
+    <router-link to="/lobby" id="new-game-link">
       {{ uiLabels.participatePoll }}
     </router-link>
     <br>
