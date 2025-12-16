@@ -3,7 +3,7 @@
   <div class="page">
 
     <div class="timer-bar">
-        Time left: 01:23
+        Time left: {{ timeLeft }}s
       </div>
     <div class="game-layout">
 
@@ -189,24 +189,63 @@
 </style>
 
 <script>
+import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-
+import { createTimer } from "@/components/StartTimer.js";
 
 export default {
   data() {
     return {
-      drawer: null
+      drawer: null,
+      timeLeft: 0,         
+      canDraw: false,
+      colors: [ "black", "red", "green", "blue", "yellow"]
     };
   },
+ // CANVAS functions
+ mounted() {
+  const canvas = this.$refs.canvas;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 
-  mounted() {
-    const canvas = this.$refs.canvas;
+  // drawing initially disabled
+  this.canDraw = false;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+  // canvas drawer WITH draw-permission signal
+  this.drawer = createCanvasDrawer(
+    canvas,
+    () => this.canDraw
+  );
 
-    this.drawer = createCanvasDrawer(canvas);
+  // timer controls draw lock
+  this.timer = createTimer({
+    getTime: () => this.timeLeft,
+    setTime: v => (this.timeLeft = v),
+    onEnd: () => {
+    this.canDraw = false;
+    }
+  });
+
+  // START ROUND CONCURRENTLY
+  this.startRound();
+},
+
+
+methods: {
+  startRound() {
+    const roundTime = 5;
+
+    // enable drawing
+    this.canDraw = true;
+
+    // start timer
+    this.timer.setTimer(roundTime);
+
+    // optional: call your concurrency function
+    concurrentStart(roundTime);
   }
+}
 };
+
 </script>
 

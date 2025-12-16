@@ -1,9 +1,10 @@
-// src/utils/canvasDrawer.js
-export function createCanvasDrawer(canvas) {
+export function createCanvasDrawer(canvas, canDrawSignal) {
   const context = canvas.getContext("2d");
 
   context.lineCap = "round";
   context.lineJoin = "round";
+  context.lineWidth = 4;
+  context.strokeStyle = "#000";
 
   let drawing = false;
   let lastX = 0;
@@ -18,6 +19,8 @@ export function createCanvasDrawer(canvas) {
   }
 
   function start(e) {
+    if (canDrawSignal && !canDrawSignal()) return;
+
     drawing = true;
     const { x, y } = getPos(e);
     lastX = x;
@@ -26,6 +29,7 @@ export function createCanvasDrawer(canvas) {
 
   function move(e) {
     if (!drawing) return;
+    if (canDrawSignal && !canDrawSignal()) return;
 
     const { x, y } = getPos(e);
 
@@ -42,10 +46,5 @@ export function createCanvasDrawer(canvas) {
     drawing = false;
   }
 
-  return {
-    start,
-    move,
-    stop,
-    context
-  };
+  return { start, move, stop };
 }
