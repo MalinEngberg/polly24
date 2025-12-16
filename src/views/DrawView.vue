@@ -208,16 +208,13 @@ export default {
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
 
-  // drawing initially disabled
   this.canDraw = false;
 
-  // canvas drawer WITH draw-permission signal
   this.drawer = createCanvasDrawer(
     canvas,
     () => this.canDraw
   );
 
-  // timer controls draw lock
   this.timer = createTimer({
     getTime: () => this.timeLeft,
     setTime: v => (this.timeLeft = v),
@@ -235,13 +232,10 @@ methods: {
   startRound() {
     const roundTime = 5;
 
-    // enable drawing
     this.canDraw = true;
 
-    // start timer
     this.timer.setTimer(roundTime);
 
-    // optional: call your concurrency function
     concurrentStart(roundTime);
   }
 }
