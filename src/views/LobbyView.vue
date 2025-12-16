@@ -1,16 +1,8 @@
 <template>
-  <div class="lobby-view">
-
-    <div class="input-field" v-if="!joined">
-      <h1>Enter Game Pin:</h1>
-      
-      <input 
-        type="text"
-        maxlength="4"
-        placeholder="Enter Game Pin" 
-        v-model="gamePin">
-      </input>
-      <br>
+  <div>
+    {{gamePin}}
+    <div v-if="!joined">
+      <input type="text" v-model="userName">
       <button v-on:click="participateInPoll">
         {{ this.uiLabels.participateInGame }}
       </button>
@@ -31,8 +23,7 @@ export default {
   data: function () {
     return {
       userName: "",
-      gamePin: "",
-      pollId: "inactive poll",
+      gamePin: "inactive poll",
       uiLabels: {},
       joined: false,
       lang: localStorage.getItem("lang") || "en",
@@ -43,13 +34,13 @@ export default {
     this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
-    socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
-    socket.emit( "joinPoll", this.pollId );
+    socket.on( "startPoll", () => this.$router.push("/poll/" + this.gamePin) );
+    socket.emit( "joinPoll", this.gamePin );
     socket.emit( "getUILabels", this.lang );
   },
   methods: {
     participateInPoll: function () {
-      socket.emit( "participateInPoll", {pollId: this.gamePin, name: this.userName} )
+      socket.emit( "participateInPoll", {gamePin: this.gamePin, name: this.userName} )
       this.joined = true;
     } 
   }

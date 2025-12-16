@@ -23,9 +23,8 @@
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
 
-<!-- Det var här man skrev in sitt PollId -->
-<div class ="name">
-    <router-link to="'/lobby/' + newPollId" id="new-game-link">
+  <div>
+    <router-link to="'/lobby/' + newgamePin" id="new-game-link">
       {{ uiLabels.participatePoll }}
     </router-link>
     <br>
@@ -48,7 +47,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newPollId: "",
+      newgamePin: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true
     }
