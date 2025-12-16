@@ -50,7 +50,6 @@
 </template>
 
 <style scoped>
-/* PAGE BACKGROUND */
 .page {
   display: flex;
   justify-content: center;
