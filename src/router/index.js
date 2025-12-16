@@ -23,7 +23,7 @@ const router = createRouter({
       component: () => import('../views/PollView.vue')
     },
     {
-      path: '/lobby/:id',
+      path: '/lobby/',
       name: 'LobbyView',
       component: () => import('../views/LobbyView.vue')
     },
@@ -59,12 +59,6 @@ const router = createRouter({
       name: 'ScoreBoardView',
       component: () => import('../views/ScoreBoardView.vue')
     }
-    //,
-    //{
-     // path: '/game/:character',
-     // name: 'GamePage',
-     // component: GamePage
-    //}
   ]
 })
 
