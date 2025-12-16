@@ -46,5 +46,9 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     drawing = false;
   }
 
-  return { start, move, stop };
+  function getcolor(color){
+    context.strokeStyle = color;
+  }
+
+  return { start, move, stop, getcolor };
 }
