@@ -16,7 +16,7 @@ export default {
 </script>
 <style scoped>
   nav {
-    background-color: lightgray;
+    background-color: rgb(224, 182, 244);
     width:100%;
     height: 4em;
     display: grid;
@@ -28,14 +28,14 @@ export default {
     font-size: 0.8rem;
     letter-spacing: 0.1em;
     text-decoration: none;
-    color: gray;
+    color: rgb(66, 22, 107);
     display: grid;
     align-items: center;
     justify-content: center;
     border-left: 1px solid gray;
   }
 
-@media screen and (max-width:50em) {
+@media screen and (max-width:150em) {
   nav {
     position: absolute;
     height:100vh;
