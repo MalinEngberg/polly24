@@ -26,8 +26,8 @@ prototype of the Data object/class
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
 ***********************************************/
 
-Data.prototype.pollExists = function (pollId) {
-  return typeof this.polls[pollId] !== "undefined"
+Data.prototype.pollExists = function (gamePin) {
+  return typeof this.polls[gamePin] !== "undefined"
 }
 
 Data.prototype.getUILabels = function (lang) {
@@ -38,52 +38,52 @@ Data.prototype.getUILabels = function (lang) {
   return JSON.parse(labels);
 }
 
-Data.prototype.createPoll = function(pollId, lang="en") {
-  if (!this.pollExists(pollId)) {
+Data.prototype.createPoll = function(gamePin, lang="en") {
+  if (!this.pollExists(gamePin)) {
     let poll = {};
     poll.lang = lang;  
     poll.questions = [];
     poll.answers = [];
     poll.participants = [];
     poll.currentQuestion = 0;              
-    this.polls[pollId] = poll;
-    console.log("poll created", pollId, poll);
+    this.polls[gamePin] = poll;
+    console.log("poll created", gamePin, poll);
   }
-  return this.polls[pollId];
+  return this.polls[gamePin];
 }
 
-Data.prototype.getPoll = function(pollId) {
-  if (this.pollExists(pollId)) {
-    return this.polls[pollId];
+Data.prototype.getPoll = function(gamePin) {
+  if (this.pollExists(gamePin)) {
+    return this.polls[gamePin];
   }
   return {};
 }
 
-Data.prototype.participateInPoll = function(pollId, name) {
-  console.log("participant will be added to", pollId, name);
-  if (this.pollExists(pollId)) {
-    this.polls[pollId].participants.push({name: name, answers: []})
+Data.prototype.participateInPoll = function(gamePin, name) {
+  console.log("participant will be added to", gamePin, name);
+  if (this.pollExists(gamePin)) {
+    this.polls[gamePin].participants.push({name: name, answers: []})
   }
 }
 
-Data.prototype.getParticipants = function(pollId) {
-  const poll = this.polls[pollId];
-  console.log("participants requested for", pollId);
-  if (this.pollExists(pollId)) { 
-    return this.polls[pollId].participants
+Data.prototype.getParticipants = function(gamePin) {
+  const poll = this.polls[gamePin];
+  console.log("participants requested for", gamePin);
+  if (this.pollExists(gamePin)) { 
+    return this.polls[gamePin].participants
   }
   return [];
 }
 
-Data.prototype.addQuestion = function(pollId, q) {
-  if (this.pollExists(pollId)) {
-    this.polls[pollId].questions.push(q);
+Data.prototype.addQuestion = function(gamePin, q) {
+  if (this.pollExists(gamePin)) {
+    this.polls[gamePin].questions.push(q);
   }
 }
 
-Data.prototype.activateQuestion = function(pollId, qId = null) {
-  if (this.pollExists(pollId)) {
-    const poll = this.polls[pollId];
+Data.prototype.activateQuestion = function(gamePin, qId = null) {
+  if (this.pollExists(gamePin)) {
+    const poll = this.polls[gamePin];
     if (qId !== null) {
       poll.currentQuestion = qId;
     }
@@ -92,9 +92,9 @@ Data.prototype.activateQuestion = function(pollId, qId = null) {
   return {}
 }
 
-Data.prototype.getSubmittedAnswers = function(pollId) {
-  if (this.pollExists(pollId)) {
-    const poll = this.polls[pollId];
+Data.prototype.getSubmittedAnswers = function(gamePin) {
+  if (this.pollExists(gamePin)) {
+    const poll = this.polls[gamePin];
     const answers = poll.answers[poll.currentQuestion];
     if (typeof poll.questions[poll.currentQuestion] !== 'undefined') {
       return answers;
@@ -103,9 +103,9 @@ Data.prototype.getSubmittedAnswers = function(pollId) {
   return {}
 }
 
-Data.prototype.submitAnswer = function(pollId, answer) {
-  if (this.pollExists(pollId)) {
-    const poll = this.polls[pollId];
+Data.prototype.submitAnswer = function(gamePin, answer) {
+  if (this.pollExists(gamePin)) {
+    const poll = this.polls[gamePin];
     let answers = poll.answers[poll.currentQuestion];
     // create answers object if no answers have yet been submitted
     if (typeof answers !== 'object') {

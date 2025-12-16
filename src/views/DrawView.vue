@@ -3,7 +3,7 @@
   <div class="page">
 
     <div class="timer-bar">
-        Time left: 01:23
+        Time left: {{ timeLeft }}s
       </div>
     <div class="game-layout">
 
@@ -30,7 +30,7 @@
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= drawer.getcolor(c)></div>
           </div>
         </div>
 
@@ -189,24 +189,58 @@
 </style>
 
 <script>
+import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-
+import { createTimer } from "@/components/StartTimer.js";
 
 export default {
   data() {
     return {
-      drawer: null
+      drawer: null,
+      timeLeft: 0,         
+      canDraw: false,
+      currentColor: "black",
+      colors: [ "black", "red", "green", "blue", "yellow"]
     };
   },
+ // CANVAS functions
+ mounted() {
+  const canvas = this.$refs.canvas;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 
-  mounted() {
-    const canvas = this.$refs.canvas;
+  this.canDraw = false;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+  this.drawer = createCanvasDrawer(
+    canvas,
+    () => this.canDraw
+  );
 
-    this.drawer = createCanvasDrawer(canvas);
+  this.timer = createTimer({
+    getTime: () => this.timeLeft,
+    setTime: v => (this.timeLeft = v),
+    onEnd: () => {
+    this.canDraw = false;
+    }
+  });
+
+  // START ROUND CONCURRENTLY
+  this.startRound();
+},
+
+
+methods: {
+  startRound() {
+    const roundTime = 10;
+
+    this.canDraw = true;
+
+    this.timer.setTimer(roundTime);
+
+    concurrentStart(roundTime);
   }
+}
 };
+
 </script>
 

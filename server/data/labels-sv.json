@@ -9,5 +9,7 @@
 	"startButton": "Starta spel!",
 	"chooseCharacter": "Välj din karaktär!",
 	"about": "Om oss",
-	"participateInPoll": "Delta i enkäten"
+	"participateInGame": "Gå med",
+	"enterGame": "Skriv in namn och Game Pin:",
+	"nameInsert": "Namn"
 }

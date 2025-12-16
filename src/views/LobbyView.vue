@@ -2,27 +2,25 @@
   <div class="lobby-view">
 
     <div class="input-field" v-if="!joined">
-      <h1>Enter Game Pin:</h1>
-
-     <input
-        type="text"
-        placeholder="Enter your name"
-        v-model="userName">
+      <h1>{{ uiLabels.enterGame }}</h1>
 
       <input
         type="text"
-        maxlength="4"
-        placeholder="Enter Game Pin"
+        v-bind:placeholder= "uiLabels.nameInsert"
+        v-model="userName">
+
+      <input 
+        type="text"
+        placeholder="Game Pin"
         v-model="gamePin">
 
-
       <br>
-      <button id="joinButton" v-on:click="participateInPoll">
-        {{ uiLabels.participateInGame }}
+      <button v-on:click="participateInPoll">
+        {{ this.uiLabels.participateInGame }}
       </button>
     </div>
   <div v-if="joined">
-    <p>Waiting for host to start poll</p>
+    <h1>Waiting for host to start game!</h1>
     {{ participants }}
   </div>
   </div>
@@ -99,16 +97,17 @@ export default {
   border: 6px solid black;
   border-radius: 15px;
 }
-
-#joinButton {
+.input-field button {
   background-color: #514ace;
-  color: white;
-  font-size: 1.5rem;
-  font-family: 'Caveat', cursive;
-  width: 15rem;;
-  padding: 1.5rem 2rem;
-  border: 3px solid rgb(213, 69, 206);
-  border-radius: 50%; /*är det snyggare med mer fyrkantigt men rundade hörn? kanske mer likt en knapp?*/
+  border: 2px solid #FF1493;
+  padding: 20px 90px;
+  border-radius: 100px;
   cursor: pointer;
+  gap: 10px;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap:10px;
+  font-weight: bold;
 }
 </style>

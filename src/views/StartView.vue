@@ -23,15 +23,8 @@
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
 
-
-  <div class="name">
-    <label>
-      Enter your name:
-      <br></br>
-      <input type="text" v-model="newPollId" />
-    </label>
-    <br>
-    <router-link to="'/lobby/' + newPollId" id="new-game-link">
+  <div>
+    <router-link to="/lobby" id="new-game-link">
       {{ uiLabels.participatePoll }}
     </router-link>
     <br>
@@ -54,7 +47,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newPollId: "",
+      newgamePin: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true
     }
