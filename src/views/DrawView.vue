@@ -1,21 +1,30 @@
+
 <template>
   <div class="page">
 
-    <div class="= timer-bar">
+    <div class="timer-bar">
         Time left: 01:23
       </div>
     <div class="game-layout">
 
       
-      <div class="center-column">
+    <div class="center-column">
         <div class="top-bar">
           Your time to paint:
           <span class="word-display" > Ä P P L E</span>
           
         </div>
 
-        <div class="canvas-area"></div>
-      </div>
+        <div class="canvas-area">
+  <canvas
+    ref="canvas"
+    @mousedown="drawer.start"
+    @mousemove="drawer.move"
+    @mouseup="drawer.stop"
+    @mouseleave="drawer.stop">
+  </canvas>
+        </div>
+    </div>
 
       <div class="right-column">
 
@@ -127,8 +136,15 @@
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
-  height: 550px; /* Adjust to your needs */
+  height: 550px;
 }
+
+.canvas-area canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 
 .right-column {
   width: 250px;
@@ -172,3 +188,26 @@
   background: white;
 }
 </style>
+
+<script>
+import { createCanvasDrawer } from "@/components/StartDraw.js";
+
+
+export default {
+  data() {
+    return {
+      drawer: null
+    };
+  },
+
+  mounted() {
+    const canvas = this.$refs.canvas;
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    this.drawer = createCanvasDrawer(canvas);
+  }
+};
+</script>
+
