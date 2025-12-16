@@ -10,7 +10,7 @@
       <div class="left-column">
             <div class="players" v-for="p in players" :key="p" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
-                <div class="player-score">Score: {{ p.score }}p
+                <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
             </div>
           </div>
@@ -200,6 +200,7 @@
 </style>
 
 <script>
+import { Getpoints } from "@/components/GetPoints.js";
 import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 import { createTimer } from "@/components/StartTimer.js";
