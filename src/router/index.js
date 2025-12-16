@@ -50,14 +50,12 @@ const router = createRouter({
       path: '/scoreboard/',
       name: 'ScoreBoardView',
       component: () => import('../views/ScoreboardView.vue')
+    }, 
+    {
+     path: '/draw/',
+      name: 'DrawView',
+      component: () => import('../views/DrawView.vue')
     }
-    }//,
-    //{
-     // path: '/game/:character',
-     // name: 'GamePage',
-     // component: GamePage
-    //}
   ]
 })
-
 export default router

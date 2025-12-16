@@ -37,7 +37,7 @@ Data.prototype.getUILabels = function (lang) {
   const labels = readFileSync("./server/data/labels-" + lang + ".json");
   return JSON.parse(labels);
 }
-
+//här skriver vi in draw time, rounds mm
 Data.prototype.createPoll = function(pollId, lang="en") {
   if (!this.pollExists(pollId)) {
     let poll = {};

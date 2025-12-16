@@ -23,14 +23,8 @@
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
 
-
-  <div class="name">
-    <label>
-      Enter your name:
-      <br></br>
-      <input type="text" v-model="newPollId" />
-    </label>
-    <br>
+<!-- Det var här man skrev in sitt PollId -->
+<div class ="name">
     <router-link to="'/lobby/' + newPollId" id="new-game-link">
       {{ uiLabels.participatePoll }}
     </router-link>
