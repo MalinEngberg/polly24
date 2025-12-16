@@ -30,7 +30,7 @@
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= drawer.getcolor(c)></div>
           </div>
         </div>
 
@@ -199,6 +199,7 @@ export default {
       drawer: null,
       timeLeft: 0,         
       canDraw: false,
+      currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"]
     };
   },
@@ -230,7 +231,7 @@ export default {
 
 methods: {
   startRound() {
-    const roundTime = 5;
+    const roundTime = 10;
 
     this.canDraw = true;
 
