@@ -7,13 +7,22 @@
       </div>
     <div class="game-layout">
 
-      
+      <div class="left-column">
+            <div class="players" v-for="p in players" :key="p" :style="{ background: p.img }" >
+                <img :src="p.img" alt="Player Image" class="player-img" />
+                <div class="player-score">Score: {{ p.score }}p
+            </div>
+            </div>
+          </div>
+
     <div class="center-column">
         <div class="top-bar">
           Your time to paint:
           <span class="word-display" > Ä P P L E</span>
           
         </div>
+
+ 
 
         <div class="canvas-area">
   <canvas
@@ -25,6 +34,8 @@
   </canvas>
         </div>
     </div>
+
+    
 
       <div class="right-column">
 
@@ -77,7 +88,7 @@
   gap: 15px;
 }
 
-.player {
+.players {
   background: white;
   border: 2px solid #aaa;
   text-align: center;
@@ -200,7 +211,10 @@ export default {
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
-      colors: [ "black", "red", "green", "blue", "yellow"]
+      colors: [ "black", "red", "green", "blue", "yellow"],
+      players:[{name: "Barbapappa", img: "/img/Barbapappa.png",score: 1200},
+                {name: "mnm", img: "/img/m&m-killen.png",score: 500},
+                {name: "Bowser", img: "/img/Bowser.png",score: 1500} ],
     };
   },
  // CANVAS functions
@@ -230,6 +244,7 @@ export default {
 
 
 methods: {
+    
   startRound() {
     const roundTime = 10;
 
