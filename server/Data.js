@@ -124,6 +124,7 @@ Data.prototype.submitAnswer = function(pollId, answer) {
   }
 }
 
+
 export { Data };
 
 
