@@ -12,25 +12,33 @@
     <button v-on:click="switchLanguage">
       {{ uiLabels.changeLanguage }}
     </button>
-    <a href="">
+
+    <router-link to="/about/">
       {{ uiLabels.about }}
-    </a>
+    </router-link>
+
+
     <a href="">FAQ</a>
   </ResponsiveNav>
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
-  <label>
-    Name:
-    <input type="text" v-model="newPollId">
-  </label>
-  <br>
-  <router-link v-bind:to="'/lobby/' + newPollId">
-    {{ uiLabels.participatePoll }}
-  </router-link>
-  <br>
-  <router-link to="/create-new-game">
-    {{ uiLabels.createPoll }}
-  </router-link>
+
+
+  <div class="name">
+    <label>
+      Enter your name:
+      <br></br>
+      <input type="text" v-model="newPollId" />
+    </label>
+    <br>
+    <router-link to="'/lobby/' + newPollId" id="new-game-link">
+      {{ uiLabels.participatePoll }}
+    </router-link>
+    <br>
+    <router-link to="/create-new-game" id="join-link">
+      {{ uiLabels.createPoll }}
+    </router-link>
+  </div>
 </template>
 
 <script>
@@ -82,13 +90,14 @@ header {
 .logo {
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  /* color: white; */
+  font-size: 4rem;
+  color: White;
   padding-top: 0.2em;
 }
 
 .logo img {
-  height: 2.5rem;
+  background-color: #AA87BF;
+  height: 15rem;
   vertical-align: bottom;
   margin-right: 0.5rem;
 }
@@ -107,7 +116,46 @@ header {
   font-size: 1.5rem;
 }
 
-@media screen and (max-width:50em) {
+.name {
+  margin-top: 2rem;
+  font-size: 2rem;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-top: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+#new-game-link {
+  color: black;
+  text-decoration: none;
+  padding: 0.01rem 1rem;
+  background-color: #ff4dbb;
+  border-radius: 7px;
+  font-weight: bold;
+  line-height: 4rem;
+}
+
+#join-link{
+  color: black;
+  text-decoration: none;
+  padding: 0.01rem 1rem;
+  background-color: #5795ff;
+  border-radius: 7px;
+  font-weight: bold;
+  line-height: 4rem;
+}
+
+label {
+
+}
+
+@media screen and (max-width:150em) {
   .logo {
     font-size: 5vw;
     display: flex;
@@ -126,5 +174,6 @@ header {
   .hide {
     left: -12em;
   }
+
 }
 </style>

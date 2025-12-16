@@ -3,9 +3,11 @@
 	"subHeading": "Always a good time",
 	"invite": "Invite participants with this link:",
 	"createPoll": "Start a new game",
-	"participatePoll": "Participate in pa game",
+	"participatePoll": "Participate in a game",
 	"question": "Question",
 	"changeLanguage": "Byt till svenska",
+	"startButton": "Start Game!",
+	"chooseCharacter": "Choose your character!",
 	"about": "About",
-	"participateInPoll": "Participate in poll"
+	"participateInGame": "Join Game"
 }
