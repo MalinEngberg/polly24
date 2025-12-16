@@ -124,6 +124,7 @@ Data.prototype.submitAnswer = function(gamePin, answer) {
   }
 }
 
+
 export { Data };
 
 

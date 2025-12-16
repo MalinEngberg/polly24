@@ -9,13 +9,21 @@ const router = createRouter({
       name: 'Start',
       component: StartView
     },
+
+    {
+      path: '/draw/',
+      name: 'DrawView',
+      component: () => import('../views/DrawView.vue')
+    },
+
+    
     {
       path: '/poll/:id',
       name: 'PollView',
       component: () => import('../views/PollView.vue')
     },
     {
-      path: '/lobby/:id',
+      path: '/lobby/',
       name: 'LobbyView',
       component: () => import('../views/LobbyView.vue')
     },
@@ -49,9 +57,8 @@ const router = createRouter({
     {
       path: '/scoreboard/',
       name: 'ScoreBoardView',
-      component: () => import('../views/ScoreboardView.vue')
+      component: () => import('../views/ScoreBoardView.vue')
     }
   ]
 })
-
 export default router
