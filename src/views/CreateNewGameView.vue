@@ -1,6 +1,6 @@
 <template>
     <header>
-        You are Creating a New Game
+    
     </header>
     <main>
         <div>
