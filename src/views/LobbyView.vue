@@ -3,21 +3,27 @@
 
     <div class="input-field" v-if="!joined">
       <h1>Enter Game Pin:</h1>
-      
-      <input 
+
+     <input
+        type="text"
+        placeholder="Enter your name"
+        v-model="userName">
+
+      <input
         type="text"
         maxlength="4"
-        placeholder="Enter Game Pin" 
+        placeholder="Enter Game Pin"
         v-model="gamePin">
-      </input>
+
+
       <br>
-      <button v-on:click="participateInPoll">
-        {{ this.uiLabels.participateInGame }}
+      <button id="joinButton" v-on:click="participateInPoll">
+        {{ uiLabels.participateInGame }}
       </button>
     </div>
   <div v-if="joined">
-    <!--<p>Waiting for host to start poll</p>
-    {{ participants }}-->
+    <p>Waiting for host to start poll</p>
+    {{ participants }}
   </div>
   </div>
 </template>
@@ -93,13 +99,14 @@ export default {
   border: 6px solid black;
   border-radius: 15px;
 }
-.input-field button {
+
+#joinButton {
   background-color: #514ace;
-  color: black;
+  color: white;
   font-size: 1.5rem;
   font-family: 'Caveat', cursive;
   width: 15rem;;
-  padding: 0.5rem 2rem;
+  padding: 1.5rem 2rem;
   border: 3px solid rgb(213, 69, 206);
   border-radius: 50%; /*är det snyggare med mer fyrkantigt men rundade hörn? kanske mer likt en knapp?*/
   cursor: pointer;

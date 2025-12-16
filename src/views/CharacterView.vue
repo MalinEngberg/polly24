@@ -29,15 +29,22 @@
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 
+class Character {
+    constructor(name, img) {
+        this.name = name;
+        this.img = img;
+    }
+}
+
 export default {
     name: "CharacterSelectView",
 
     data: function() {
         return {
             characters: [
-                {name: "Barbapappa", img: "/img/Barbapappa.png"},
-                {name: "mnm", img: "/img/m&m-killen.png"},
-                {name: "Bowser", img: "/img/Bowser.png"}
+                new Character("Barbappa", "/img/Barbapappa.png"),
+                new Character("mnm", "/img/m&m-killen.png"),
+                new Character("Bowser", "/img/Bowser.png")
             ],
 
             currentIndex: 0,
