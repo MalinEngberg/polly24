@@ -1,7 +1,7 @@
 <template>
     <main id ="CharacterPage">
         <section id = "characterSelect">
-            <h1>Choose your character!</h1>
+            <h1>{{ uiLabels.chooseCharacter }}</h1>
             <br />
             <div class = "switchCharacter">
                 <button class = "arrow-button" v-on:click="prevCharacter"><</button>
@@ -13,19 +13,22 @@
 
                 <button class = "arrow-button" v-on:click="nextCharacter">></button>
             </div>
-            <br />
-            <br />
-            <br />
 
+            <br />
+            <br />
+            <br />
 
             <button id ="startButton" v-on:click="startGame">
-                Lets start!
+                {{ uiLabels.startButton }}
             </button>
         </section>
     </main>
 </template>
 
 <script>
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+
 export default {
     name: "CharacterSelectView",
 
@@ -37,10 +40,19 @@ export default {
                 {name: "Bowser", img: "/img/Bowser.png"}
             ],
 
-            currentIndex: 0
+            currentIndex: 0,
+
+            lang: localStorage.getItem("lang") || "en",
+            pollId: "",
+            pollData: {},
+            uiLabels: {}
         }
     },
 
+    created: function() {
+        socket.on( "uiLabels", labels => this.uiLabels = labels );
+        socket.emit( "getUILabels", this.lang );
+    },
 
     methods: {
         getCurrentCharacter() {
