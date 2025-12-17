@@ -15,9 +15,9 @@
         </div>
         <div class="Option">
             <p>
-                <label for="GamePin">GamePin</label><br>
+                <label for="gamePin">GamePin</label><br>
 
-                <input type="text" id="GamePin" v-model="GamePin" required="required" v-bind:placeholder="uiLabels.GamePinInsert">
+                <input type="text" id="gamePin" v-model="gamePin" required="required" v-bind:placeholder="uiLabels.gamePinInsert">
             </p>
         </div>
         <div class="Option">
@@ -82,7 +82,7 @@ export default {
             name: '',
             DrawTime: '60s',
             Rounds: '3rounds',
-            GamePin: '',
+            gamePin: '',
             joined: true
         }
     },
@@ -92,10 +92,10 @@ export default {
     },
     methods: {
         createGame: function () {
-            socket.emit("createGame",{gamePin: this.GamePin, lang: this.lang })
-            socket.emit("participateInGame", {gamePin: this.GamePin, name: this.name, joined: this.joined});
-            socket.emit("joinLobbyAsHost", {gamePin: this.GamePin, name: this.name});
-            this.$router.push('/lobby/' + this.GamePin);
+            socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
+            socket.emit("participateInGame", {gamePin: this.gamePin, name: this.name, joined: this.joined});
+            socket.emit("joinLobbyAsHost", {gamePin: this.gamePin, name: this.name});
+            this.$router.push('/lobby/' + this.gamePin);
         }
     }
 }

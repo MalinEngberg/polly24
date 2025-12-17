@@ -25,11 +25,11 @@
 
   <div>
     <router-link to="/lobby/" id="new-game-link">
-      {{ uiLabels.participatePoll }}
+      {{ uiLabels.participateInGame }}
     </router-link>
     <br>
     <router-link to="/create-new-game" id="join-link">
-      {{ uiLabels.createPoll }}
+      {{ uiLabels.createGame }}
     </router-link>
   </div>
 </template>
