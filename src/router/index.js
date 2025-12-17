@@ -9,9 +9,6 @@ const router = createRouter({
       name: 'Start',
       component: StartView
     },
-<<<<<<< HEAD
-      {
-=======
 
     {
       path: '/draw/',
@@ -21,7 +18,6 @@ const router = createRouter({
 
     
     {
->>>>>>> origin/main
       path: '/poll/:id',
       name: 'PollView',
       component: () => import('../views/PollView.vue')

@@ -1,6 +1,6 @@
 
-<<<<<<< HEAD
-=======
+<template>
+  <div class="lobby-view">
     <div class="input-field" v-if="!joined">
       <h1>{{ uiLabels.enterGame }}</h1>
 
@@ -19,13 +19,10 @@
         {{ this.uiLabels.participateInGame }}
       </button>
     </div>
-  <div v-if="joined">
-    <h1>Waiting for host to start game!</h1>
-    {{ participants }}
-      <router-link to="/lobby/" id="createGame">
-        
-      </router-link>
-  </div>
+    <div v-if="joined">
+      <h1>Waiting for host to start game!</h1>
+      {{ participants }}
+    </div>
   </div>
 </template>
 
@@ -115,4 +112,3 @@ export default {
   font-weight: bold;
 }
 </style>
->>>>>>> origin/main
