@@ -21,8 +21,11 @@ function sockets(io, socket, data) {
   });
 
   socket.on('participateInGame', function(d) {
+    socket.join(d.gamePin);
     data.participateInGame(d.gamePin, d.name, d.joined);
     io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
+
+    console.log("participant added to gamePin:", data.getParticipants(d.gamePin));
   });
 
   socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});

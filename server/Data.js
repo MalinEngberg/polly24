@@ -62,6 +62,7 @@ Data.prototype.getPoll = function(gamePin) {
 Data.prototype.participateInGame = function(gamePin, name, joined) {
   console.log("participant will be added to:", gamePin, name, joined);
   if (this.pollExists(gamePin)) {
+    this.createGame(gamePin);
     this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
     console.log("participants now:", this.polls[gamePin].participants);
   }

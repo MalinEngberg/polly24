@@ -1,7 +1,7 @@
 <template>
   <div class="lobby-view">
 
-    <div class="input-field" v-if="!joined">
+    <div class="input-field" v-if="!$route.params.gamePin">
       <h1>{{ uiLabels.enterGame }}</h1>
 
       <input
@@ -16,16 +16,19 @@
 
       <br>
       <button v-on:click="participateInGame">
-        {{ this.uiLabels.participateInGame }}
+        {{ uiLabels.participateInGame }}
       </button>
     </div>
-  <div v-if="joined">
-    <h1>Waiting for host to start game!</h1>
-    {{ participants }}
-      <router-link to="/lobby/" id="createGame">
+    <div v-else>
+      <h1>Waiting for host to start game!</h1>
+      <p>[{{ participants.map(p => p.name).join(', ') }}]</p>
+      <!--<p>{{ participants }}</p>
+      <li v-for="participant in participants" :key="participant.name">
+        {{ participant.name }}
+      </li>-->
+
         
-      </router-link>
-  </div>
+    </div>
   </div>
 </template>
 
@@ -50,15 +53,23 @@ export default {
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
     socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
+
     socket.on( "hostJoined", () => {this.joined = true});
-    socket.emit( "joinPoll", this.pollId );
+    
     socket.emit( "getUILabels", this.lang );
+
+    if (this.$route.params.gamePin) {
+      this.gamePin = this.$route.params.gamePin;
+      socket.emit("joinGame", this.gamePin);
+      socket.emit("participateInGame", { gamePin: this.gamePin, name: this.userName, joined: true });
+  }
   },
   methods: {
     participateInGame: function () {
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName } )
-      this.joined = true;
+      localStorage.setItem("userName", this.userName);
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, joined: true } )
       this.$router.push('/lobby/'+ this.gamePin);
+      this.joined = true;
     } 
   }
 
