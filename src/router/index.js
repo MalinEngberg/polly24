@@ -9,7 +9,7 @@ const router = createRouter({
       name: 'Start',
       component: StartView
     },
-      {
+    {
       path: '/poll/:id',
       name: 'PollView',
       component: () => import('../views/PollView.vue')
@@ -25,15 +25,38 @@ const router = createRouter({
       component: () => import('../views/CreateView.vue')
     },
     {
-      path: '/result/:id',
+      path: '/result/',
+      // erased :id from the path, before = /result/:id
       name: 'ResultView',
       component: () => import('../views/ResultView.vue')
+    },
+    {
+      path: '/character',
+      name: 'CharacterView',
+     component: () => import('../views/CharacterView.vue')
     },
     {
       path: '/create-new-game',
       name: 'CreateNewGameView',
       component: () => import('../views/CreateNewGameView.vue')
+    },
+
+    {
+      path: '/about/',
+      name: 'AboutUsView',
+      component: () => import('../views/AboutUsView.vue')
+    },
+    {
+      path: '/scoreboard/',
+      name: 'ScoreBoardView',
+      component: () => import('../views/ScoreboardView.vue')
     }
+    }//,
+    //{
+     // path: '/game/:character',
+     // name: 'GamePage',
+     // component: GamePage
+    //}
   ]
 })
 

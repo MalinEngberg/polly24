@@ -37,6 +37,8 @@ function sockets(io, socket, data) {
     data.submitAnswer(d.pollId, d.answer);
     io.to(d.pollId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.pollId));
   }); 
+
+  socket
 }
 
 export { sockets };
