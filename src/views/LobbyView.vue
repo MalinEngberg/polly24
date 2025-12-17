@@ -21,9 +21,14 @@
     </div>
   <div v-if="joined">
     <h1>Waiting for host to start game!</h1>
+        {{ participants }}
+    <br />
+    <button id ="startGameButton" v-on:click="startGameNow">
+        {{ uiLabels.startGameButton }}
+    </button>
     {{ participants }}
       <router-link to="/lobby/" id="createGame">
-        
+
       </router-link>
   </div>
   </div>
@@ -51,7 +56,6 @@ export default {
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
     socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
-    socket.on( "hostJoined", () => {this.joined = true});
     socket.emit( "joinPoll", this.pollId );
     socket.emit( "getUILabels", this.lang );
   },

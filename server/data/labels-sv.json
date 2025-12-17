@@ -2,7 +2,7 @@
 	"sales-pitch": "Rita. Gissa. Ha kul!",
 	"subHeading": "Alltid kul",
 	"invite": "Bjud in deltagare med den här länken:",
-	"createGame": "Skapa ett nytt spel",
+	"createPoll": "Skapa ett nytt spel",
 	"participatePoll": "Delta i ett spel",
 	"question": "Fråga",
 	"changeLanguage": "Change to English",
@@ -11,6 +11,8 @@
 	"about": "Om oss",
 	"participateInGame": "Gå med",
 	"enterGame": "Skriv in namn och Game Pin:",
+	"nameInsert": "Namn",
+	"startGameButton": "Starta spelet!"
 	"nameInsert": "Namn",
 	"namePlaceHolder": "Skriv in ditt namn",
 	"CreatingNewGame": "Du skapar ett nytt spel!",

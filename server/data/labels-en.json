@@ -2,7 +2,7 @@
 	"sales-pitch": "Write. Guess. Having fun!",
 	"subHeading": "Always a good time",
 	"invite": "Invite participants with this link:",
-	"createGame": "Create a new game",
+	"createPoll": "Create a new game",
 	"participatePoll": "Participate in a game",
 	"question": "Question",
 	"changeLanguage": "Byt till svenska",
@@ -11,6 +11,8 @@
 	"about": "About",
 	"participateInGame": "Join Game",
 	"enterGame": "Enter name and Game Pin:",
+	"nameInsert": "Name",
+	"startGameButton": "Start Game!"
 	"nameInsert": "Name",
 	"namePlaceHolder": "Enter your name",
 	"CreatingNewGame": "You are creating a new game!",
