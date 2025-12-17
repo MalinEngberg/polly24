@@ -4,7 +4,6 @@
     </header>
     <main>
         <div>
-<<<<<<< HEAD
             <h1>You are creating a new game!</h1>
         </div>
         <div class="select-Language">
@@ -30,14 +29,6 @@
             </p>
         </div>
     </main>
-=======
-            <h1>
-                Create New Game
-            </h1>
-
-        </div>
-    </body>
->>>>>>> main
 </template>
 
 <script>
@@ -67,13 +58,10 @@ export default {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
    h1 {
     font-size: 36pt;
    }
-=======
 body {
     background-color: #AA87BF;
 }
->>>>>>> main
 </style>
