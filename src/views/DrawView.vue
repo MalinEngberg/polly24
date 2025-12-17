@@ -1,27 +1,47 @@
+
 <template>
   <div class="page">
 
-    <div class="= timer-bar">
-        Time left: 01:23
+    <div class="timer-bar">
+        Time left: {{ timeLeft }}s
       </div>
     <div class="game-layout">
 
-      
-      <div class="center-column">
+      <div class="left-column">
+            <div class="players" v-for="p in players" :key="p" :style="{ background: p.img }" >
+                <img :src="p.img" alt="Player Image" class="player-img" />
+                <div class="player-score">{{ p.name }}: {{ p.score }}p
+            </div>
+            </div>
+          </div>
+
+    <div class="center-column">
         <div class="top-bar">
           Your time to paint:
           <span class="word-display" > Ä P P L E</span>
           
         </div>
 
-        <div class="canvas-area"></div>
-      </div>
+ 
+
+        <div class="canvas-area">
+  <canvas
+    ref="canvas"
+    @mousedown="drawer.start"
+    @mousemove="drawer.move"
+    @mouseup="drawer.stop"
+    @mouseleave="drawer.stop">
+  </canvas>
+        </div>
+    </div>
+
+    
 
       <div class="right-column">
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= drawer.getcolor(c)></div>
           </div>
         </div>
 
@@ -41,7 +61,6 @@
 </template>
 
 <style scoped>
-/* PAGE BACKGROUND */
 .page {
   display: flex;
   justify-content: center;
@@ -69,7 +88,7 @@
   gap: 15px;
 }
 
-.player {
+.players {
   background: white;
   border: 2px solid #aaa;
   text-align: center;
@@ -127,8 +146,15 @@
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
-  height: 550px; /* Adjust to your needs */
+  height: 550px;
 }
+
+.canvas-area canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 
 .right-column {
   width: 250px;
@@ -172,3 +198,65 @@
   background: white;
 }
 </style>
+
+<script>
+import { Getpoints } from "@/components/GetPoints.js";
+import { concurrentStart } from "@/components/Concurrency.js";
+import { createCanvasDrawer } from "@/components/StartDraw.js";
+import { createTimer } from "@/components/StartTimer.js";
+
+export default {
+  data() {
+    return {
+      drawer: null,
+      timeLeft: 0,         
+      canDraw: false,
+      currentColor: "black",
+      colors: [ "black", "red", "green", "blue", "yellow"],
+      players:[{name: "Barbapappa", img: "/img/Barbapappa.png",score: 1200},
+                {name: "mnm", img: "/img/m&m-killen.png",score: 500},
+                {name: "Bowser", img: "/img/Bowser.png",score: 1500} ],
+    };
+  },
+ // CANVAS functions
+ mounted() {
+  const canvas = this.$refs.canvas;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  this.canDraw = false;
+
+  this.drawer = createCanvasDrawer(
+    canvas,
+    () => this.canDraw
+  );
+
+  this.timer = createTimer({
+    getTime: () => this.timeLeft,
+    setTime: v => (this.timeLeft = v),
+    onEnd: () => {
+    this.canDraw = false;
+    }
+  });
+
+  // START ROUND CONCURRENTLY
+  this.startRound();
+},
+
+
+methods: {
+    
+  startRound() {
+    const roundTime = 10;
+
+    this.canDraw = true;
+
+    this.timer.setTimer(roundTime);
+
+    concurrentStart(roundTime);
+  }
+}
+};
+
+</script>
+

@@ -2,10 +2,21 @@
 	"sales-pitch": "Rita. Gissa. Ha kul!",
 	"subHeading": "Alltid kul",
 	"invite": "Bjud in deltagare med den här länken:",
-	"createPoll": "Skapa ett nytt spel",
+	"createGame": "Skapa ett nytt spel",
 	"participatePoll": "Delta i ett spel",
 	"question": "Fråga",
 	"changeLanguage": "Change to English",
+	"startButton": "Starta spel!",
+	"chooseCharacter": "Välj din karaktär!",
 	"about": "Om oss",
-	"participateInPoll": "Delta i enkäten"
+	"participateInGame": "Gå med",
+	"enterGame": "Skriv in namn och Game Pin:",
+	"nameInsert": "Namn",
+	"namePlaceHolder": "Skriv in ditt namn",
+	"CreatingNewGame": "Du skapar ett nytt spel!",
+	"LanguageOption": "Språk",
+	"DrawTimeOption": "Rit tid",
+	"RoundsOption": "Rundor",
+	"GamePinInsert": "Skapa ett GamePin",
+	"CreateGameButton": "Skapa ett nytt spel"
 }

@@ -19,18 +19,16 @@
   </ResponsiveNav>
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
-  <label>
-    Name:
-    <input type="text" v-model="newPollId">
-  </label>
-  <br>
-  <router-link v-bind:to="'/lobby/' + newPollId">
-    {{ uiLabels.participatePoll }}
-  </router-link>
-  <br>
-  <router-link to="/create-new-game">
-    {{ uiLabels.createPoll }}
-  </router-link>
+
+  <div>
+    <router-link to="/lobby/" id="new-game-link">
+      {{ uiLabels.participatePoll }}
+    </router-link>
+    <br>
+    <router-link to="/create-new-game" id="join-link">
+      {{ uiLabels.createPoll }}
+    </router-link>
+  </div>
 </template>
 
 <script>
@@ -46,7 +44,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newPollId: "",
+      newgamePin: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true
     }
