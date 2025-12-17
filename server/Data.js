@@ -38,14 +38,14 @@ Data.prototype.getUILabels = function (lang) {
   return JSON.parse(labels);
 }
 
-Data.prototype.createPoll = function(gamePin, lang="en") {
+Data.prototype.createGame = function(gamePin, lang="en") {
   if (!this.pollExists(gamePin)) {
     let poll = {};
     poll.lang = lang;  
     poll.questions = [];
     poll.answers = [];
     poll.participants = [];
-    poll.currentQuestion = 0;              
+    poll.currentQuestion = 0;             
     this.polls[gamePin] = poll;
     console.log("poll created", gamePin, poll);
   }
@@ -59,10 +59,10 @@ Data.prototype.getPoll = function(gamePin) {
   return {};
 }
 
-Data.prototype.participateInPoll = function(gamePin, name) {
-  console.log("participant will be added to", gamePin, name);
+Data.prototype.participateInGame = function(gamePin, name, joined) {
+  console.log("participant will be added to", gamePin, name, joined);
   if (this.pollExists(gamePin)) {
-    this.polls[gamePin].participants.push({name: name, answers: []})
+    this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
   }
 }
 
