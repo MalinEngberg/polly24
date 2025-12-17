@@ -38,6 +38,13 @@ function sockets(io, socket, data) {
     io.to(d.gamePin).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gamePin));
   }); 
 
+  socket.on("guess", ({ guess }) => {
+  if (guess.toLowerCase() === currentWord) {
+    io.emit("correctGuess", { playerId: socket.id });
+  }
+});
+
+
   socket
 }
 

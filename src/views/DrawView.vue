@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in players" :key="p" :style="{ background: p.img }" >
+            <div class="players" v-for="p in players" :key="p.name" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -41,7 +41,7 @@
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= drawer.getcolor(c)></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= "drawer && drawer.getcolor(c)"></div>
           </div>
         </div>
 
@@ -51,7 +51,10 @@
         </div>
 
         <div class="guess-box">
-          <input type="text" placeholder="Guess something..." />
+          <input type="text"
+                 placeholder="Guess something..."
+                 v-model="currentGuess"
+                 @keydown.enter="submitGuess" />
         </div>
 
       </div>
@@ -200,7 +203,9 @@
 </style>
 
 <script>
-import { Getpoints } from "@/components/GetPoints.js";
+import io from 'socket.io-client';
+const socket = io("localhost:5173");
+//import { Getpoints } from "@/components/GetPoints.js";
 import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 import { createTimer } from "@/components/StartTimer.js";
@@ -216,6 +221,10 @@ export default {
       players:[{name: "Barbapappa", img: "/img/Barbapappa.png",score: 1200},
                 {name: "mnm", img: "/img/m&m-killen.png",score: 500},
                 {name: "Bowser", img: "/img/Bowser.png",score: 1500} ],
+
+      currentGuess: "",
+      guesses: [],
+      currentWord: "apple",
     };
   },
  // CANVAS functions
@@ -241,6 +250,8 @@ export default {
 
   // START ROUND CONCURRENTLY
   this.startRound();
+
+  socket.on("correctGuess", this.onCorrectGuess);
 },
 
 
@@ -254,6 +265,29 @@ methods: {
     this.timer.setTimer(roundTime);
 
     concurrentStart(roundTime);
+  },
+
+  submitGuess() {
+    const guess = this.currentGuess.trim();
+    if (!guess) return;
+
+    this.guesses.push(guess);
+
+    socket.emit("guess", {guess});
+
+    this.currentGuess = "";
+},
+
+  isCorrectGuess(guess) {
+    return guess.toLowerCase() === this.currentWord.toLowerCase();
+  },
+
+  onCorrectGuess() {
+    console.log(`${player} guessed ${word} correctly`);
+    this.canDraw = false;
+
+    this.timer?.stopTimer();
+
   }
 }
 };
