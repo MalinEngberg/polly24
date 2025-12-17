@@ -4,6 +4,7 @@
     </header>
     <main>
         <div>
+<<<<<<< HEAD
             <h1>You are creating a new game!</h1>
         </div>
         <div class="select-Language">
@@ -29,14 +30,50 @@
             </p>
         </div>
     </main>
+=======
+            <h1>
+                Create New Game
+            </h1>
+
+        </div>
+    </body>
+>>>>>>> main
 </template>
 
 <script>
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+
+export default {
+    name: 'CreateNewGameView',
+    data: function () {
+        return {
+            lang: localStorage.getItem("lang") || "en",
+            uiLabels: {},
+        }
+    },
+    created: function () {
+        socket.on("uiLabels", labels => this.uiLabels = labels);
+        socket.emit("getUILabels", this.lang);
+    },
+    methods: {
+        createGame: function () {
+            socket.emit("createPoll",{pollId: this.pollId, lang: this.lang })
+            socket.emit("joinPoll", this.pollId);
+        }
+    }
+}
 
 </script>
 
 <style scoped>
+<<<<<<< HEAD
    h1 {
     font-size: 36pt;
    }
+=======
+body {
+    background-color: #AA87BF;
+}
+>>>>>>> main
 </style>

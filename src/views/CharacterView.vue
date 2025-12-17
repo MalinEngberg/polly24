@@ -1,7 +1,7 @@
 <template>
     <main id ="CharacterPage">
         <section id = "characterSelect">
-            <h1>Choose your character!</h1>
+            <h1>{{ uiLabels.chooseCharacter }}</h1>
             <br />
             <div class = "switchCharacter">
                 <button class = "arrow-button" v-on:click="prevCharacter"><</button>
@@ -13,34 +13,53 @@
 
                 <button class = "arrow-button" v-on:click="nextCharacter">></button>
             </div>
-            <br />
-            <br />
-            <br />
 
+            <br />
+            <br />
+            <br />
 
             <button id ="startButton" v-on:click="startGame">
-                Lets start!
+                {{ uiLabels.startButton }}
             </button>
         </section>
     </main>
 </template>
 
 <script>
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+
+class Character {
+    constructor(name, img) {
+        this.name = name;
+        this.img = img;
+    }
+}
+
 export default {
     name: "CharacterSelectView",
 
     data: function() {
         return {
             characters: [
-                {name: "Barbapappa", img: "/img/Barbapappa.png"},
-                {name: "mnm", img: "/img/m&m-killen.png"},
-                {name: "Bowser", img: "/img/Bowser.png"}
+                new Character("Barbappa", "/img/Barbapappa.png"),
+                new Character("mnm", "/img/m&m-killen.png"),
+                new Character("Bowser", "/img/Bowser.png")
             ],
 
-            currentIndex: 0
+            currentIndex: 0,
+
+            lang: localStorage.getItem("lang") || "en",
+            pollId: "",
+            pollData: {},
+            uiLabels: {}
         }
     },
 
+    created: function() {
+        socket.on( "uiLabels", labels => this.uiLabels = labels );
+        socket.emit( "getUILabels", this.lang );
+    },
 
     methods: {
         getCurrentCharacter() {
