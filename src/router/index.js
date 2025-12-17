@@ -51,7 +51,7 @@ const router = createRouter({
       name: 'ScoreBoardView',
       component: () => import('../views/ScoreboardView.vue')
     }
-    }//,
+    //,
     //{
      // path: '/game/:character',
      // name: 'GamePage',
