@@ -24,6 +24,12 @@ function sockets(io, socket, data) {
     data.participateInPoll(d.gamePin, d.name);
     io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
   });
+
+  socket.on('getparticipants', (d) =>{
+     const participants = data.getParticipants(d.gamePin);
+     socket.emit('participantsUpdate', participants);
+  });
+
   socket.on('startPoll', function(gamePin) {
     io.to(gamePin).emit('startPoll');
   })
@@ -38,9 +44,11 @@ function sockets(io, socket, data) {
     io.to(d.gamePin).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gamePin));
   }); 
 
-  socket.on("guess", ({ guess }) => {
+ socket.on("guess", ({ guess, gamePin, timeleft, playerName }) => {
   if (guess.toLowerCase() === currentWord) {
-    io.emit("correctGuess", { playerId: socket.id });
+    
+    const result = data.onCorrectGuess(playerName, timeleft);
+    io.to(gamePin).emit("correctGuess", result);
   }
 });
 

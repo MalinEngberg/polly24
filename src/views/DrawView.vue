@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in players" :key="p.name" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -204,7 +204,8 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:5173");
+const socket = io("localhost:3000");
+//import {Getpoints} from "@/components/GetPoints.js";
 //import { Getpoints } from "@/components/GetPoints.js";
 import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
@@ -218,10 +219,7 @@ export default {
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      players:[{name: "Barbapappa", img: "/img/Barbapappa.png",score: 1200},
-                {name: "mnm", img: "/img/m&m-killen.png",score: 500},
-                {name: "Bowser", img: "/img/Bowser.png",score: 1500} ],
-
+      participants: [],
       currentGuess: "",
       guesses: [],
       currentWord: "apple",
@@ -229,6 +227,17 @@ export default {
   },
  // CANVAS functions
  mounted() {
+
+   socket.on("correctGuess", (data) => {
+    this.onCorrectGuess(data);
+  });
+
+  socket.on('participantsUpdate', (participants) => {
+    this.participants = participants;
+  });
+
+   socket.emit('getparticipants', { gamePin: 'test' });
+
   const canvas = this.$refs.canvas;
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
@@ -250,8 +259,6 @@ export default {
 
   // START ROUND CONCURRENTLY
   this.startRound();
-
-  socket.on("correctGuess", this.onCorrectGuess);
 },
 
 
@@ -273,21 +280,21 @@ methods: {
 
     this.guesses.push(guess);
 
-    socket.emit("guess", {guess});
+    socket.emit("guess", {guess,gamePin: "test", timeleft: timeLeft});
 
     this.currentGuess = "";
 },
 
-  isCorrectGuess(guess) {
-    return guess.toLowerCase() === this.currentWord.toLowerCase();
-  },
-
-  onCorrectGuess() {
-    console.log(`${player} guessed ${word} correctly`);
+onCorrectGuess(data) {
     this.canDraw = false;
 
-    this.timer?.stopTimer();
+    this.timer?.stopTimer?.();
 
+    this.participants = data.participants;
+
+    console.log(
+      `${data.playerName} gained ${data.points} points`
+    );
   }
 }
 };
