@@ -30,9 +30,12 @@ import io from 'socket.io-client';
 const socket = io("localhost:3000");
 
 class Character {
-    constructor(name, img) {
+    constructor(name, img, score, drawer) {
+       
         this.name = name;
         this.img = img;
+        this.score = score; 
+        this.drawer = drawer;
     }
 }
 
@@ -42,9 +45,9 @@ export default {
     data: function() {
         return {
             characters: [
-                new Character("Barbappa", "/img/Barbapappa.png"),
-                new Character("mnm", "/img/m&m-killen.png"),
-                new Character("Bowser", "/img/Bowser.png")
+                new Character("Barbappa", "/img/Barbapappa.png" ,0, false),
+                new Character("mnm", "/img/m&m-killen.png",0, false),
+                new Character("Bowser", "/img/Bowser.png",0, false),
             ],
 
             currentIndex: 0,
