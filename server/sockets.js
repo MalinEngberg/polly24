@@ -87,7 +87,7 @@ function startRound(io, data, gamePin) {
   poll.drawerSocketId = drawer.socketId;
 
   io.to(gamePin).emit("roundStarted", {
-    drawer: drawer.name,
+    drawer: drawer.socketId,
     word: poll.currentWord,
     timeLeft: poll.timeLeft
   });

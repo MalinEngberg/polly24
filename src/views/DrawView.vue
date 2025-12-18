@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.SocketId" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -27,10 +27,10 @@
         <div class="canvas-area">
   <canvas v-if = "drawerTool"
     ref="canvas"
-    @mousedown="drawerTool.start"
-    @mousemove="drawerTool.move"
-    @mouseup="drawerTool.stop"
-    @mouseleave="drawerTool.stop">
+    @mousedown="drawerTool?.start"
+    @mousemove="drawerTool?.move"
+    @mouseup="drawerTool?.stop"
+    @mouseleave="drawerTool?.stop">
   </canvas>
         </div>
     </div>
@@ -49,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" v-if="!drawerTool">
+        <div class="guess-box" v-if="!drawerTool || !canDraw">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -204,17 +204,13 @@
 <script>
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
-//import {Getpoints} from "@/components/GetPoints.js";
-//import { Getpoints } from "@/components/GetPoints.js";
-//import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-//import { createTimer } from "@/components/StartTimer.js";
 
 export default {
   data() {
     return {
       drawerTool: null,
-      mySocketId: null,
+      SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -231,13 +227,13 @@ export default {
   this.canDraw = false;
 
   socket.on("connect", () => {
-    this.mySocketId = socket.id;
+    this.SocketId = socket.id;
   });
 
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
 
-    const me = participants.find(p => p.id === this.mySocketId);
+    const me = participants.find(p => p.id === this.SocketId);
     this.canDraw = me ? me.drawer : false;
   });
 
@@ -248,7 +244,7 @@ export default {
 
   socket.emit("participateInGame", {
   gamePin: "test",
-  name: this.playerName
+  name: this.SocketId
 });
 
 
@@ -257,7 +253,7 @@ export default {
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = data.drawer === this.playerName;
+    this.canDraw = data.drawer === this.SocketId;
   });
 
   socket.on("timerUpdate", time => {
@@ -293,7 +289,7 @@ methods: {
     socket.emit("guess", {
       guess,
       gamePin: "test",
-      playerName: this.playerName
+      playerName: this.SocketId
     });
 
     this.currentGuess = "";
@@ -308,7 +304,7 @@ onCorrectGuess(data) {
     this.participants = data.participants;
 
     console.log(
-      `${data.playerName} gained ${data.points} points`
+      `${data.SocketId} gained ${data.points} points`
       
     );
   }
