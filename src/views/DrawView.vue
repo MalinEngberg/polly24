@@ -226,10 +226,6 @@ export default {
 
   this.canDraw = false;
 
-  socket.on("connect", () => {
-    this.SocketId = socket.id;
-  });
-
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
 
@@ -237,18 +233,7 @@ export default {
     this.canDraw = me ? me.drawer : false;
   });
 
-  
-
   socket.emit('getparticipants', { gamePin: 'test' });
-
-
-  socket.emit("participateInGame", {
-  gamePin: "test",
-  name: this.SocketId
-});
-
-
-  socket.emit("joinGame", "test");
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
