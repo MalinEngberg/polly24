@@ -20,14 +20,14 @@
       </button>
     </div>
     <div v-else>
-      <h1>Waiting for host to start game!</h1>
+      <h1>{{ uiLabels.waitLabel }}</h1>
       <p>[{{ participants.map(p => p.name).join(', ') }}]</p>
-      <!--<p>{{ participants }}</p>
-      <li v-for="participant in participants" :key="participant.name">
-        {{ participant.name }}
-      </li>-->
 
-        
+      <router-link to="/draw" id="goToDrawLink">
+        {{ uiLabels.goToDraw }}
+      </router-link>
+      
+      
     </div>
   </div>
 </template>
@@ -43,7 +43,6 @@ export default {
       userName: "",
       gamePin: "",
       uiLabels: {},
-      joined: false,
       lang: localStorage.getItem("lang") || "en",
       participants: []
     }
@@ -52,7 +51,7 @@ export default {
     this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
-    socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
+    //socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
 
     socket.on( "hostJoined", () => {this.joined = true});
     
@@ -61,16 +60,17 @@ export default {
     if (this.$route.params.gamePin) {
       this.gamePin = this.$route.params.gamePin;
       socket.emit("joinGame", this.gamePin);
-      socket.emit("participateInGame", { gamePin: this.gamePin, name: this.userName, joined: true });
+      //socket.emit("participateInGame", { gamePin: this.gamePin, name: this.userName, joined: true });
   }
   },
   methods: {
     participateInGame: function () {
       localStorage.setItem("userName", this.userName);
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, joined: true } )
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, joined: true } );
       this.$router.push('/lobby/'+ this.gamePin);
-      this.joined = true;
-    } 
+      //this.joined = true;
+    }
+
   }
 
 }
@@ -125,4 +125,15 @@ export default {
   gap:10px;
   font-weight: bold;
 }
+#goToDrawLink {
+        /*display: inline-block;*/
+        background-color: #39FF14;
+        /*border: 2px solid #FF1493;*/
+        padding: 20px 90px;
+        border-radius: 100px;
+        /*gap: 10px;*/
+        /*font-size: 18px;*/
+        /*align-items: center;*/
+    } 
+
 </style>

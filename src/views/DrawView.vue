@@ -206,6 +206,7 @@ import { createCanvasDrawer } from "@/components/StartDraw.js";
 import { createTimer } from "@/components/StartTimer.js";
 
 export default {
+  name: 'DrawView',
   data() {
     return {
       drawer: null,

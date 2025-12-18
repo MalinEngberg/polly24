@@ -15,6 +15,7 @@ function Data() {
       }
     ],
     answers: [],
+    score: 0,
     currentQuestion: 0,
     participants: []
   }
@@ -59,11 +60,19 @@ Data.prototype.getPoll = function(gamePin) {
   return {};
 }
 
+Data.prototype.participateInPoll = function(gamePin, name, joined) {
+  console.log("participant will be added to:", gamePin, name, joined);
+  if (this.pollExists(gamePin)) {
+    this.createGame
+    this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
+    console.log("participants now:", this.polls[gamePin].participants);
+  }
+},
 Data.prototype.participateInGame = function(gamePin, name, joined) {
   console.log("participant will be added to:", gamePin, name, joined);
   if (this.pollExists(gamePin)) {
-    this.createGame(gamePin);
-    this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
+    this.createGame
+    this.polls[gamePin].participants.push({name: name, score: 0, joined: joined})
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
