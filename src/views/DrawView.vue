@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in players" :key="p" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -25,7 +25,7 @@
  
 
         <div class="canvas-area">
-  <canvas
+  <canvas v-if = "drawer"
     ref="canvas"
     @mousedown="drawer.start"
     @mousemove="drawer.move"
@@ -35,13 +35,12 @@
         </div>
     </div>
 
-    
 
       <div class="right-column">
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= drawer.getcolor(c)></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= "drawer && drawer.getcolor(c)"></div>
           </div>
         </div>
 
@@ -51,7 +50,10 @@
         </div>
 
         <div class="guess-box">
-          <input type="text" placeholder="Guess something..." />
+          <input type="text"
+                 placeholder="Guess something..."
+                 v-model="currentGuess"
+                 @keydown.enter="submitGuess" />
         </div>
 
       </div>
@@ -200,7 +202,10 @@
 </style>
 
 <script>
-import { Getpoints } from "@/components/GetPoints.js";
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+//import {Getpoints} from "@/components/GetPoints.js";
+//import { Getpoints } from "@/components/GetPoints.js";
 import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 import { createTimer } from "@/components/StartTimer.js";
@@ -208,18 +213,30 @@ import { createTimer } from "@/components/StartTimer.js";
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: false,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      players:[{name: "Barbapappa", img: "/img/Barbapappa.png",score: 1200},
-                {name: "mnm", img: "/img/m&m-killen.png",score: 500},
-                {name: "Bowser", img: "/img/Bowser.png",score: 1500} ],
+      participants: [],
+      currentGuess: "",
+      guesses: [],
+      currentWord: "apple",
     };
   },
  // CANVAS functions
  mounted() {
+
+   socket.on("correctGuess", (data) => {
+    this.onCorrectGuess(data);
+  });
+
+  socket.on('participantsUpdate', (participants) => {
+    this.participants = participants;
+  });
+
+   socket.emit('getparticipants', { gamePin: 'test' });
+
   const canvas = this.$refs.canvas;
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
@@ -245,8 +262,8 @@ export default {
 
 
 methods: {
-    
   startRound() {
+
     const roundTime = 10;
 
     this.canDraw = true;
@@ -254,6 +271,32 @@ methods: {
     this.timer.setTimer(roundTime);
 
     concurrentStart(roundTime);
+  },
+
+  submitGuess() {
+    const guess = this.currentGuess.trim();
+    if (!guess) return;
+
+    this.guesses.push(guess);
+
+    socket.emit("guess", {guess,gamePin: "test", timeleft: this.timeLeft, playername:"placeholder" });
+
+    this.currentGuess = "";
+},
+
+onCorrectGuess(data) {
+  if (data.correct) {
+    this.canDraw = false;
+
+    this.timer?.stopTimer?.();
+
+    this.participants = data.participants;
+
+    console.log(
+      `${data.playerName} gained ${data.points} points`
+      
+    );
+  }
   }
 }
 };

@@ -25,6 +25,11 @@ function sockets(io, socket, data) {
     io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
   });
 
+  socket.on('getparticipants', (d) =>{
+     const participants = data.getParticipants(d.gamePin);
+     socket.emit('participantsUpdate', participants);
+  });
+
   socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
   socket.on('startPoll', function(gamePin) {
@@ -40,6 +45,16 @@ function sockets(io, socket, data) {
     data.submitAnswer(d.gamePin, d.answer);
     io.to(d.gamePin).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gamePin));
   }); 
+
+ socket.on("guess", ({ guess, gamePin, timeleft, playerName }) => {
+  if (guess.toLowerCase() === currentWord) {
+    
+    const result = data.onCorrectGuess(gamePin, playerName, timeleft);
+    io.to(gamePin).emit("correctGuess", result);
+  }
+});
+
+
 
   socket
 }

@@ -32,6 +32,12 @@ var stopDrawing = () => {
 
 
 var concurrentStart = async (time) => {
+  for (participant in this.participants) {
+    if (!participant.drawer){
+      participant.drawer = true;
+      break;
+    }
+  }
   setCanDraw(true);
 
   const timerPromise = resolveTimer(time);
