@@ -214,7 +214,7 @@ export default {
   data() {
     return {
       drawerTool: null,
-      playerName: "Clara",
+      mySocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -230,9 +230,18 @@ export default {
 
   this.canDraw = false;
 
+  socket.on("connect", () => {
+    this.mySocketId = socket.id;
+  });
+
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
+
+    const me = participants.find(p => p.id === this.mySocketId);
+    this.canDraw = me ? me.drawer : false;
   });
+
+  
 
   socket.emit('getparticipants', { gamePin: 'test' });
 
