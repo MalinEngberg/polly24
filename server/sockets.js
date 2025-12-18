@@ -47,10 +47,11 @@ function sockets(io, socket, data) {
  socket.on("guess", ({ guess, gamePin, timeleft, playerName }) => {
   if (guess.toLowerCase() === currentWord) {
     
-    const result = data.onCorrectGuess(playerName, timeleft);
+    const result = data.onCorrectGuess(gamePin, playerName, timeleft);
     io.to(gamePin).emit("correctGuess", result);
   }
 });
+
 
 
   socket

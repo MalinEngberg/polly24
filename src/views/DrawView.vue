@@ -25,7 +25,7 @@
  
 
         <div class="canvas-area">
-  <canvas
+  <canvas v-if = "drawer"
     ref="canvas"
     @mousedown="drawer.start"
     @mousemove="drawer.move"
@@ -35,7 +35,6 @@
         </div>
     </div>
 
-    
 
       <div class="right-column">
 
@@ -214,7 +213,7 @@ import { createTimer } from "@/components/StartTimer.js";
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: false,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -263,8 +262,8 @@ export default {
 
 
 methods: {
-    
   startRound() {
+
     const roundTime = 10;
 
     this.canDraw = true;
@@ -280,12 +279,13 @@ methods: {
 
     this.guesses.push(guess);
 
-    socket.emit("guess", {guess,gamePin: "test", timeleft: timeLeft});
+    socket.emit("guess", {guess,gamePin: "test", timeleft: this.timeLeft, playername:"placeholder" });
 
     this.currentGuess = "";
 },
 
 onCorrectGuess(data) {
+  if (data.correct) {
     this.canDraw = false;
 
     this.timer?.stopTimer?.();
@@ -294,7 +294,9 @@ onCorrectGuess(data) {
 
     console.log(
       `${data.playerName} gained ${data.points} points`
+      
     );
+  }
   }
 }
 };

@@ -125,29 +125,25 @@ Data.prototype.submitAnswer = function(gamePin, answer) {
   }
 }
 
-Data.prototype.onCorrectGuess = function(playerName,timeleft) {
-    // Stop drawing & timer
+Data.prototype.onCorrectGuess = function (gamePin, playerName, timeleft) {
+  const poll = this.polls[gamePin];
+  if (!poll) return { correct: false };
 
-    // Find the player and update score
-    const player = this.participants.find(
-      p => p.name === this.playerName
-    );
+  const player = poll.participants.find(p => p.name === playerName);
 
-    let points = 0;
-    if (player) {
-    points = GetPoints(30,timeleft,1);
+  let points = 0;
+  if (player) {
+    points = GetPoints(30, timeleft, 1);
     player.score += points;
-    }
+  }
 
-    console.log(`${playerName} gained ${points} points`);
-
-    return {
+  return {
     correct: true,
     playerName,
     points,
-    participants: this.participants
+    participants: poll.participants
   };
-  }
+}
 
 
 export { Data };
