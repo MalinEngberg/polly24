@@ -25,11 +25,11 @@
 
   <div>
     <router-link to="/lobby/" id="new-game-link">
-      {{ uiLabels.participatePoll }}
+      {{ uiLabels.participateInGame }}
     </router-link>
     <br>
     <router-link to="/create-new-game" id="join-link">
-      {{ uiLabels.createPoll }}
+      {{ uiLabels.createGame }}
     </router-link>
   </div>
 </template>
@@ -37,7 +37,8 @@
 <script>
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+sessionStorage.setItem("serverIP", "130.243.228.186:3000");
+const socket = io(sessionStorage.getItem("serverIP"));
 
 export default {
   name: 'StartView',
@@ -127,7 +128,7 @@ h2 {
 #new-game-link {
   color: black;
   text-decoration: none;
-  padding: 0.01rem 1rem;
+  padding: 0.3rem 2.5rem;
   background-color: #ff4dbb;
   border-radius: 7px;
   font-weight: bold;
@@ -137,7 +138,7 @@ h2 {
 #join-link{
   color: black;
   text-decoration: none;
-  padding: 0.01rem 1rem;
+  padding: 0.3rem 1rem;
   background-color: #5795ff;
   border-radius: 7px;
   font-weight: bold;
