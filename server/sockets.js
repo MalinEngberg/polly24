@@ -28,7 +28,7 @@ function sockets(io, socket, data) {
     console.log("participant added to gamePin:", data.getParticipants(d.gamePin));
   });
 
-  socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
+  //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
   socket.on('startPoll', function(gamePin) {
     io.to(gamePin).emit('startPoll');

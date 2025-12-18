@@ -60,25 +60,24 @@ Data.prototype.getPoll = function(gamePin) {
   return {};
 }
 
-Data.prototype.participateInPoll = function(gamePin, name, joined) {
-  console.log("participant will be added to:", gamePin, name, joined);
+//Data.prototype.participateInPoll = function(gamePin, name, joined) {
+  //console.log("participant will be added to:", gamePin, name, joined);
+  //if (this.pollExists(gamePin)) {
+    //this.createGame
+    //this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
+    //console.log("participants now:", this.polls[gamePin].participants);
+  //}
+//},
+Data.prototype.participateInGame = function(gamePin, name) {
+  console.log("participant will be added to:", gamePin, name);
   if (this.pollExists(gamePin)) {
     this.createGame
-    this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
-    console.log("participants now:", this.polls[gamePin].participants);
-  }
-},
-Data.prototype.participateInGame = function(gamePin, name, joined) {
-  console.log("participant will be added to:", gamePin, name, joined);
-  if (this.pollExists(gamePin)) {
-    this.createGame
-    this.polls[gamePin].participants.push({name: name, score: 0, joined: joined})
+    this.polls[gamePin].participants.push({name: name, score: 0})
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
 
 Data.prototype.getParticipants = function(gamePin) {
-  const poll = this.polls[gamePin];
   console.log("participants requested for", gamePin);
   if (this.pollExists(gamePin)) { 
     return this.polls[gamePin].participants

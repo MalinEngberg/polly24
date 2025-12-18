@@ -95,7 +95,6 @@ export default {
             localStorage.setItem("userName", this.name);
             socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
             socket.emit("participateInGame", {gamePin: this.gamePin, name: this.name, joined: this.joined});
-            socket.emit("joinLobbyAsHost", {gamePin: this.gamePin, name: this.name});
             this.$router.push('/lobby/' + this.gamePin);
         }
     }

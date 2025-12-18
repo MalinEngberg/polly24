@@ -51,24 +51,19 @@ export default {
     this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
-    //socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
-
-    socket.on( "hostJoined", () => {this.joined = true});
     
     socket.emit( "getUILabels", this.lang );
 
     if (this.$route.params.gamePin) {
       this.gamePin = this.$route.params.gamePin;
       socket.emit("joinGame", this.gamePin);
-      //socket.emit("participateInGame", { gamePin: this.gamePin, name: this.userName, joined: true });
   }
   },
   methods: {
     participateInGame: function () {
       localStorage.setItem("userName", this.userName);
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, joined: true } );
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName} );
       this.$router.push('/lobby/'+ this.gamePin);
-      //this.joined = true;
     }
 
   }
