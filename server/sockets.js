@@ -21,9 +21,17 @@ function sockets(io, socket, data) {
   });
 
   socket.on('participateInGame', function(d) {
-    data.participateInGame(d.gamePin, d.name, d.joined);
-    io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
-  });
+  data.participateInGame(d.gamePin, d.name, socket.id);
+
+  const participants = data.getParticipants(d.gamePin);
+  io.to(d.gamePin).emit('participantsUpdate', participants);
+
+  if (participants.length === 1) {
+    startRound(io, data, d.gamePin);
+  }
+});
+
+
 
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
@@ -46,13 +54,56 @@ function sockets(io, socket, data) {
     io.to(d.gamePin).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gamePin));
   }); 
 
- socket.on("guess", ({ guess, gamePin, timeleft, playerName }) => {
-  if (guess.toLowerCase() === currentWord) {
-    
-    const result = data.onCorrectGuess(gamePin, playerName, timeleft);
-    io.to(gamePin).emit("correctGuess", result);
+ socket.on("guess", d => {
+  const poll = data.getPoll(d.gamePin);
+  if (!poll || !poll.isRunning) return;
+
+  if (d.guess.toLowerCase() === poll.currentWord) {
+    clearInterval(poll.timer);
+    poll.isRunning = false;
+
+    const result = data.onCorrectGuess(
+      d.gamePin,
+      d.playerName,
+      poll.timeLeft
+    );
+
+    io.to(d.gamePin).emit("correctGuess", result);
+    io.to(d.gamePin).emit("roundEnded");
   }
 });
+
+function startRound(io, data, gamePin) {
+  const poll = data.getPoll(gamePin);
+  if (!poll) return;
+
+  poll.currentWord = "apple"; // replace with random later
+  poll.timeLeft = 30;
+  poll.isRunning = true;
+
+  if (!poll.participants.length) return;
+
+  const drawer = poll.participants[0];
+  poll.drawerSocketId = drawer.socketId;
+
+  io.to(gamePin).emit("roundStarted", {
+    drawer: drawer.name,
+    word: poll.currentWord,
+    timeLeft: poll.timeLeft
+  });
+
+  poll.timer = setInterval(() => {
+    poll.timeLeft--;
+    io.to(gamePin).emit("timerUpdate", poll.timeLeft);
+
+    if (poll.timeLeft <= 0) {
+      clearInterval(poll.timer);
+      poll.isRunning = false;
+      io.to(gamePin).emit("roundEnded");
+    }
+  }, 1000);
+}
+
 
 
 

@@ -25,12 +25,12 @@
  
 
         <div class="canvas-area">
-  <canvas v-if = "drawer"
+  <canvas v-if = "drawerTool"
     ref="canvas"
-    @mousedown="drawer.start"
-    @mousemove="drawer.move"
-    @mouseup="drawer.stop"
-    @mouseleave="drawer.stop">
+    @mousedown="drawerTool.start"
+    @mousemove="drawerTool.move"
+    @mouseup="drawerTool.stop"
+    @mouseleave="drawerTool.stop">
   </canvas>
         </div>
     </div>
@@ -40,7 +40,7 @@
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= "drawer && drawer.getcolor(c)"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
         </div>
 
@@ -49,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box">
+        <div class="guess-box" v-if="!drawerTool">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -206,14 +206,15 @@ import io from 'socket.io-client';
 const socket = io("localhost:3000");
 //import {Getpoints} from "@/components/GetPoints.js";
 //import { Getpoints } from "@/components/GetPoints.js";
-import { concurrentStart } from "@/components/Concurrency.js";
+//import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-import { createTimer } from "@/components/StartTimer.js";
+//import { createTimer } from "@/components/StartTimer.js";
 
 export default {
   data() {
     return {
-      drawer: false,
+      drawerTool: null,
+      playerName: "Clara",
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -227,68 +228,73 @@ export default {
  // CANVAS functions
  mounted() {
 
-   socket.on("correctGuess", (data) => {
-    this.onCorrectGuess(data);
-  });
+  this.canDraw = false;
 
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
   });
 
-   socket.emit('getparticipants', { gamePin: 'test' });
+  socket.emit('getparticipants', { gamePin: 'test' });
 
-  const canvas = this.$refs.canvas;
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
 
-  this.canDraw = false;
+  socket.emit("participateInGame", {
+  gamePin: "test",
+  name: this.playerName
+});
 
-  this.drawer = createCanvasDrawer(
-    canvas,
-    () => this.canDraw
-  );
 
-  this.timer = createTimer({
-    getTime: () => this.timeLeft,
-    setTime: v => (this.timeLeft = v),
-    onEnd: () => {
-    this.canDraw = false;
-    }
+  socket.emit("joinGame", "test");
+
+  socket.on("roundStarted", data => {
+    this.timeLeft = data.timeLeft;
+    this.currentWord = data.word;
+    this.canDraw = data.drawer === this.playerName;
   });
 
-  // START ROUND CONCURRENTLY
-  this.startRound();
+  socket.on("timerUpdate", time => {
+    this.timeLeft = time;
+  });
+
+  socket.on("roundEnded", () => {
+    this.canDraw = false;
+  });
+
+  socket.on("correctGuess", data => {
+  this.onCorrectGuess(data);
+  });
+
+  // Canvas
+  this.$nextTick(() => {
+  const canvas = this.$refs.canvas;
+  if (!canvas) return;
+
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
+});
 },
 
 
 methods: {
-  startRound() {
-
-    const roundTime = 10;
-
-    this.canDraw = true;
-
-    this.timer.setTimer(roundTime);
-
-    concurrentStart(roundTime);
-  },
 
   submitGuess() {
     const guess = this.currentGuess.trim();
     if (!guess) return;
 
-    this.guesses.push(guess);
-
-    socket.emit("guess", {guess,gamePin: "test", timeleft: this.timeLeft, playername:"placeholder" });
+    socket.emit("guess", {
+      guess,
+      gamePin: "test",
+      playerName: this.playerName
+    });
 
     this.currentGuess = "";
-},
+  },
 
 onCorrectGuess(data) {
   if (data.correct) {
     this.canDraw = false;
 
-    this.timer?.stopTimer?.();
+   //this.timer?.stopTimer?.();
 
     this.participants = data.participants;
 
