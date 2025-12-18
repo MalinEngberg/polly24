@@ -24,12 +24,12 @@
   <h2>{{ uiLabels.subHeading }}</h2>
 
   <div>
-    <router-link to="/lobby" id="new-game-link">
-      {{ uiLabels.participatePoll }}
+    <router-link to="/lobby/" id="new-game-link">
+      {{ uiLabels.participateInGame }}
     </router-link>
     <br>
     <router-link to="/create-new-game" id="join-link">
-      {{ uiLabels.createPoll }}
+      {{ uiLabels.createGame }}
     </router-link>
   </div>
 </template>

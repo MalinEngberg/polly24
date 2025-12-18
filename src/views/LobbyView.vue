@@ -15,13 +15,16 @@
         v-model="gamePin">
 
       <br>
-      <button v-on:click="participateInPoll">
+      <button v-on:click="participateInGame">
         {{ this.uiLabels.participateInGame }}
       </button>
     </div>
   <div v-if="joined">
     <h1>Waiting for host to start game!</h1>
     {{ participants }}
+      <router-link to="/lobby/" id="createGame">
+        
+      </router-link>
   </div>
   </div>
 </template>
@@ -36,7 +39,6 @@ export default {
     return {
       userName: "",
       gamePin: "",
-      pollId: "inactive poll",
       uiLabels: {},
       joined: false,
       lang: localStorage.getItem("lang") || "en",
@@ -48,13 +50,15 @@ export default {
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
     socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
+    socket.on( "hostJoined", () => {this.joined = true});
     socket.emit( "joinPoll", this.pollId );
     socket.emit( "getUILabels", this.lang );
   },
   methods: {
-    participateInPoll: function () {
-      socket.emit( "participateInPoll", {pollId: this.gamePin, name: this.userName} )
+    participateInGame: function () {
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName } )
       this.joined = true;
+      this.$router.push('/lobby/'+ this.gamePin);
     } 
   }
 

@@ -4,8 +4,8 @@ function sockets(io, socket, data) {
     socket.emit('uiLabels', data.getUILabels(lang));
   });
 
-  socket.on('createPoll', function(d) {
-    data.createPoll(d.gamePin, d.lang)
+  socket.on('createGame', function(d) {
+    data.createGame(d.gamePin, d.lang)
     socket.emit('pollData', data.getPoll(d.gamePin));
   });
 
@@ -14,14 +14,14 @@ function sockets(io, socket, data) {
     socket.emit('questionUpdate', data.activateQuestion(d.gamePin));
   });
 
-  socket.on('joinPoll', function(gamePin) {
+  socket.on('joinGame', function(gamePin) {
     socket.join(gamePin);
     socket.emit('questionUpdate', data.activateQuestion(gamePin))
     socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
   });
 
-  socket.on('participateInPoll', function(d) {
-    data.participateInPoll(d.gamePin, d.name);
+  socket.on('participateInGame', function(d) {
+    data.participateInGame(d.gamePin, d.name, d.joined);
     io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
   });
 
@@ -29,6 +29,8 @@ function sockets(io, socket, data) {
      const participants = data.getParticipants(d.gamePin);
      socket.emit('participantsUpdate', participants);
   });
+
+  socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
   socket.on('startPoll', function(gamePin) {
     io.to(gamePin).emit('startPoll');
