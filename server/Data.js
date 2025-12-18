@@ -1,5 +1,7 @@
 'use strict';
 import {readFileSync} from "fs";
+import GetPoints from "../src/components/GetPoints.js";
+
 
 // Store data in an object to keep the global namespace clean. In an actual implementation this would be interfacing a database...
 function Data() {
@@ -16,6 +18,7 @@ function Data() {
     ],
     answers: [],
     score: 0,
+    answers: [{}],
     currentQuestion: 0,
     participants: []
   }
@@ -134,6 +137,26 @@ Data.prototype.submitAnswer = function(gamePin, answer) {
     console.log("answers looks like ", answers, typeof answers);
   }
 }
+
+Data.prototype.onCorrectGuess = function (gamePin, playerName, timeLeft) {
+  const poll = this.polls[gamePin];
+  if (!poll) return { correct: false };
+
+  const player = poll.participants.find(p => p.name === playerName);
+  if (!player) return { correct: false };
+
+  const points = GetPoints(30, timeLeft, 1);
+  player.score += points;
+
+  return {
+    correct: true,
+    playerName,
+    points,
+    participants: poll.participants
+  };
+};
+
+
 
 
 export { Data };
