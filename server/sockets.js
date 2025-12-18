@@ -21,6 +21,11 @@ function sockets(io, socket, data) {
   });
 
   socket.on('participateInGame', function(d) {
+    socket.join(d.gamePin);
+    data.participateInGame(d.gamePin, d.name, d.joined);
+    io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
+
+    console.log("participant added to gamePin:", data.getParticipants(d.gamePin));
   data.participateInGame(d.gamePin, d.name, socket.id);
 
   const participants = data.getParticipants(d.gamePin);
@@ -38,7 +43,7 @@ function sockets(io, socket, data) {
      socket.emit('participantsUpdate', participants);
   });
 
-  socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
+  //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
   socket.on('startPoll', function(gamePin) {
     io.to(gamePin).emit('startPoll');

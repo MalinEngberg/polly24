@@ -207,6 +207,7 @@ const socket = io("localhost:3000");
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 
 export default {
+  name: 'DrawView',
   data() {
     return {
       drawerTool: null,
