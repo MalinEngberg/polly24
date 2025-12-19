@@ -32,9 +32,9 @@ function sockets(io, socket, data) {
     //data.participateInGame(d.gamePin, d.name, socket.id);
     //io.to(d.gamePin).emit('participantsUpdate', participants);
 
-  //if (participants.length === 1) {
-    //startRound(io, data, d.gamePin);
-  //}
+  if (participants.length === 1) {
+    startRound(io, data, d.gamePin);
+  }
   });
 
   socket.on('startGame', function(d){
