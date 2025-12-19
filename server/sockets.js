@@ -40,7 +40,7 @@ function sockets(io, socket, data) {
 
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
-     socket.emit('participantsUpdate', participants);
+     socket.emit('participantsUpdate', participants, d.gamePin);
   });
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});

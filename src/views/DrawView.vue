@@ -210,6 +210,7 @@ export default {
   name: 'DrawView',
   data() {
     return {
+      gamePin: "test",
       drawerTool: null,
       SocketId: null,
       timeLeft: 0,         
@@ -227,7 +228,7 @@ export default {
 
   this.canDraw = false;
 
-  socket.emit('getparticipants', { gamePin: 'test' });
+  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
