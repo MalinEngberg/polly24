@@ -210,7 +210,7 @@ export default {
   name: 'DrawView',
   data() {
     return {
-      gamePin: "test",
+      gamePin: null,
       drawerTool: null,
       SocketId: null,
       timeLeft: 0,         
@@ -219,7 +219,6 @@ export default {
       colors: [ "black", "red", "green", "blue", "yellow"],
       participants: [],
       currentGuess: "",
-      guesses: [],
       currentWord: "apple",
     };
   },
@@ -275,7 +274,7 @@ methods: {
 
     socket.emit("guess", {
       guess,
-      gamePin: "test",
+      gamePin: this.gamePin,
       playerName: this.SocketId
     });
 
