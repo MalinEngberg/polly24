@@ -218,7 +218,7 @@ export default {
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [],
+      participants: [{name: "Loading...", score: 0, img: ""}],
       currentGuess: "",
       currentWord: "apple",
     };
@@ -227,15 +227,19 @@ export default {
  mounted() {
 
   this.canDraw = false;
+  
+  socket.on('participantsUpdate', (participants) => {
+  this.participants = participants;
+    });
 
+  
   socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-  socket.on('participantsUpdate', (participants) => {
-    this.participants = participants;
+  
 
     const me = participants.find(p => p.id === this.SocketId);
     this.canDraw = me ? me.drawer : false;
-  });
+  
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
