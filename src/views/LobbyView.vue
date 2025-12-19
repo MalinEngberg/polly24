@@ -23,9 +23,12 @@
       <h1>{{ uiLabels.waitLabel }}</h1>
       <p>[{{ participants.map(p => p.name).join(', ') }}]</p>
 
-      <router-link to="/draw" id="goToDrawLink">
+      <button v-on:click="startDraw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}
-      </router-link>
+      </button>
+      <!--<router-link to="/draw" id="goToDrawLink">
+        {{ uiLabels.goToDraw }}
+      </router-link>-->
       
       
     </div>
@@ -48,22 +51,34 @@ export default {
     }
   },
   created: function () {
-    this.userName = localStorage.getItem("userName") || "";
+    //this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
     
+    socket.on("gameStarted", () => {
+      console.log("GAME STARTED")
+      this.$router.push('/draw/'+ this.gamePin)
+    });
+
     socket.emit( "getUILabels", this.lang );
 
     if (this.$route.params.gamePin) {
       this.gamePin = this.$route.params.gamePin;
-      socket.emit("joinGame", this.gamePin);
+      socket.emit("joinGame", this.gamePin)
+      console.log("Joining game room:", this.gamePin)
+      
   }
   },
   methods: {
     participateInGame: function () {
-      localStorage.setItem("userName", this.userName);
+      //localStorage.setItem("userName", this.userName);
+      socket.emit("joinGame", this.gamePin);
       socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName} );
       this.$router.push('/lobby/'+ this.gamePin);
+    },
+    startDraw() {
+      console.log("Start game clicked")
+      socket.emit("startGame", {gamePin: this.gamePin, participants: this.participants})
     }
 
   }
