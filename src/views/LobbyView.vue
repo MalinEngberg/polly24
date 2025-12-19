@@ -57,8 +57,11 @@ export default {
     
     socket.on("gameStarted", () => {
       console.log("GAME STARTED")
-      this.$router.push('/draw/'+ this.gamePin)
-    });
+      this.$router.push({
+      path: `/draw/${this.gamePin}`, 
+      query:{userName: this.userName}
+      });
+    }),
 
     socket.emit( "getUILabels", this.lang );
 
@@ -67,7 +70,7 @@ export default {
       socket.emit("joinGame", this.gamePin)
       console.log("Joining game room:", this.gamePin)
       
-  }
+    }
   },
   methods: {
     participateInGame: function () {
