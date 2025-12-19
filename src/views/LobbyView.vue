@@ -1,7 +1,7 @@
 <template>
   <div class="lobby-view">
 
-    <div class="input-field" v-if="!joined">
+    <div class="input-field" v-if="!$route.params.gamePin">
       <h1>{{ uiLabels.enterGame }}</h1>
 
       <input
@@ -16,16 +16,19 @@
 
       <br>
       <button v-on:click="participateInGame">
-        {{ this.uiLabels.participateInGame }}
+        {{ uiLabels.participateInGame }}
       </button>
     </div>
-  <div v-if="joined">
-    <h1>Waiting for host to start game!</h1>
-    {{ participants }}
-      <router-link to="/lobby/" id="createGame">
-        
+    <div v-else>
+      <h1>{{ uiLabels.waitLabel }}</h1>
+      <p>[{{ participants.map(p => p.name).join(', ') }}]</p>
+
+      <router-link to="/draw" id="goToDrawLink">
+        {{ uiLabels.goToDraw }}
       </router-link>
-  </div>
+      
+      
+    </div>
   </div>
 </template>
 
@@ -40,7 +43,6 @@ export default {
       userName: "",
       gamePin: "",
       uiLabels: {},
-      joined: false,
       lang: localStorage.getItem("lang") || "en",
       participants: []
     }
@@ -49,17 +51,21 @@ export default {
     this.userName = localStorage.getItem("userName") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
-    socket.on( "startPoll", () => this.$router.push("/poll/" + this.pollId) );
-    socket.on( "hostJoined", () => {this.joined = true});
-    socket.emit( "joinPoll", this.pollId );
+    
     socket.emit( "getUILabels", this.lang );
+
+    if (this.$route.params.gamePin) {
+      this.gamePin = this.$route.params.gamePin;
+      socket.emit("joinGame", this.gamePin);
+  }
   },
   methods: {
     participateInGame: function () {
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName } )
-      this.joined = true;
+      localStorage.setItem("userName", this.userName);
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName} );
       this.$router.push('/lobby/'+ this.gamePin);
-    } 
+    }
+
   }
 
 }
@@ -114,4 +120,15 @@ export default {
   gap:10px;
   font-weight: bold;
 }
+#goToDrawLink {
+        /*display: inline-block;*/
+        background-color: #39FF14;
+        /*border: 2px solid #FF1493;*/
+        padding: 20px 90px;
+        border-radius: 100px;
+        /*gap: 10px;*/
+        /*font-size: 18px;*/
+        /*align-items: center;*/
+    } 
+
 </style>
