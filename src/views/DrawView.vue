@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.SocketId" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -25,12 +25,12 @@
  
 
         <div class="canvas-area">
-  <canvas v-if = "drawer"
+  <canvas v-if = "drawerTool"
     ref="canvas"
-    @mousedown="drawer.start"
-    @mousemove="drawer.move"
-    @mouseup="drawer.stop"
-    @mouseleave="drawer.stop">
+    @mousedown="drawerTool?.start"
+    @mousemove="drawerTool?.move"
+    @mouseup="drawerTool?.stop"
+    @mouseleave="drawerTool?.stop">
   </canvas>
         </div>
     </div>
@@ -40,7 +40,7 @@
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click= "drawer && drawer.getcolor(c)"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
         </div>
 
@@ -49,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box">
+        <div class="guess-box" v-if="!drawerTool || !canDraw">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -204,16 +204,14 @@
 <script>
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
-//import {Getpoints} from "@/components/GetPoints.js";
-//import { Getpoints } from "@/components/GetPoints.js";
-import { concurrentStart } from "@/components/Concurrency.js";
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-import { createTimer } from "@/components/StartTimer.js";
 
 export default {
+  name: 'DrawView',
   data() {
     return {
-      drawer: false,
+      drawerTool: null,
+      SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -227,73 +225,72 @@ export default {
  // CANVAS functions
  mounted() {
 
-   socket.on("correctGuess", (data) => {
-    this.onCorrectGuess(data);
-  });
+  this.canDraw = false;
 
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
+
+    const me = participants.find(p => p.id === this.SocketId);
+    this.canDraw = me ? me.drawer : false;
   });
 
-   socket.emit('getparticipants', { gamePin: 'test' });
+  socket.emit('getparticipants', { gamePin: 'test' });
 
+  socket.on("roundStarted", data => {
+    this.timeLeft = data.timeLeft;
+    this.currentWord = data.word;
+    this.canDraw = data.drawer === this.SocketId;
+  });
+
+  socket.on("timerUpdate", time => {
+    this.timeLeft = time;
+  });
+
+  socket.on("roundEnded", () => {
+    this.canDraw = false;
+  });
+
+  socket.on("correctGuess", data => {
+  this.onCorrectGuess(data);
+  });
+
+  // Canvas
+  this.$nextTick(() => {
   const canvas = this.$refs.canvas;
+  if (!canvas) return;
+
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-
-  this.canDraw = false;
-
-  this.drawer = createCanvasDrawer(
-    canvas,
-    () => this.canDraw
-  );
-
-  this.timer = createTimer({
-    getTime: () => this.timeLeft,
-    setTime: v => (this.timeLeft = v),
-    onEnd: () => {
-    this.canDraw = false;
-    }
-  });
-
-  // START ROUND CONCURRENTLY
-  this.startRound();
+  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
+});
 },
 
 
 methods: {
-  startRound() {
-
-    const roundTime = 10;
-
-    this.canDraw = true;
-
-    this.timer.setTimer(roundTime);
-
-    concurrentStart(roundTime);
-  },
 
   submitGuess() {
     const guess = this.currentGuess.trim();
     if (!guess) return;
 
-    this.guesses.push(guess);
-
-    socket.emit("guess", {guess,gamePin: "test", timeleft: this.timeLeft, playername:"placeholder" });
+    socket.emit("guess", {
+      guess,
+      gamePin: "test",
+      playerName: this.SocketId
+    });
 
     this.currentGuess = "";
-},
+  },
 
 onCorrectGuess(data) {
   if (data.correct) {
     this.canDraw = false;
 
-    this.timer?.stopTimer?.();
+   //this.timer?.stopTimer?.();
 
     this.participants = data.participants;
 
     console.log(
-      `${data.playerName} gained ${data.points} points`
+      `${data.SocketId} gained ${data.points} points`
       
     );
   }

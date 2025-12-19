@@ -18,5 +18,7 @@
 	"DrawTimeOption": "Rit tid",
 	"RoundsOption": "Rundor",
 	"GamePinInsert": "Skapa ett GamePin",
-	"CreateGameButton": "Skapa ett nytt spel"
+	"CreateGameButton": "Skapa ett nytt spel",
+	"waitLabel": "Väntar på att spelare ska gå med i spelet...",
+	"goToDraw": "Nu kör vi!"
 }

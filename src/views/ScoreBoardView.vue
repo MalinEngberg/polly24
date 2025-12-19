@@ -2,10 +2,12 @@
     <header>
         <h1>
             Resultat
-            <img src='/img/podium.png'>
         </h1>
-
     </header>
+    <section id="winnerSection">
+        <h2>Winners!</h2>
+        <div class="winners">
+            <winner v-for="winner in
     <footer>
         <router-link to="/" id="start-over-link">
             Start over...

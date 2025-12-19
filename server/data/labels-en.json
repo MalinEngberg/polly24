@@ -18,5 +18,7 @@
 	"DrawTimeOption": "Draw Time",
 	"RoundsOption": "Rounds",
 	"GamePinInsert": "Create a GamePin",
-	"CreateGameButton": "Create New Game"
+	"CreateGameButton": "Create New Game",
+	"waitLabel": "Waiting for players to join the game...",
+	"goToDraw": "Lets start!"
 }
