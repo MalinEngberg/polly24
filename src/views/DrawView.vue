@@ -227,14 +227,14 @@ export default {
 
   this.canDraw = false;
 
+  socket.emit('getparticipants', { gamePin: 'test' });
+
   socket.on('participantsUpdate', (participants) => {
     this.participants = participants;
 
     const me = participants.find(p => p.id === this.SocketId);
     this.canDraw = me ? me.drawer : false;
   });
-
-  socket.emit('getparticipants', { gamePin: 'test' });
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
