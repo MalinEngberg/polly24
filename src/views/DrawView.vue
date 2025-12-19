@@ -17,8 +17,8 @@
 
     <div class="center-column">
         <div class="top-bar">
-          Your time to paint:
-          <span class="word-display" > Ä P P L E</span>
+          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
+          <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
           
         </div>
 
@@ -144,6 +144,7 @@
   letter-spacing: 12px;
   margin-left: 10px;
 }
+
 
 .canvas-area {
   background: white;
