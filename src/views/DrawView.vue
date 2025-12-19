@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in participants" :key="p.SocketId" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -25,7 +25,7 @@
  
 
         <div class="canvas-area">
-  <canvas v-if = "drawerTool"
+  <canvas 
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -49,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" v-if="!drawerTool || !canDraw">
+        <div class="guess-box" >
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -211,9 +211,10 @@ export default {
   name: 'DrawView',
   data() {
     return {
-      gamePin: null,
+      gamePin: this.$route.params.gamePin,
+      name: this.$route.params.userName,
       drawerTool: null,
-      SocketId: null,
+      //SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -237,14 +238,14 @@ export default {
 
   
 
-    const me = participants.find(p => p.id === this.SocketId);
+    const me = this.participants.find(p => p.name === this.name);
     this.canDraw = me ? me.drawer : false;
   
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = data.drawer === this.SocketId;
+    this.canDraw = data.drawer === this.name;
   });
 
   socket.on("timerUpdate", time => {
@@ -280,7 +281,7 @@ methods: {
     socket.emit("guess", {
       guess,
       gamePin: this.gamePin,
-      playerName: this.SocketId
+      playerName: this.name
     });
 
     this.currentGuess = "";
@@ -295,7 +296,7 @@ onCorrectGuess(data) {
     this.participants = data.participants;
 
     console.log(
-      `${data.SocketId} gained ${data.points} points`
+      `${data.name} gained ${data.points} points`
       
     );
   }

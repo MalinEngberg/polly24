@@ -6,14 +6,10 @@ function Data() {
   this.polls = {};
   this.polls['test'] = {
     lang: "en",
-    questions: [
-      {q: "How old are you?", 
-       a: ["0-13", "14-18", "19-25", "26-35", "36-45","45-"]
-      },
-      {q: "How much do you enjoy coding?", 
-       a: ["1", "2", "3", "4", "5"]
-      }
-    ],
+    timer:0,
+    timeleft:0,
+    currentWord:"apple",
+    isRunning: false,
     answers: [],
     score: 0,
     currentQuestion: 0,
@@ -72,7 +68,7 @@ Data.prototype.participateInGame = function(gamePin, name) {
   console.log("participant will be added to:", gamePin, name);
   if (this.pollExists(gamePin)) {
     this.createGame
-    this.polls[gamePin].participants.push({name: name, score: 0})
+    this.polls[gamePin].participants.push({name: name, score: 0, gamePin: gamePin, drawer: false})
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }

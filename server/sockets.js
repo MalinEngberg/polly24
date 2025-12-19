@@ -45,9 +45,11 @@ function sockets(io, socket, data) {
     console.log("Participants are", d.participants)
   })
 
+
+
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
-     socket.emit('participantsUpdate', participants, d.gamePin);
+     socket.emit('participantsUpdate', participants);
   });
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
