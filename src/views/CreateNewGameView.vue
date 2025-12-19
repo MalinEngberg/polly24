@@ -10,11 +10,13 @@
         <div class="option">
             <input type="text" id="name" v-model="name" required="required" v-bind:placeholder="uiLabels.namePlaceHolder">
         </div>
+        <p v-if="nameError" class="error">{{nameError}}</p>
 
         <label class="label" for="gamePin">GamePin</label>
         <div class="option">
             <input type="text" id="gamePin" v-model="gamePin" required="required" v-bind:placeholder="uiLabels.GamePinInsert">
         </div>
+        <p v-if="gamePinError" class="error">{{gamePinError}}</p>
 
         <label class="label" for="language">{{uiLabels.LanguageOption}}</label>
         <div class="option">
@@ -79,7 +81,9 @@ export default {
             DrawTime: '60s',
             Rounds: '3rounds',
             gamePin: '',
-            joined: true
+            joined: true,
+            nameError: '',
+            gamePinError: ''
         }
     },
     created: function () {
@@ -88,6 +92,19 @@ export default {
     },
     methods: {
         createGame: function () {
+            this.nameError = "";
+            this.gamePinError = "";
+
+            if (!this.name) {
+                this.nameError = this.uiLabels.nameError;
+                return;
+            }
+            if (!this.gamePin) {
+                this.gamePinError = this.uiLabels.gamePinError;
+                return;
+            }
+            if (this.nameError || this.gamePinError) return;
+
             localStorage.setItem("userName", this.name);
             socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
             socket.emit("joinGame", {gamePin: this.gamePin});
@@ -168,6 +185,17 @@ export default {
     font-family: 'Caveat', cursive;
     border: 2px solid black;
     cursor: pointer;
-    margin: 20px;
+    margin: 40px;
+   }
+
+   .error {
+    color: red;
+    font-weight: bold;
+    font-family: "Times New Roman";
+    font-size: 1rem;
+    grid-column: 2 / span 1;
+    text-align: left;
+    margin-top: -30px;
+    margin-bottom: 0px;
    }
 </style>
