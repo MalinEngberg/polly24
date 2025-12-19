@@ -29,7 +29,7 @@
     </router-link>
     <br>
     <router-link to="/create-new-game" id="join-link">
-      {{ uiLabels.createGame }}
+      {{ uiLabels.CreateGameButton }}
     </router-link>
   </div>
 </template>
@@ -127,9 +127,10 @@ h2 {
 #new-game-link {
   color: black;
   text-decoration: none;
-  padding: 0.01rem 1rem;
+  padding: 0.5rem 2rem;
   background-color: #ff4dbb;
-  border-radius: 7px;
+  border-radius: 999px;
+  font-size: 1.5rem;
   font-weight: bold;
   line-height: 4rem;
 }
@@ -137,9 +138,10 @@ h2 {
 #join-link{
   color: black;
   text-decoration: none;
-  padding: 0.01rem 1rem;
+  padding: 0.5rem 2rem;
   background-color: #5795ff;
-  border-radius: 7px;
+  border-radius: 999px;
+  font-size: 1.5rem;
   font-weight: bold;
   line-height: 4rem;
 }
