@@ -1,24 +1,17 @@
 'use strict';
 import {readFileSync} from "fs";
 import GetPoints from "../src/components/GetPoints.js";
-
-
 // Store data in an object to keep the global namespace clean. In an actual implementation this would be interfacing a database...
 function Data() {
   this.polls = {};
   this.polls['test'] = {
     lang: "en",
-    questions: [
-      {q: "How old are you?", 
-       a: ["0-13", "14-18", "19-25", "26-35", "36-45","45-"]
-      },
-      {q: "How much do you enjoy coding?", 
-       a: ["1", "2", "3", "4", "5"]
-      }
-    ],
+    timer:0,
+    timeleft:0,
+    currentWord:"apple",
+    isRunning: false,
     answers: [],
     score: 0,
-    answers: [{}],
     currentQuestion: 0,
     participants: []
   }
@@ -75,7 +68,7 @@ Data.prototype.participateInGame = function(gamePin, name) {
   console.log("participant will be added to:", gamePin, name);
   if (this.pollExists(gamePin)) {
     this.createGame
-    this.polls[gamePin].participants.push({name: name, score: 0})
+    this.polls[gamePin].participants.push({name: name, score: 0, gamePin: gamePin, drawer: false})
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
@@ -108,7 +101,7 @@ Data.prototype.activateQuestion = function(gamePin, qId = null) {
 Data.prototype.getSubmittedAnswers = function(gamePin) {
   if (this.pollExists(gamePin)) {
     const poll = this.polls[gamePin];
-    const answers = poll.answers[poll.currentQuestion];
+    //const answers = poll.answers[poll.currentQuestion];
     if (typeof poll.questions[poll.currentQuestion] !== 'undefined') {
       return answers;
     }
@@ -136,26 +129,6 @@ Data.prototype.submitAnswer = function(gamePin, answer) {
     console.log("answers looks like ", answers, typeof answers);
   }
 }
-
-Data.prototype.onCorrectGuess = function (gamePin, playerName, timeLeft) {
-  const poll = this.polls[gamePin];
-  if (!poll) return { correct: false };
-
-  const player = poll.participants.find(p => p.name === playerName);
-  if (!player) return { correct: false };
-
-  const points = GetPoints(30, timeLeft, 1);
-  player.score += points;
-
-  return {
-    correct: true,
-    playerName,
-    points,
-    participants: poll.participants
-  };
-};
-
-
 
 
 export { Data };

@@ -8,7 +8,7 @@
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in participants" :key="p.SocketId" :style="{ background: p.img }" >
+            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
                 <img :src="p.img" alt="Player Image" class="player-img" />
                 <div class="player-score">{{ p.name }}: {{ p.score }}p
             </div>
@@ -17,15 +17,15 @@
 
     <div class="center-column">
         <div class="top-bar">
-          Your time to paint:
-          <span class="word-display" > Ä P P L E</span>
+          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
+          <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
           
         </div>
 
  
 
         <div class="canvas-area">
-  <canvas v-if = "drawerTool"
+  <canvas 
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -49,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" v-if="!drawerTool || !canDraw">
+        <div class="guess-box" >
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -145,6 +145,7 @@
   margin-left: 10px;
 }
 
+
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
@@ -210,15 +211,16 @@ export default {
   name: 'DrawView',
   data() {
     return {
+      gamePin: this.$route.params.gamePin,
+      name: this.$route.params.userName,
       drawerTool: null,
-      SocketId: null,
+      //SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [],
+      participants: [{name: "Loading...", score: 0, img: ""}],
       currentGuess: "",
-      guesses: [],
       currentWord: "apple",
     };
   },
@@ -226,20 +228,24 @@ export default {
  mounted() {
 
   this.canDraw = false;
-
+  
   socket.on('participantsUpdate', (participants) => {
-    this.participants = participants;
+  this.participants = participants;
+    });
 
-    const me = participants.find(p => p.id === this.SocketId);
+  
+  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
+
+  
+
+    const me = this.participants.find(p => p.name === this.name);
     this.canDraw = me ? me.drawer : false;
-  });
-
-  socket.emit('getparticipants', { gamePin: 'test' });
+  
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = data.drawer === this.SocketId;
+    this.canDraw = data.drawer === this.name;
   });
 
   socket.on("timerUpdate", time => {
@@ -274,8 +280,8 @@ methods: {
 
     socket.emit("guess", {
       guess,
-      gamePin: "test",
-      playerName: this.SocketId
+      gamePin: this.gamePin,
+      playerName: this.name
     });
 
     this.currentGuess = "";
@@ -290,7 +296,7 @@ onCorrectGuess(data) {
     this.participants = data.participants;
 
     console.log(
-      `${data.SocketId} gained ${data.points} points`
+      `${data.name} gained ${data.points} points`
       
     );
   }

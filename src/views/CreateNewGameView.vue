@@ -66,7 +66,7 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io(sessionStorage.getItem("serverIP"));
 
 export default {
     name: 'CreateNewGameView',
@@ -90,6 +90,7 @@ export default {
         createGame: function () {
             localStorage.setItem("userName", this.name);
             socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
+            socket.emit("joinGame", {gamePin: this.gamePin});
             socket.emit("participateInGame", {gamePin: this.gamePin, name: this.name, joined: this.joined});
             this.$router.push('/lobby/' + this.gamePin);
         }
