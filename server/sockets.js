@@ -16,31 +16,38 @@ function sockets(io, socket, data) {
 
   socket.on('joinGame', function(gamePin) {
     socket.join(gamePin);
-    socket.emit('questionUpdate', data.activateQuestion(gamePin))
-    socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
+    //socket.emit('questionUpdate', data.activateQuestion(gamePin))
+    //socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
   });
 
   socket.on('participateInGame', function(d) {
     socket.join(d.gamePin);
-    data.participateInGame(d.gamePin, d.name, d.joined);
-    io.to(d.gamePin).emit('participantsUpdate', data.getParticipants(d.gamePin));
+    data.participateInGame(d.gamePin, d.name, socket.id);
+    
+    const participants = data.getParticipants(d.gamePin);
+    io.to(d.gamePin).emit('participantsUpdate', participants);
 
     console.log("participant added to gamePin:", data.getParticipants(d.gamePin));
-  data.participateInGame(d.gamePin, d.name, socket.id);
+  
+    //data.participateInGame(d.gamePin, d.name, socket.id);
+    //io.to(d.gamePin).emit('participantsUpdate', participants);
 
-  const participants = data.getParticipants(d.gamePin);
-  io.to(d.gamePin).emit('participantsUpdate', participants);
+  //if (participants.length === 1) {
+    //startRound(io, data, d.gamePin);
+  //}
+  });
 
-  if (participants.length === 1) {
-    startRound(io, data, d.gamePin);
-  }
-});
+  socket.on('startGame', function(d){
+    //const participants = data.getParticipants(gamePin)
+    io.to(d.gamePin).emit('gameStarted');
 
-
+    console.log("Game started for room:", d.gamePin)
+    console.log("Participants are", d.participants)
+  })
 
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
-     socket.emit('participantsUpdate', participants);
+     socket.emit('participantsUpdate', participants, d.gamePin);
   });
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});

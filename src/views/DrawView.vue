@@ -17,8 +17,8 @@
 
     <div class="center-column">
         <div class="top-bar">
-          Your time to paint:
-          <span class="word-display" > Ä P P L E</span>
+          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
+          <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
           
         </div>
 
@@ -145,6 +145,7 @@
   margin-left: 10px;
 }
 
+
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
@@ -210,15 +211,15 @@ export default {
   name: 'DrawView',
   data() {
     return {
+      gamePin: null,
       drawerTool: null,
       SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [],
+      participants: [{name: "Loading...", score: 0, img: ""}],
       currentGuess: "",
-      guesses: [],
       currentWord: "apple",
     };
   },
@@ -226,15 +227,19 @@ export default {
  mounted() {
 
   this.canDraw = false;
-
+  
   socket.on('participantsUpdate', (participants) => {
-    this.participants = participants;
+  this.participants = participants;
+    });
+
+  
+  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
+
+  
 
     const me = participants.find(p => p.id === this.SocketId);
     this.canDraw = me ? me.drawer : false;
-  });
-
-  socket.emit('getparticipants', { gamePin: 'test' });
+  
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
@@ -274,7 +279,7 @@ methods: {
 
     socket.emit("guess", {
       guess,
-      gamePin: "test",
+      gamePin: this.gamePin,
       playerName: this.SocketId
     });
 

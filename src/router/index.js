@@ -11,7 +11,7 @@ const router = createRouter({
     },
 
     {
-      path: '/draw',
+      path: '/draw/:gamePin?',
       name: 'DrawView',
       component: () => import('../views/DrawView.vue')
     },
