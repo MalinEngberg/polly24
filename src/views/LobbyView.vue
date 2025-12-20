@@ -76,7 +76,7 @@ export default {
     participateInGame: function () {
       //localStorage.setItem("userName", this.userName);
       socket.emit("joinGame", this.gamePin);
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName} );
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, socketId: this.socketId} );
       this.$router.push('/lobby/'+ this.gamePin);
     },
     startDraw() {

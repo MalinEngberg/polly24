@@ -17,7 +17,7 @@
 
     <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
+          <span class="word-display" v-if="canDraw">Your time to paint: Ä P P L E</span>
           <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
           
         </div>
@@ -26,7 +26,7 @@
 
         <div class="canvas-area">
   <canvas 
-    v-if="drawerTool"
+    v-show="canDraw"
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -215,7 +215,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.params.userName,
       drawerTool: null,
-      //SocketId: null,
+      socketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -227,7 +227,6 @@ export default {
   },
  // CANVAS functions
  mounted() {
-
   this.canDraw = false;
   
   socket.on('participantsUpdate', (participants) => {
@@ -237,14 +236,14 @@ export default {
   
   socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-    const me = this.participants.find(p => p.name === this.name);
+    const me = this.participants.find(p => p.socketId === this.socketId);
     this.canDraw = me ? me.drawer : false;
   
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = data.drawer === this.name;
+    this.canDraw = (data.drawer === this.socketId);
   });
 
   socket.on("timerUpdate", time => {
@@ -305,4 +304,3 @@ onCorrectGuess(data) {
 };
 
 </script>
-
