@@ -26,6 +26,7 @@
 
         <div class="canvas-area">
   <canvas 
+    v-if="drawerTool"
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -49,7 +50,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" >
+        <div class="guess-box" v-if="!drawerTool || !canDraw">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -236,8 +237,6 @@ export default {
   
   socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-  
-
     const me = this.participants.find(p => p.name === this.name);
     this.canDraw = me ? me.drawer : false;
   
@@ -276,6 +275,7 @@ methods: {
 
   submitGuess() {
     const guess = this.currentGuess.trim();
+    console.log(this.currentGuess);
     if (!guess) return;
 
     socket.emit("guess", {
