@@ -19,5 +19,7 @@
 	"GamePinInsert": "Skapa ett GamePin",
 	"CreateGameButton": "Skapa ett nytt spel",
 	"waitLabel": "Väntar på att spelare ska gå med i spelet...",
-	"goToDraw": "Nu kör vi!"
+	"goToDraw": "Nu kör vi!",
+	"nameError": "*Skriv in ditt namn",
+	"gamePinError": "*Skapa ett GamePin"
 }
