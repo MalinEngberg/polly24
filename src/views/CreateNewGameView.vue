@@ -1,71 +1,69 @@
 <template>
     <header>
-    
-    </header>
-    <main>
-        <div>
+        <div class="title">
             <h1>{{uiLabels.CreatingNewGame}}</h1>
         </div>
-        <div class="Option">
-            <p>
-                <label for="name">{{uiLabels.nameInsert}}</label><br>
-
-                <input type="text" id="name" v-model="name" required="required" v-bind:placeholder="uiLabels.namePlaceHolder">
-            </p>
+    </header>
+<div class="page">
+    <main class="gridContainer">
+        <label class="label" for="name">{{uiLabels.nameInsert}}</label>
+        <div class="option">
+            <input type="text" id="name" v-model="name" required="required" v-bind:placeholder="uiLabels.namePlaceHolder">
         </div>
-        <div class="Option">
-            <p>
-                <label for="gamePin">GamePin</label><br>
+        <p v-if="nameError" class="error">{{nameError}}</p>
 
-                <input type="text" id="gamePin" v-model="gamePin" required="required" v-bind:placeholder="uiLabels.gamePinInsert">
-            </p>
+        <label class="label" for="gamePin">GamePin</label>
+        <div class="option">
+            <input type="text" id="gamePin" v-model="gamePin" required="required" v-bind:placeholder="uiLabels.GamePinInsert">
         </div>
-        <div class="Option">
-            <p>
-                <label for="language">{{uiLabels.LanguageOption}}</label><br>
+        <p v-if="gamePinError" class="error">{{gamePinError}}</p>
 
+        <label class="label" for="language">{{uiLabels.LanguageOption}}</label>
+        <div class="option">
+            <label class="choice"><span>Svenska</span>
                 <input type="radio" id="svenska" v-model="language" value="Svenska">
-                <label for="svenska">Svenska</label><br>
+            </label>
 
+            <label class="choice"><span>English</span>
                 <input type="radio" id="english" v-model="language" value="English">
-                <label for="english">English</label><br>
-            </p>
+            </label>
         </div>
-        <div class="Option">
-            <p>
-                <label for="DrawTime">{{uiLabels.DrawTimeOption}}</label><br>
 
+        <label class="label" for="DrawTime">{{uiLabels.DrawTimeOption}}</label>
+        <div class="option">
+            <label class="choice"><span>30s</span>
                 <input type="radio" id="30" v-model="DrawTime" value="30s">
-                <label for="30s">30s</label><br>
+            </label>
 
+            <label class="choice"><span>45s</span>
                 <input type="radio" id="45" v-model="DrawTime" value="45s">
-                <label for="45s">45s</label><br>
+            </label>
 
+            <label class="choice"><span>60s</span>
                 <input type="radio" id="60" v-model="DrawTime" value="60s">
-                <label for="60s">60s</label><br>
-            </p>
+            </label>
         </div>
-        <div class="Option">
-            <p>
-                <label for="Rounds">{{uiLabels.RoundsOption}}</label><br>
 
+        <label class="label" for="Rounds">{{uiLabels.RoundsOption}}</label>
+        <div class="option">
+            <label class="choice"><span>2</span>
                 <input type="radio" id="2rounds" v-model="Rounds" value="2rounds">
-                <label for="2rounds">2</label><br>
+            </label>
 
+            <label class="choice"><span>3</span>
                 <input type="radio" id="3rounds" v-model="Rounds" value="3rounds">
-                <label for="3rounds">3</label><br>
+            </label>
 
+            <label class="choice"><span>5</span>
                 <input type="radio" id="5rounds" v-model="Rounds" value="5rounds">
-                <label for="5rounds">5</label><br>
-            </p>
+            </label>
         </div>
     </main>
+
     <button type="button" v-on:click="createGame">
-        {{this.uiLabels.CreateGameButton}}
-        <router-link to="/lobby" id="createGame">
-        {{ uiLabels.createGame }}
-        </router-link>
+        {{ uiLabels.CreateGameButton }}
     </button>
+</div>
 </template>
 
 <script>
@@ -83,7 +81,9 @@ export default {
             DrawTime: '60s',
             Rounds: '3rounds',
             gamePin: '',
-            joined: true
+            joined: true,
+            nameError: '',
+            gamePinError: ''
         }
     },
     created: function () {
@@ -92,6 +92,19 @@ export default {
     },
     methods: {
         createGame: function () {
+            this.nameError = "";
+            this.gamePinError = "";
+
+            if (!this.name) {
+                this.nameError = this.uiLabels.nameError;
+                return;
+            }
+            if (!this.gamePin) {
+                this.gamePinError = this.uiLabels.gamePinError;
+                return;
+            }
+            if (this.nameError || this.gamePinError) return;
+
             localStorage.setItem("userName", this.name);
             socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
             socket.emit("joinGame", {gamePin: this.gamePin});
@@ -103,7 +116,86 @@ export default {
 </script>
 
 <style scoped>
-   h1 {
-    font-size: 36pt;
+    .page {
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gridContainer {
+        width: 70%;
+        margin: 20px;
+        display: grid;
+        grid-template-columns: auto auto;
+        row-gap: 30px;
+        column-gap: 100px;
+        align-items: center;
+        justify-content: center;
+    }
+
+   .title {
+    font-size: 2.2rem;
+   }
+
+   .label {
+        display: inline-block;
+        background-color: #ff4dbb;
+        color: black;
+        border: 1px solid black;
+        padding: 10px 30px;
+        border-radius: 999px;
+        font-size: 1.7rem;
+        font-weight: bold;
+        grid-column: 1;
+   }
+
+   .option {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    grid-column: 2;
+   }
+
+   .choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+   }
+
+   .choice span {
+    margin: 20px;
+    margin-bottom: 5px;
+   }
+
+   .option input {
+    padding: 6px 10px;
+    font-size: 1rem;
+    border: 1.5px solid black;
+   }
+
+   button {
+    border-radius: 999px;
+    padding: 30px 60px;
+    background-color: #39FF14;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Caveat', cursive;
+    border: 2px solid black;
+    cursor: pointer;
+    margin: 40px;
+   }
+
+   .error {
+    color: red;
+    font-weight: bold;
+    font-family: "Times New Roman";
+    font-size: 1rem;
+    grid-column: 2 / span 1;
+    text-align: left;
+    margin-top: -30px;
+    margin-bottom: 0px;
    }
 </style>

@@ -2,7 +2,6 @@
 	"sales-pitch": "Rita. Gissa. Ha kul!",
 	"subHeading": "Alltid kul",
 	"invite": "Bjud in deltagare med den här länken:",
-	"createGame": "Skapa ett nytt spel",
 	"participatePoll": "Delta i ett spel",
 	"question": "Fråga",
 	"changeLanguage": "Change to English",
@@ -20,5 +19,7 @@
 	"GamePinInsert": "Skapa ett GamePin",
 	"CreateGameButton": "Skapa ett nytt spel",
 	"waitLabel": "Väntar på att spelare ska gå med i spelet...",
-	"goToDraw": "Nu kör vi!"
+	"goToDraw": "Nu kör vi!",
+	"nameError": "*Skriv in ditt namn",
+	"gamePinError": "*Skapa ett GamePin"
 }

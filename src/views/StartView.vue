@@ -29,7 +29,7 @@
     </router-link>
     <br>
     <router-link to="/create-new-game" id="join-link">
-      {{ uiLabels.createGame }}
+      {{ uiLabels.CreateGameButton }}
     </router-link>
   </div>
 </template>
@@ -38,6 +38,7 @@
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
 sessionStorage.setItem("serverIP", "localhost:3000");
+sessionStorage.setItem("serverIP", "http://localhost:3000");
 const socket = io(sessionStorage.getItem("serverIP"));
 
 export default {
@@ -128,9 +129,10 @@ h2 {
 #new-game-link {
   color: black;
   text-decoration: none;
-  padding: 0.3rem 2.5rem;
+  padding: 0.5rem 2rem;
   background-color: #ff4dbb;
-  border-radius: 7px;
+  border-radius: 999px;
+  font-size: 1.5rem;
   font-weight: bold;
   line-height: 4rem;
 }
@@ -138,9 +140,10 @@ h2 {
 #join-link{
   color: black;
   text-decoration: none;
-  padding: 0.3rem 1rem;
+  padding: 0.5rem 2rem;
   background-color: #5795ff;
-  border-radius: 7px;
+  border-radius: 999px;
+  font-size: 1.5rem;
   font-weight: bold;
   line-height: 4rem;
 }
