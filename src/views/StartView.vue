@@ -37,7 +37,6 @@
 <script>
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
-sessionStorage.setItem("serverIP", "localhost:3000");
 sessionStorage.setItem("serverIP", "http://localhost:3000");
 const socket = io(sessionStorage.getItem("serverIP"));
 
