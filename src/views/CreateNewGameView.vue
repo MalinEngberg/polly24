@@ -81,9 +81,10 @@ export default {
             DrawTime: '60s',
             Rounds: '3rounds',
             gamePin: '',
-            joined: true,
+            //joined: true,
             nameError: '',
-            gamePinError: ''
+            gamePinError: '',
+            socketId: socket.id
         }
     },
     created: function () {
@@ -108,7 +109,7 @@ export default {
             localStorage.setItem("userName", this.name);
             socket.emit("createGame",{gamePin: this.gamePin, lang: this.lang })
             socket.emit("joinGame", {gamePin: this.gamePin});
-            socket.emit("participateInGame", {gamePin: this.gamePin, name: this.name, joined: this.joined});
+            socket.emit("participateInGame", {gamePin: this.gamePin, name: this.name, socketId: this.socketId});
             this.$router.push('/lobby/' + this.gamePin);
         }
     }

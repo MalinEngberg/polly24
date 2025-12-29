@@ -215,7 +215,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.params.userName,
       drawerTool: null,
-      //SocketId: null,
+      socketId: socket.id,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -237,14 +237,14 @@ export default {
   
   socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-    const me = this.participants.find(p => p.name === this.name);
+    const me = this.participants.find(p => p.socketId === this.socketId);
     this.canDraw = me ? me.drawer : false;
   
 
   socket.on("roundStarted", data => {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = data.drawer === this.name;
+    this.canDraw = (data.drawer === this.socketId);
   });
 
   socket.on("timerUpdate", time => {
@@ -303,6 +303,5 @@ onCorrectGuess(data) {
   }
 }
 };
-
 </script>
 

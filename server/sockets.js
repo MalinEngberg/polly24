@@ -6,18 +6,21 @@ function sockets(io, socket, data) {
 
   socket.on('createGame', function(d) {
     data.createGame(d.gamePin, d.lang)
-    socket.emit('pollData', data.getPoll(d.gamePin));
+    socket.emit('pollData', data.getGame(d.gamePin));
   });
 
   socket.on('addQuestion', function(d) {
-    data.addQuestion(d.gamePin, {q: d.q, a: d.a});
-    socket.emit('questionUpdate', data.activateQuestion(d.gamePin));
+    //data.addQuestion(d.gamePin, {q: d.q, a: d.a});
+    //socket.emit('questionUpdate', data.activateQuestion(d.gamePin));
+
+    if (participants.length === 1) {startRound(io, data, d.gamePin);}
   });
 
   socket.on('joinGame', function(gamePin) {
     socket.join(gamePin);
     //socket.emit('questionUpdate', data.activateQuestion(gamePin))
     //socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
+
   });
 
   socket.on('participateInGame', function(d) {
@@ -32,9 +35,6 @@ function sockets(io, socket, data) {
     //data.participateInGame(d.gamePin, d.name, socket.id);
     //io.to(d.gamePin).emit('participantsUpdate', participants);
 
-  if (participants.length === 1) {
-    startRound(io, data, d.gamePin);
-  }
   });
 
   socket.on('startGame', function(d){
@@ -43,9 +43,9 @@ function sockets(io, socket, data) {
 
     console.log("Game started for room:", d.gamePin)
     console.log("Participants are", d.participants)
+
+    startRound(io, data, d.gamePin);
   })
-
-
 
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
@@ -54,9 +54,10 @@ function sockets(io, socket, data) {
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
-  socket.on('startPoll', function(gamePin) {
-    io.to(gamePin).emit('startPoll');
-  })
+  //socket.on('startPoll', function(gamePin) {
+  //  io.to(gamePin).emit('startPoll');
+  //})
+
   socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
     io.to(d.gamePin).emit('questionUpdate', question);
@@ -69,7 +70,7 @@ function sockets(io, socket, data) {
   }); 
 
  socket.on("guess", d => {
-  const poll = data.getPoll(d.gamePin);
+  const poll = data.getGame(d.gamePin);
   if (!poll || !poll.isRunning) return;
 
   if (d.guess.toLowerCase() === poll.currentWord) {
@@ -88,23 +89,29 @@ function sockets(io, socket, data) {
 });
 
 function startRound(io, data, gamePin) {
-  const poll = data.getPoll(gamePin);
-  if (!poll) return;
+  const poll = data.getGame(gamePin);
+  if (!poll || !poll.participants.length) return;
+
+  //reset tror jag
+  poll.participants.forEach(p => p.drawer = false);
+
+  const drawer = poll.participants[0];
+  drawer.drawer = true;
+  poll.drawerSocketId = drawer.socketId;
+
+  console.log("Starting round. Drawer is:", drawer.name);
+
+  io.to(gamePin).emit("participantsUpdate", poll.participants);
 
   poll.currentWord = "apple"; // replace with random later
   poll.timeLeft = 30;
   poll.isRunning = true;
 
-  if (!poll.participants.length) return;
-
-  const drawer = poll.participants[0];
-  poll.drawerSocketId = drawer.socketId;
-
   io.to(gamePin).emit("roundStarted", {
     drawer: drawer.socketId,
     word: poll.currentWord,
     timeLeft: poll.timeLeft
-  });
+  }, 1000);
 
   poll.timer = setInterval(() => {
     poll.timeLeft--;
@@ -116,10 +123,17 @@ function startRound(io, data, gamePin) {
       io.to(gamePin).emit("roundEnded");
     }
   }, 1000);
+  
+  console.log(
+  "AFTER startRound:",
+  poll.participants.map(p => ({
+    name: p.name,
+    drawer: p.drawer,
+    socketId: p.socketId
+  }))
+);
+
 }
-
-
-
 
   socket
 }
