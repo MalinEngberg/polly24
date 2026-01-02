@@ -17,7 +17,7 @@
 
     <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="canDraw">Your time to paint: Ä P P L E</span>
+          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
           <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
           
         </div>
@@ -26,7 +26,7 @@
 
         <div class="canvas-area">
   <canvas 
-    v-show="canDraw"
+    v-if="drawerTool"
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
