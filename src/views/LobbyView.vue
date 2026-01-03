@@ -36,8 +36,7 @@
 </template>
 
 <script>
-import io from 'socket.io-client';
-const socket = io(sessionStorage.getItem("serverIP"));
+import { socket } from '@/socket';
 
 export default {
   name: 'LobbyView',

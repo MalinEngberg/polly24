@@ -203,8 +203,8 @@
 </style>
 
 <script>
-import io from 'socket.io-client';
-const socket = io(sessionStorage.getItem("serverIP") || "http://localhost:3000");
+import { socket } from '@/socket';
+console.log('Connecting to: ', socket);
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 
 export default {
@@ -233,19 +233,23 @@ export default {
     });
   
   socket.on('connect', () => {
+    console.log('CONNECTED TO: ', socket.id);
     this.socketId = socket.id;
+  });
+
+  socket.on('connect-error', (err) => {
+    console.log('CONNECT ERROR: ', err.message);
   });
   
   socket.emit('getparticipants', { gamePin: this.gamePin });
 
-    const me = this.participants.find(p => p.socketId === this.socketId);
-    this.canDraw = me ? me.drawer : false;
-  
-
   socket.on("roundStarted", data => {
+    console.log("roundStarted drawer =", data.drawer);
+    console.log("my socket.id =", socket.id);
+    console.log("canDraw computed =", socket.id === data.drawer);
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
-    this.canDraw = (data.drawer === this.socketId);
+    this.canDraw = (data.drawer === socket.id); // blir inte detta problematiskt? drawer är boolean och socket.id en string? alltid false.
   });
 
   socket.on("timerUpdate", time => {
