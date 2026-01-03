@@ -1,4 +1,4 @@
-export function createCanvasDrawer(canvas, canDrawSignal) {
+export function createCanvasDrawer(canvas, canDrawSignal, onLocalDraw) {
   const context = canvas.getContext("2d");
 
   context.lineCap = "round";
@@ -19,6 +19,7 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
   }
 
   function start(e) {
+    console.log('canDrawSignal:', canDrawSignal?.()); //denna blir false just nu så nästa rad returnerar bara
     if (canDrawSignal && !canDrawSignal()) return;
 
     drawing = true;
@@ -33,10 +34,20 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
 
     const { x, y } = getPos(e);
 
+    const fromX = lastX;
+    const fromY = lastY;
+
     context.beginPath();
-    context.moveTo(lastX, lastY);
+    context.moveTo(fromX, fromY);
     context.lineTo(x, y);
     context.stroke();
+
+    onLocalDraw?.({
+      from: {x: fromX, y: fromY},
+      to: {x, y},
+      color: context.strokeStyle,
+      lineWidth: context.lineWidth
+    });
 
     lastX = x;
     lastY = y;
@@ -50,5 +61,27 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     context.strokeStyle = color;
   }
 
-  return { start, move, stop, getcolor };
+  function drawRemote(seg) { // vad är seg?
+    if (!seg?.from || !seg?.to) return;
+
+    const prevColor = context.strokeStyle;
+    const prevWidth = context.lineWidth;
+
+    if (seg.color) context.strokeStyle = seg.color;
+    if (seg.lineWidth) context.lineWidth = seg.lineWidth;
+
+    context.beginPath();
+    context.moveTo(seg.from.x, seg.from.y); // varför skriver man såhär?
+    context.lineTo(seg.to.x, seg.to.y);
+    context.stroke();
+
+    context.strokeStyle = prevColor;
+    context.lineWidth = prevWidth;
+  }
+
+  function clear() {
+    context.clearRect (0, 0, canvas.width, canvas.height);
+  }
+
+  return { start, move, stop, getcolor, drawRemote, clear };
 }

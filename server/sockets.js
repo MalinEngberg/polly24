@@ -49,6 +49,23 @@ function sockets(io, socket, data) {
      socket.emit('participantsUpdate', participants);
   });
 
+  socket.on('draw', (d) => {
+    const game = data.getGame(d.gamePin);
+    if (!game || !game.isRunning) return;
+    
+    if (socket.id !== game.drawerSocketId) return;
+
+    socket.to(d.gamePin).emit('draw', d);
+  });
+
+  socket.on('clearCanvas', (d) => {
+    const game = data.getGame(d.gamePin);
+    if (!game) return;
+    if (socket.id !== game.drawerSocketId) return;
+
+    io.to(d.gamePin).emit('clearCanvas'); // varför io to på denna och på draw stocket to? Vad är skillnaden?
+  })
+
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
   //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})

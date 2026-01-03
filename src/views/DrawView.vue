@@ -25,8 +25,7 @@
  
 
         <div class="canvas-area">
-  <canvas 
-    v-if="drawerTool"
+  <canvas
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -205,7 +204,7 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io(sessionStorage.getItem("serverIP") || "http://localhost:3000");
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 
 export default {
@@ -213,7 +212,7 @@ export default {
   data() {
     return {
       gamePin: this.$route.params.gamePin,
-      name: this.$route.params.userName,
+      name: this.$route.query.userName, // ändrat till query ist för params, vad gör det för skillnad egentligen?
       drawerTool: null,
       socketId: null,
       timeLeft: 0,         
@@ -232,9 +231,12 @@ export default {
   socket.on('participantsUpdate', (participants) => {
   this.participants = participants;
     });
-
   
-  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
+  socket.on('connect', () => {
+    this.socketId = socket.id;
+  });
+  
+  socket.emit('getparticipants', { gamePin: this.gamePin });
 
     const me = this.participants.find(p => p.socketId === this.socketId);
     this.canDraw = me ? me.drawer : false;
@@ -265,8 +267,21 @@ export default {
 
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
+
+  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw, (seg) => {
+    socket.emit('draw', {gamePin: this.gamePin, seg});
+  });
+
+  socket.on('draw', (d) => {
+    if (this.canDraw) return;
+    this.drawerTool.drawRemote(d.seg);
+  });
+
+  socket.on('clear', (d) => {
+    this.drawerTool.clear;
+  });
 });
+
 },
 
 
