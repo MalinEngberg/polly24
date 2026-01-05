@@ -16,26 +16,26 @@
           </div>
 
     <div class="center-column">
-        <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
-          <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
-          
-        </div>
+        
+      <div class="top-bar">
+        <span class="word-display" v-if="canDraw">
+          Your time to paint: Ä P P L E
+        </span>
+        <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span> 
+      </div>
 
- 
+      <div class="canvas-area">
+        <canvas 
+          v-if="canDraw"
+          ref="canvas"
+          @mousedown="drawerTool?.start"
+          @mousemove="drawerTool?.move"
+          @mouseup="drawerTool?.stop"
+          @mouseleave="drawerTool?.stop">
+        </canvas>
+      </div>
 
-        <div class="canvas-area">
-  <canvas 
-    v-if="drawerTool"
-    ref="canvas"
-    @mousedown="drawerTool?.start"
-    @mousemove="drawerTool?.move"
-    @mouseup="drawerTool?.stop"
-    @mouseleave="drawerTool?.stop">
-  </canvas>
-        </div>
     </div>
-
 
       <div class="right-column">
 
@@ -50,7 +50,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" v-if="!drawerTool || !canDraw">
+        <div class="guess-box" v-if="!canDraw">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -228,23 +228,40 @@ export default {
  // CANVAS functions
  mounted() {
 
-  this.canDraw = false;
+  //this.canDraw = false;
+
+  socket.on('connect', () => {
+    this.socketId = socket.id;
+    console.log("Connected with socket ID:", this.socketId);
+
+    socket.emit("getparticipants", { gamePin: this.gamePin });
+  });
   
   socket.on('participantsUpdate', (participants) => {
   this.participants = participants;
     });
 
-  
-  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
+  //socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-    const me = this.participants.find(p => p.socketId === this.socketId);
-    this.canDraw = me ? me.drawer : false;
+  const me = this.participants.find(p => p.socketId === this.socketId);
+  this.canDraw = me ? me.drawer : false;
   
 
   socket.on("roundStarted", data => {
+    console.log("Received roundStarted event:", data);
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
     this.canDraw = (data.drawer === this.socketId);
+
+    if (this.canDraw && !this.drawerTool) {
+      const canvas = this.$refs.canvas;
+      if (canvas){
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
+      }
+    }
+    console.log("Round started. You are the drawer:", this.canDraw);
   });
 
   socket.on("timerUpdate", time => {
@@ -260,14 +277,14 @@ export default {
   });
 
   // Canvas
-  this.$nextTick(() => {
-  const canvas = this.$refs.canvas;
-  if (!canvas) return;
+  //this.$nextTick(() => {
+  //const canvas = this.$refs.canvas;
+  //if (!canvas) return;
 
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
-});
+  //canvas.width = canvas.offsetWidth;
+  //canvas.height = canvas.offsetHeight;
+  //this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
+//});
 },
 
 

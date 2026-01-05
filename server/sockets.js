@@ -107,11 +107,14 @@ function startRound(io, data, gamePin) {
   poll.timeLeft = 30;
   poll.isRunning = true;
 
+
+
   io.to(gamePin).emit("roundStarted", {
     drawer: drawer.socketId,
     word: poll.currentWord,
     timeLeft: poll.timeLeft
-  }, 1000);
+  });
+
 
   poll.timer = setInterval(() => {
     poll.timeLeft--;
