@@ -25,8 +25,8 @@
  
 
         <div class="canvas-area">
-  <canvas 
-    v-if="drawerTool"
+
+  <canvas
     ref="canvas"
     @mousedown="drawerTool?.start"
     @mousemove="drawerTool?.move"
@@ -215,48 +215,24 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.params.userName,
       drawerTool: null,
-      socketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [{name: "Loading...", score: 0, img: ""}],
+      participants: [],
       currentGuess: "",
       currentWord: "apple",
     };
   },
  // CANVAS functions
  mounted() {
-  this.canDraw = false;
   
   socket.on('participantsUpdate', (participants) => {
-  this.participants = participants;
-    });
-
-  
-  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
-
-    const me = this.participants.find(p => p.socketId === this.socketId);
-    this.canDraw = me ? me.drawer : false;
-  
-
-  socket.on("roundStarted", data => {
-    this.timeLeft = data.timeLeft;
-    this.currentWord = data.word;
-    this.canDraw = (data.drawer === this.socketId);
+    this.participants = participants;
   });
 
-  socket.on("timerUpdate", time => {
-    this.timeLeft = time;
-  });
-
-  socket.on("roundEnded", () => {
-    this.canDraw = false;
-  });
-
-  socket.on("correctGuess", data => {
-  this.onCorrectGuess(data);
-  });
+  // socket.emit('joinGame', {gamePin: this.gamePin});
+  socket.emit('participateInGame', {gamePin: this.gamePin, name: this.name});
 
   // Canvas
   this.$nextTick(() => {
@@ -265,8 +241,24 @@ export default {
 
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
-});
+
+  this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
+    socket.emit("drawing", {gamePin: this.gamePin, ...data});
+  });
+  });
+
+  socket.on("drawing", (data) => {
+    const canvas = this.$refs.canvas;
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+    context.beginPath();
+    context.moveTo(data.lastX, data.lastY);
+    context.lineTo(data.x, data.y);
+    context.strokeStyle = data.color;
+    context.lineWidth = 4;
+    context.stroke();
+  });
 },
 
 

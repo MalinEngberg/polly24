@@ -38,6 +38,8 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     context.lineTo(x, y);
     context.stroke();
 
+    emitDrawing?.({lastX, lastY, x, y, color: context.strokeStyle});
+
     lastX = x;
     lastY = y;
   }
