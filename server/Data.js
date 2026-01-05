@@ -64,16 +64,15 @@ Data.prototype.getPoll = function(gamePin) {
     //console.log("participants now:", this.polls[gamePin].participants);
   //}
 //},
-Data.prototype.participateInGame = function(gamePin, name, socketId) {
-  console.log("participant will be added to:", gamePin, name, socketId);
+Data.prototype.participateInGame = function(gamePin, name) {
+  console.log("participant will be added to:", gamePin, name);
   if (this.pollExists(gamePin)) {
     // store socketId so server can know which socket belongs to whom
     this.polls[gamePin].participants.push({
       name: name,
       score: 0,
       gamePin: gamePin,
-      drawer: true,
-      socketId: socketId
+      drawer: true
     });
     console.log("participants now:", this.polls[gamePin].participants);
   }

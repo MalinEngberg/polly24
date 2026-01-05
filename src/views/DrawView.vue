@@ -211,14 +211,14 @@ export default {
   data() {
     return {
       gamePin: this.$route.params.gamePin,
-      name: this.$route.params.userName,
+      name: this.$route.params.name,
       drawerTool: null,
       //SocketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [{name: "Loading...", score: 0, img: ""}],
+      participants: [],
       currentGuess: "",
       currentWord: "apple",
     };

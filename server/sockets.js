@@ -25,13 +25,13 @@ function sockets(io, socket, data) {
     // expect an object { gamePin }
     if (d && d.gamePin) {
       socket.join(d.gamePin);
-      console.log('socket joined room', d.gamePin, 'socket id', socket.id);
+      console.log('socket joined room', d.gamePin);
     }
   });
 
   socket.on('participateInGame', function(d) {
     socket.join(d.gamePin);
-    data.participateInGame(d.gamePin, d.name, socket.id);
+    data.participateInGame(d.gamePin, d.name);
     
     const participants = data.getParticipants(d.gamePin);
     io.to(d.gamePin).emit('participantsUpdate', participants);
@@ -48,6 +48,7 @@ function sockets(io, socket, data) {
 
   socket.on('startGame', function(d){
     //const participants = data.getParticipants(gamePin)
+    socket.join(d.gamePin);
     io.to(d.gamePin).emit('gameStarted');
 
     console.log("Game started for room:", d.gamePin)
