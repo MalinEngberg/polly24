@@ -16,16 +16,24 @@ function sockets(io, socket, data) {
     if (participants.length === 1) {startRound(io, data, d.gamePin);}
   });
 
-  socket.on('joinGame', function(gamePin) {
+  /* socket.on('joinGame', function(gamePin) {
     socket.join(gamePin);
     //socket.emit('questionUpdate', data.activateQuestion(gamePin))
     //socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
+  }); */
 
+   socket.on('joinGame', function(d) {
+    // was: socket.on('joinGame', function(gamePin) { socket.join(gamePin); });
+    // expect an object { gamePin }
+    if (d && d.gamePin) {
+      socket.join(d.gamePin);
+      console.log('socket joined room', d.gamePin);
+    }
   });
 
   socket.on('participateInGame', function(d) {
     socket.join(d.gamePin);
-    data.participateInGame(d.gamePin, d.name, socket.id);
+    data.participateInGame(d.gamePin, d.name);
     
     const participants = data.getParticipants(d.gamePin);
     io.to(d.gamePin).emit('participantsUpdate', participants);
@@ -40,6 +48,7 @@ function sockets(io, socket, data) {
 
   socket.on('startGame', function(d){
     //const participants = data.getParticipants(gamePin)
+    socket.join(d.gamePin);
     io.to(d.gamePin).emit('gameStarted');
     // startRound(io, data, d.gamePin);
 
@@ -118,17 +127,13 @@ function startRound(io, data, gamePin) {
       io.to(gamePin).emit("roundEnded");
     }
   }, 1000);
-  
-  console.log(
-  "AFTER startRound:",
-  poll.participants.map(p => ({
-    name: p.name,
-    drawer: p.drawer,
-    socketId: p.socketId
-  }))
-);
-
 }
+
+socket.on("drawing", (data) => {
+  // Broadcast drawing data to all other clients in the same game room
+  socket.to(data.gamePin).emit("drawing", data);
+});
+
 
   socket
 }
