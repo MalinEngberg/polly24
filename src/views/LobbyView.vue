@@ -7,7 +7,7 @@
       <input
         type="text"
         v-bind:placeholder= "uiLabels.nameInsert"
-        v-model="userName">
+        v-model="name">
 
       <input 
         type="text"
@@ -43,7 +43,7 @@ export default {
   name: 'LobbyView',
   data: function () {
     return {
-      userName: "",
+      name: this.$route.query.name || "",
       gamePin: "",
       uiLabels: {},
       lang: localStorage.getItem("lang") || "en",
@@ -51,7 +51,7 @@ export default {
     }
   },
   created: function () {
-    //this.userName = localStorage.getItem("userName") || "";
+    //this.name = localStorage.getItem("name") || "";
     socket.on( "uiLabels", labels => this.uiLabels = labels );
     socket.on( "participantsUpdate", p => this.participants = p );
     
@@ -59,7 +59,7 @@ export default {
       console.log("GAME STARTED")
       this.$router.push({
       path: `/draw/${this.gamePin}`, 
-      query:{userName: this.userName}
+      query:{name: this.name}
       });
     }),
 
@@ -74,9 +74,9 @@ export default {
   },
   methods: {
     participateInGame: function () {
-      //localStorage.setItem("userName", this.userName);
+      //localStorage.setItem("name", this.name);
       socket.emit("joinGame", this.gamePin);
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.userName, socketId: this.socketId} );
+      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.name} );
       this.$router.push('/lobby/'+ this.gamePin);
     },
     startDraw() {

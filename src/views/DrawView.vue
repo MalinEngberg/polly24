@@ -1,4 +1,3 @@
-
 <template>
   <div class="page">
 
@@ -28,10 +27,10 @@
   <canvas 
     v-if="drawerTool"
     ref="canvas"
-    @mousedown="drawerTool?.start"
-    @mousemove="drawerTool?.move"
-    @mouseup="drawerTool?.stop"
-    @mouseleave="drawerTool?.stop">
+    @mousedown="drawerTool && drawerTool.start($event)"
+    @mousemove="drawerTool && drawerTool.move($event)"
+    @mouseup="drawerTool && drawerTool.stop($event)"
+    @mouseleave="drawerTool && drawerTool.stop($event)">
   </canvas>
         </div>
     </div>
@@ -213,60 +212,55 @@ export default {
   data() {
     return {
       gamePin: this.$route.params.gamePin,
-      name: this.$route.params.userName,
+      name: this.$route.params.name,
       drawerTool: null,
       socketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
       colors: [ "black", "red", "green", "blue", "yellow"],
-      participants: [{name: "Loading...", score: 0, img: ""}],
+      participants: [],
       currentGuess: "",
       currentWord: "apple",
     };
   },
  // CANVAS functions
  mounted() {
-  this.canDraw = false;
-  
+
   socket.on('participantsUpdate', (participants) => {
-  this.participants = participants;
-    });
-
-  
-  socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
-
-    const me = this.participants.find(p => p.socketId === this.socketId);
-    this.canDraw = me ? me.drawer : false;
-  
-
-  socket.on("roundStarted", data => {
-    this.timeLeft = data.timeLeft;
-    this.currentWord = data.word;
-    this.canDraw = (data.drawer === this.socketId);
+    this.participants = participants;
   });
 
-  socket.on("timerUpdate", time => {
-    this.timeLeft = time;
-  });
+  // make sure we are in the room (in case we navigated directly to draw view)
+  socket.emit('joinGame', { gamePin: this.gamePin });
+  socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
 
-  socket.on("roundEnded", () => {
-    this.canDraw = false;
-  });
-
-  socket.on("correctGuess", data => {
-  this.onCorrectGuess(data);
-  });
-
-  // Canvas
   this.$nextTick(() => {
-  const canvas = this.$refs.canvas;
-  if (!canvas) return;
+    const canvas = this.$refs.canvas;
+    if (!canvas) return;
 
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-  this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
-});
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
+      // Emit drawing data to the server
+      socket.emit("drawing", { gamePin: this.gamePin, ...data });
+    });
+  });
+
+  // Listen for drawing events from other players
+  socket.on("drawing", (data) => {
+    const canvas = this.$refs.canvas;
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+    context.beginPath();
+    context.moveTo(data.lastX, data.lastY);
+    context.lineTo(data.x, data.y);
+    context.strokeStyle = data.color;
+    context.lineWidth = 4;
+    context.stroke();
+  });
 },
 
 

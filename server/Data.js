@@ -64,16 +64,19 @@ Data.prototype.getGame = function(gamePin) {
     //console.log("participants now:", this.polls[gamePin].participants);
   //}
 //},
-
-Data.prototype.participateInGame = function(gamePin, name, socketId) {
-  console.log("participant will be added to:", gamePin, name, socketId);
-  if (this.gameExists(gamePin)) {
-    this.createGame //chatten säger att denna rad inte behövs?
-    this.polls[gamePin].participants.push({name: name, score: 0, gamePin: gamePin, drawer: false, socketId: socketId})
+Data.prototype.participateInGame = function(gamePin, name) {
+  console.log("participant will be added to:", gamePin, name);
+  if (this.pollExists(gamePin)) {
+    // store socketId so server can know which socket belongs to whom
+    this.polls[gamePin].participants.push({
+      name: name,
+      score: 0,
+      gamePin: gamePin,
+      drawer: true
+    });
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
-
 Data.prototype.getParticipants = function(gamePin) {
   console.log("participants requested for", gamePin);
   if (this.gameExists(gamePin)) { 
