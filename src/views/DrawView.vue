@@ -215,7 +215,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.params.userName,
       drawerTool: null,
-      socketId: socket.id,
+      socketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -227,15 +227,7 @@ export default {
   },
  // CANVAS functions
  mounted() {
-
-  //this.canDraw = false;
-
-  socket.on('connect', () => {
-    this.socketId = socket.id;
-    console.log("Connected with socket ID:", this.socketId);
-
-    socket.emit("getparticipants", { gamePin: this.gamePin });
-  });
+  this.canDraw = false;
   
   socket.on('participantsUpdate', (participants) => {
   this.participants = participants;
@@ -243,8 +235,8 @@ export default {
 
   //socket.emit('getparticipants', { gamePin: this.gamePin }); //TO DO: replace 'test' with actual game pin
 
-  const me = this.participants.find(p => p.socketId === this.socketId);
-  this.canDraw = me ? me.drawer : false;
+    const me = this.participants.find(p => p.socketId === this.socketId);
+    this.canDraw = me ? me.drawer : false;
   
 
   socket.on("roundStarted", data => {
@@ -252,16 +244,6 @@ export default {
     this.timeLeft = data.timeLeft;
     this.currentWord = data.word;
     this.canDraw = (data.drawer === this.socketId);
-
-    if (this.canDraw && !this.drawerTool) {
-      const canvas = this.$refs.canvas;
-      if (canvas){
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        this.drawerTool = createCanvasDrawer(canvas, () => this.canDraw);
-      }
-    }
-    console.log("Round started. You are the drawer:", this.canDraw);
   });
 
   socket.on("timerUpdate", time => {
@@ -320,5 +302,5 @@ onCorrectGuess(data) {
   }
 }
 };
-</script>
 
+</script>

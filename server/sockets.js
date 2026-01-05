@@ -35,11 +35,13 @@ function sockets(io, socket, data) {
     //data.participateInGame(d.gamePin, d.name, socket.id);
     //io.to(d.gamePin).emit('participantsUpdate', participants);
 
+    if (participants.length === 1) {startRound(io, data, d.gamePin);}
   });
 
   socket.on('startGame', function(d){
     //const participants = data.getParticipants(gamePin)
     io.to(d.gamePin).emit('gameStarted');
+    // startRound(io, data, d.gamePin);
 
     console.log("Game started for room:", d.gamePin)
     console.log("Participants are", d.participants)
@@ -54,9 +56,7 @@ function sockets(io, socket, data) {
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
-  //socket.on('startPoll', function(gamePin) {
-  //  io.to(gamePin).emit('startPoll');
-  //})
+  //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})
 
   socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
@@ -90,24 +90,16 @@ function sockets(io, socket, data) {
 
 function startRound(io, data, gamePin) {
   const poll = data.getGame(gamePin);
-  if (!poll || !poll.participants.length) return;
-
-  //reset tror jag
-  poll.participants.forEach(p => p.drawer = false);
-
-  const drawer = poll.participants[0];
-  drawer.drawer = true;
-  poll.drawerSocketId = drawer.socketId;
-
-  console.log("Starting round. Drawer is:", drawer.name);
-
-  io.to(gamePin).emit("participantsUpdate", poll.participants);
+  if (!poll) return;
 
   poll.currentWord = "apple"; // replace with random later
   poll.timeLeft = 30;
   poll.isRunning = true;
 
 
+  const drawer = poll.participants[0];
+  drawer.drawer = true;
+  poll.drawerSocketId = drawer.socketId;
 
   io.to(gamePin).emit("roundStarted", {
     drawer: drawer.socketId,

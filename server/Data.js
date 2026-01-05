@@ -56,10 +56,19 @@ Data.prototype.getGame = function(gamePin) {
   return {};
 }
 
+//Data.prototype.participateInPoll = function(gamePin, name, joined) {
+  //console.log("participant will be added to:", gamePin, name, joined);
+  //if (this.gameExists(gamePin)) {
+    //this.createGame
+    //this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
+    //console.log("participants now:", this.polls[gamePin].participants);
+  //}
+//},
+
 Data.prototype.participateInGame = function(gamePin, name, socketId) {
-  console.log("participant will be added to:", gamePin, name);
+  console.log("participant will be added to:", gamePin, name, socketId);
   if (this.gameExists(gamePin)) {
-    this.createGame(gamePin);
+    this.createGame //chatten säger att denna rad inte behövs?
     this.polls[gamePin].participants.push({name: name, score: 0, gamePin: gamePin, drawer: false, socketId: socketId})
     console.log("participants now:", this.polls[gamePin].participants);
   }
