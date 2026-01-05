@@ -25,6 +25,7 @@
 
         <div class="canvas-area">
   <canvas 
+    v-if="drawerTool"
     ref="canvas"
     @mousedown="drawerTool && drawerTool.start($event)"
     @mousemove="drawerTool && drawerTool.move($event)"
@@ -48,7 +49,7 @@
           <p>Hanna <span style="color: green;">+325p</span></p>
         </div>
 
-        <div class="guess-box" >
+        <div class="guess-box" v-if="!drawerTool || !canDraw">
           <input type="text"
                  placeholder="Guess something..."
                  v-model="currentGuess"
@@ -213,7 +214,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.params.name,
       drawerTool: null,
-      //SocketId: null,
+      socketId: null,
       timeLeft: 0,         
       canDraw: false,
       currentColor: "black",
@@ -267,6 +268,7 @@ methods: {
 
   submitGuess() {
     const guess = this.currentGuess.trim();
+    console.log(this.currentGuess);
     if (!guess) return;
 
     socket.emit("guess", {
@@ -296,4 +298,3 @@ onCorrectGuess(data) {
 };
 
 </script>
-

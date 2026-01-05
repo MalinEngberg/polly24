@@ -6,7 +6,7 @@ function sockets(io, socket, data) {
 
   socket.on('createGame', function(d) {
     data.createGame(d.gamePin, d.lang)
-    socket.emit('pollData', data.getPoll(d.gamePin));
+    socket.emit('pollData', data.getGame(d.gamePin));
   });
 
   socket.on('addQuestion', function(d) {
@@ -41,21 +41,18 @@ function sockets(io, socket, data) {
     //data.participateInGame(d.gamePin, d.name, socket.id);
     //io.to(d.gamePin).emit('participantsUpdate', participants);
 
-  if (participants.length === 1) {
-    startRound(io, data, d.gamePin);
-  }
+    if (participants.length === 1) {startRound(io, data, d.gamePin);}
   });
 
   socket.on('startGame', function(d){
     //const participants = data.getParticipants(gamePin)
     socket.join(d.gamePin);
     io.to(d.gamePin).emit('gameStarted');
+    // startRound(io, data, d.gamePin);
 
     console.log("Game started for room:", d.gamePin)
     console.log("Participants are", d.participants)
   })
-
-
 
   socket.on('getparticipants', (d) =>{
      const participants = data.getParticipants(d.gamePin);
@@ -64,9 +61,8 @@ function sockets(io, socket, data) {
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
-  socket.on('startPoll', function(gamePin) {
-    io.to(gamePin).emit('startPoll');
-  })
+  //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})
+
   socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
     io.to(d.gamePin).emit('questionUpdate', question);
@@ -79,7 +75,7 @@ function sockets(io, socket, data) {
   }); 
 
  socket.on("guess", d => {
-  const poll = data.getPoll(d.gamePin);
+  const poll = data.getGame(d.gamePin);
   if (!poll || !poll.isRunning) return;
 
   if (d.guess.toLowerCase() === poll.currentWord) {
@@ -98,7 +94,7 @@ function sockets(io, socket, data) {
 });
 
 function startRound(io, data, gamePin) {
-  const poll = data.getPoll(gamePin);
+  const poll = data.getGame(gamePin);
   if (!poll) return;
 
   poll.currentWord = "apple"; // replace with random later
@@ -108,6 +104,7 @@ function startRound(io, data, gamePin) {
   if (!poll.participants.length) return;
 
   const drawer = poll.participants[0];
+  drawer.drawer = true;
   poll.drawerSocketId = drawer.socketId;
 
   io.to(gamePin).emit("roundStarted", {
