@@ -14,10 +14,19 @@ function sockets(io, socket, data) {
     socket.emit('questionUpdate', data.activateQuestion(d.gamePin));
   });
 
-  socket.on('joinGame', function(gamePin) {
+  /* socket.on('joinGame', function(gamePin) {
     socket.join(gamePin);
     //socket.emit('questionUpdate', data.activateQuestion(gamePin))
     //socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gamePin));
+  }); */
+
+   socket.on('joinGame', function(d) {
+    // was: socket.on('joinGame', function(gamePin) { socket.join(gamePin); });
+    // expect an object { gamePin }
+    if (d && d.gamePin) {
+      socket.join(d.gamePin);
+      console.log('socket joined room', d.gamePin, 'socket id', socket.id);
+    }
   });
 
   socket.on('participateInGame', function(d) {
@@ -118,7 +127,10 @@ function startRound(io, data, gamePin) {
   }, 1000);
 }
 
-
+socket.on("drawing", (data) => {
+  // Broadcast drawing data to all other clients in the same game room
+  socket.to(data.gamePin).emit("drawing", data);
+});
 
 
   socket

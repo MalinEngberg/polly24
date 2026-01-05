@@ -1,4 +1,4 @@
-export function createCanvasDrawer(canvas, canDrawSignal) {
+export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
   const context = canvas.getContext("2d");
 
   context.lineCap = "round";
@@ -14,7 +14,7 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     const rect = canvas.getBoundingClientRect();
     return {
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      y: e.clientY - rect.top,
     };
   }
 
@@ -38,6 +38,9 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     context.lineTo(x, y);
     context.stroke();
 
+    // Emit drawing data
+    emitDrawing?.({ lastX, lastY, x, y, color: context.strokeStyle });
+
     lastX = x;
     lastY = y;
   }
@@ -46,7 +49,7 @@ export function createCanvasDrawer(canvas, canDrawSignal) {
     drawing = false;
   }
 
-  function getcolor(color){
+  function getcolor(color) {
     context.strokeStyle = color;
   }
 

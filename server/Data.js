@@ -64,15 +64,20 @@ Data.prototype.getPoll = function(gamePin) {
     //console.log("participants now:", this.polls[gamePin].participants);
   //}
 //},
-Data.prototype.participateInGame = function(gamePin, name) {
-  console.log("participant will be added to:", gamePin, name);
+Data.prototype.participateInGame = function(gamePin, name, socketId) {
+  console.log("participant will be added to:", gamePin, name, socketId);
   if (this.pollExists(gamePin)) {
-    this.createGame
-    this.polls[gamePin].participants.push({name: name, score: 0, gamePin: gamePin, drawer: false})
+    // store socketId so server can know which socket belongs to whom
+    this.polls[gamePin].participants.push({
+      name: name,
+      score: 0,
+      gamePin: gamePin,
+      drawer: true,
+      socketId: socketId
+    });
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
-
 Data.prototype.getParticipants = function(gamePin) {
   console.log("participants requested for", gamePin);
   if (this.pollExists(gamePin)) { 
