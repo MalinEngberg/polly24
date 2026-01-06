@@ -25,7 +25,6 @@
 
         <div class="canvas-area">
   <canvas 
-    v-if="drawerTool"
     ref="canvas"
     @mousedown="drawerTool && drawerTool.start($event)"
     @mousemove="drawerTool && drawerTool.move($event)"
