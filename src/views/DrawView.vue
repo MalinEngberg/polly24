@@ -24,10 +24,14 @@
 
 
         <div class="canvas-area">
-          <canvas ref="canvas" @mousedown="drawerTool && drawerTool.start($event)"
-            @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
-            @mouseleave="drawerTool && drawerTool.stop($event)">
-          </canvas>
+  <canvas 
+    v-if="drawerTool"
+    ref="canvas"
+    @mousedown="drawerTool && drawerTool.start($event)"
+    @mousemove="drawerTool && drawerTool.move($event)"
+    @mouseup="drawerTool && drawerTool.stop($event)"
+    @mouseleave="drawerTool && drawerTool.stop($event)">
+  </canvas>
         </div>
       </div>
 
@@ -269,9 +273,10 @@ export default {
 
   methods: {
 
-    submitGuess() {
-      const guess = this.currentGuess.trim();
-      if (!guess) return;
+  submitGuess() {
+    const guess = this.currentGuess.trim();
+    console.log(this.currentGuess);
+    if (!guess) return;
 
       socket.emit("guess", {
         guess,

@@ -4,9 +4,9 @@ function sockets(io, socket, data) {
     socket.emit('uiLabels', data.getUILabels(lang));
   });
 
-  socket.on('createGame', function (d) {
-    data.createGame(d.gamePin, d.lang);
-    socket.emit('pollData', data.getPoll(d.gamePin));
+  socket.on('createGame', function(d) {
+    data.createGame(d.gamePin, d.lang)
+    socket.emit('pollData', data.getGame(d.gamePin));
   });
 
   socket.on('addQuestion', function (d) {
@@ -64,10 +64,9 @@ function sockets(io, socket, data) {
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
 
-  socket.on('startPoll', function (gamePin) {
-    io.to(gamePin).emit('startPoll');
-  })
-  socket.on('runQuestion', function (d) {
+  //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})
+
+  socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
     io.to(d.gamePin).emit('questionUpdate', question);
     io.to(d.gamePin).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gamePin));
