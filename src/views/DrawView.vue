@@ -7,10 +7,8 @@
     <div class="game-layout">
 
       <div class="left-column">
-        <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }">
-          <img :src="p.img" alt="Player Image" class="player-img" />
-          <div class="player-score">{{ p.name }}: {{ p.score }}p
-          </div>
+        <div class="players" v-for="p in participants" :key="p.name">
+          <div>{{ p.name }}: {{ p.score }}p</div>
         </div>
       </div>
 
@@ -77,9 +75,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.query.name,
       drawerTool: null,
-      //SocketId: null,
       timeLeft: 0,
-      canDraw: false,
       currentColor: "black",
       colors: ["black", "red", "green", "blue", "yellow"],
       participants: [],
@@ -176,20 +172,6 @@ export default {
       this.currentGuess = "";
     },
 
-    onCorrectGuess(data) {
-      if (data.correct) {
-        this.canDraw = false;
-
-        //this.timer?.stopTimer?.();
-
-        this.participants = data.participants;
-
-        console.log(
-          `${data.name} gained ${data.points} points`
-
-        );
-      }
-    },
     sendMessage: function () {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
@@ -258,18 +240,7 @@ export default {
   background: white;
   border: 2px solid #aaa;
   text-align: center;
-  padding-bottom: 5px;
-}
-
-.player-img {
-  width: 100%;
-  height: auto;
-}
-
-.player-score {
-  background: #e9e9e9;
-  padding: 5px 0;
-  border-top: 2px solid #aaa;
+  padding: 10px;
 }
 
 /* CENTER COLUMN */
@@ -284,7 +255,6 @@ export default {
   display: flex;
   flex-direction: column;
   border: 2px solid #aaa;
-  ;
   padding: 10px;
   margin-left: 120px;
   font-size: 20px;
@@ -322,7 +292,6 @@ export default {
   height: 100%;
   display: block;
 }
-
 
 .right-column {
   width: 250px;
