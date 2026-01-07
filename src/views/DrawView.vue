@@ -81,6 +81,7 @@ export default {
       currentColor: "black",
       colors: ["black", "red", "green", "blue", "yellow"],
       participants: [],
+      currentDrawer: "",
       currentGuess: "",
       currentWord: "",
       currentMessage: "",
@@ -108,6 +109,11 @@ export default {
       this.participants = participants;
     });
 
+    // hämta currentDrawer
+    socket.on("currentDrawer", (currentDrawer) => {this.currentDrawer = currentDrawer; console.log("Nu är vi i drawView och vår ritare är", this.currentDrawer);});
+    console.log("Vi är nu i DrawView och vill hitta currentDrawer för", this.gamePin);
+    socket.emit("getCurrentDrawer", {gamePin: this.gamePin});
+
     socket.on("currentWord", (currentWord) => {
       this.currentWord = currentWord;
     })
@@ -118,8 +124,8 @@ export default {
 
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-
-      this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
+      
+      this.drawerTool = createCanvasDrawer(canvas, () => this.currentDrawer === this.name, (data) => {
         // Emit drawing data to the server
         socket.emit("drawing", { gamePin: this.gamePin, ...data });
       });

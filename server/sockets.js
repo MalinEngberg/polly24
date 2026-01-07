@@ -53,7 +53,8 @@ function sockets(io, socket, data) {
     //const participants = data.getParticipants(gamePin)
     io.to(d.gamePin).emit('gameStarted');
     console.log("Game started for room:", d.gamePin)
-  })
+  });
+
   socket.on('iCreated', function (d) {
     socket.emit("iCreated", data.getParticipants(d.gamePin));
     console.log("Emitted iCreated for room:", d.gamePin)
@@ -64,6 +65,12 @@ function sockets(io, socket, data) {
     const participants = data.getParticipants(d.gamePin);
     console.log("Sending participants for", d.gamePin, ":", participants);
     socket.emit('participantsUpdate', participants);
+  });
+
+  socket.on('getCurrentDrawer', (d) => {
+    const currentDrawer = data.getCurrentDrawer(d.gamePin);
+    console.log("Currentdrawer i socket är", currentDrawer);
+    io.to(d.gamePin).emit("currentDrawer", currentDrawer);
   });
 
   //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});

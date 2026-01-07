@@ -1,4 +1,5 @@
 export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
+  console.log("Nu är vi i StartDraw");
   const context = canvas.getContext("2d");
 
   context.lineCap = "round";
