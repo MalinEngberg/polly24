@@ -337,12 +337,14 @@ export default {
   padding: 10px;
 }
 
-.guess-box input {
+.MessageDisplay {
   width: 95%;
+  height: 450px;
   border: 2px solid #aaa;
   padding: 8px;
   font-size: 16px;
   background: white;
+  overflow: scroll;
 }
 
 #chooseRandomWordButton {
