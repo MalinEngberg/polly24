@@ -35,6 +35,14 @@ Data.prototype.getUILabels = function (lang) {
   return JSON.parse(labels);
 }
 
+Data.prototype.getUIWords = function (lang) {
+  //check if lang is valid before trying to load the dictionary file
+  if (!["en", "sv"].some( el => el === lang))
+    lang = "en";
+  const words = readFileSync("./server/data/words-" + lang + ".json");
+  return JSON.parse(words);
+}
+
 Data.prototype.createGame = function(gamePin, lang="en") {
   if (!this.gameExists(gamePin)) {
     let poll = {};

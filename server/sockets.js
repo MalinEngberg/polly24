@@ -4,6 +4,10 @@ function sockets(io, socket, data) {
     socket.emit('uiLabels', data.getUILabels(lang));
   });
 
+  socket.on('getUIWords', function (lang) {
+    socket.emit('uiWords', data.getUIWords(lang));
+  });
+
   socket.on('createGame', function(d) {
     data.createGame(d.gamePin, d.lang)
     socket.emit('pollData', data.getGame(d.gamePin));
@@ -101,6 +105,12 @@ function sockets(io, socket, data) {
     io.to(d.gamePin).emit("messageReceived", { sender: d.sender, message: message });
     console.log("New message in gamePin", d.gamePin, "from", d.sender, ":", message);
   });
+
+  socket.on("currentWord", d => {
+    const currentWord = d.currentWord;
+    io.to(d.gamePin).emit("currentWord", currentWord);
+    console.log("Current word sending to all:", currentWord);
+  })
 
   function startRound(io, data, gamePin) {
     const poll = data.getPoll(gamePin);

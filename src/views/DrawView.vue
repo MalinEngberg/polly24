@@ -16,7 +16,7 @@
 
       <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">It´s time to paint: Ä P P L E</span>
+          <span class="word-display" v-if="drawerTool">It´s time to paint: {{currentWord}}</span>
           <span class="word-display" v-else v-for="i in currentWord.length" :key="i"> _</span>
 
         </div>
@@ -24,13 +24,13 @@
 
 
         <div class="canvas-area">
-  <canvas 
-    ref="canvas"
-    @mousedown="drawerTool && drawerTool.start($event)"
-    @mousemove="drawerTool && drawerTool.move($event)"
-    @mouseup="drawerTool && drawerTool.stop($event)"
-    @mouseleave="drawerTool && drawerTool.stop($event)">
-  </canvas>
+          <canvas ref="canvas" @mousedown="drawerTool && drawerTool.start($event)"
+            @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
+            @mouseleave="drawerTool && drawerTool.stop($event)">
+          </canvas>
+          <button v-on:click="chooseRandomWord" id="chooseRandomWordButton">
+            {{ uiLabels.chooseWord }}
+          </button>
         </div>
       </div>
 
@@ -56,6 +56,142 @@
     </div>
   </div>
 </template>
+
+<script>
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+import { createCanvasDrawer } from "@/components/StartDraw.js";
+
+export default {
+  name: 'DrawView',
+  data() {
+    return {
+      uiLabels: {},
+      uiWords: {},
+      lang: localStorage.getItem("lang") || "en",
+      gamePin: this.$route.params.gamePin,
+      name: this.$route.query.name,
+      drawerTool: null,
+      //SocketId: null,
+      timeLeft: 0,
+      canDraw: false,
+      currentColor: "black",
+      colors: ["black", "red", "green", "blue", "yellow"],
+      participants: [],
+      currentGuess: "",
+      currentWord: "",
+      currentMessage: "",
+      receivedMessage: "",
+      sender: ""
+    };
+  },
+  // CANVAS functions
+  mounted() {
+    // hämta uiLabels
+    socket.on("uiLabels", labels => this.uiLabels = labels);
+    socket.emit("getUILabels", this.lang);
+
+    // hämta words
+    socket.on("uiWords", words => this.uiWords = words);
+    socket.emit("getUIWords", this.lang);
+
+    // make sure we are in the room (in case we navigated directly to draw view)
+    socket.emit('joinGame', { gamePin: this.gamePin });
+    socket.emit('getParticipants', { gamePin: this.gamePin });
+    //socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
+
+    socket.on('participantsUpdate', (participants) => {
+      this.participants = participants;
+    });
+
+    socket.on("currentWord", (currentWord) => {
+      this.currentWord = currentWord;
+    })
+
+    this.$nextTick(() => {
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
+        // Emit drawing data to the server
+        socket.emit("drawing", { gamePin: this.gamePin, ...data });
+      });
+    });
+
+    // Listen for drawing events from other players
+    socket.on("drawing", (data) => {
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+
+      const context = canvas.getContext("2d");
+      context.beginPath();
+      context.moveTo(data.lastX, data.lastY);
+      context.lineTo(data.x, data.y);
+      context.strokeStyle = data.color;
+      context.lineWidth = 4;
+      context.stroke();
+    });
+    socket.on("messageReceived", data => {
+      console.log("New message received from", data.sender, ":", data.message);
+      this.receivedMessage = data.message;
+      // Here you can add logic to display the received message in the chat UI
+    });
+  },
+
+
+  methods: {
+
+    submitGuess() {
+      const guess = this.currentGuess.trim();
+      console.log(this.currentGuess);
+      if (!guess) return;
+
+      socket.emit("guess", {
+        guess,
+        gamePin: this.gamePin,
+        playerName: this.name
+      });
+
+      this.currentGuess = "";
+    },
+
+    onCorrectGuess(data) {
+      if (data.correct) {
+        this.canDraw = false;
+
+        //this.timer?.stopTimer?.();
+
+        this.participants = data.participants;
+
+        console.log(
+          `${data.name} gained ${data.points} points`
+
+        );
+      }
+    },
+    sendMessage: function () {
+      // Logic to send the message
+      socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
+      console.log("Message sent:", this.currentMessage);
+      this.currentMessage = ""; // Clear the input field after sending
+    },
+    chooseRandomWord: function () {
+      console.log("Choosing a new word");
+      const words = this.uiWords;
+      const randomIndex = Math.floor(Math.random() * 10) + 1;
+      const randomWord = words[randomIndex];
+      console.log("Random index:", randomIndex, "words to choose from:", words, "Chosen word:", randomWord);
+      this.currentWord = randomWord;
+      socket.emit("currentWord", {currentWord: this.currentWord, gamePin: this.gamePin});
+    }
+
+  }
+};
+
+</script>
 
 <style scoped>
 .page {
@@ -197,116 +333,16 @@
   font-size: 16px;
   background: white;
 }
+
+#chooseRandomWordButton {
+  /*display: inline-block;*/
+  background-color: #39FF14;
+  /*border: 2px solid #FF1493;*/
+  padding: 20px 90px;
+  border-radius: 100px;
+  margin: 30px;
+  /*gap: 10px;*/
+  /*font-size: 18px;*/
+  /*align-items: center;*/
+}
 </style>
-
-<script>
-import io from 'socket.io-client';
-const socket = io("localhost:3000");
-import { createCanvasDrawer } from "@/components/StartDraw.js";
-
-export default {
-  name: 'DrawView',
-  data() {
-    return {
-      gamePin: this.$route.params.gamePin,
-      name: this.$route.query.name,
-      drawerTool: null,
-      //SocketId: null,
-      timeLeft: 0,
-      canDraw: false,
-      currentColor: "black",
-      colors: ["black", "red", "green", "blue", "yellow"],
-      participants: [],
-      currentGuess: "",
-      currentWord: "apple",
-      currentMessage: "",
-      receivedMessage: "",
-      sender: ""
-    };
-  },
-  // CANVAS functions
-  mounted() {
-
-    // make sure we are in the room (in case we navigated directly to draw view)
-    socket.emit('joinGame', { gamePin: this.gamePin });
-    socket.emit('getParticipants', { gamePin: this.gamePin });
-    //socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
-   
-    socket.on('participantsUpdate', (participants) => {
-      this.participants = participants;
-    });
-
-    this.$nextTick(() => {
-      const canvas = this.$refs.canvas;
-      if (!canvas) return;
-
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-
-      this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
-        // Emit drawing data to the server
-        socket.emit("drawing", { gamePin: this.gamePin, ...data });
-      });
-    });
-
-    // Listen for drawing events from other players
-    socket.on("drawing", (data) => {
-      const canvas = this.$refs.canvas;
-      if (!canvas) return;
-
-      const context = canvas.getContext("2d");
-      context.beginPath();
-      context.moveTo(data.lastX, data.lastY);
-      context.lineTo(data.x, data.y);
-      context.strokeStyle = data.color;
-      context.lineWidth = 4;
-      context.stroke();
-    });
-    socket.on("messageReceived", data => {
-      console.log("New message received from", data.sender, ":", data.message);
-      this.receivedMessage = data.message;
-      // Here you can add logic to display the received message in the chat UI
-    });
-  },
-
-
-  methods: {
-
-  submitGuess() {
-    const guess = this.currentGuess.trim();
-    console.log(this.currentGuess);
-    if (!guess) return;
-
-      socket.emit("guess", {
-        guess,
-        gamePin: this.gamePin,
-        playerName: this.name
-      });
-
-      this.currentGuess = "";
-    },
-
-    onCorrectGuess(data) {
-      if (data.correct) {
-        this.canDraw = false;
-
-        //this.timer?.stopTimer?.();
-
-        this.participants = data.participants;
-
-        console.log(
-          `${data.name} gained ${data.points} points`
-
-        );
-      }
-    },
-    sendMessage: function () {
-      // Logic to send the message
-      socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
-      console.log("Message sent:", this.currentMessage);
-      this.currentMessage = ""; // Clear the input field after sending
-    }
-  }
-};
-
-</script>
