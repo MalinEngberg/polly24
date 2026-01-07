@@ -16,7 +16,7 @@
 
       <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">It´s time to paint: {{currentWord}}</span>
+          <span class="word-display" v-if="drawerTool">It´s time to paint: {{ currentWord }}</span>
           <span class="word-display" v-else v-for="i in currentWord.length" :key="i"> _</span>
 
         </div>
@@ -44,13 +44,16 @@
           </div>
         </div>
 
+        <div class="MessageDisplay">
+          <ul v-for="msg in messages">
+            <b>{{ msg.sender }}:</b> {{ msg.receivedMessage }}
+          </ul>
+        </div>
+
         <div class="InputChat">
           <input type="text" placeholder="Write something..." v-model="currentMessage" @keydown.enter="sendMessage" />
         </div>
 
-        <div class="MessageDisplay">
-          <p>sender: {{ sender }}, {{ receivedMessage }}</p>
-        </div>
       </div>
 
     </div>
@@ -82,7 +85,8 @@ export default {
       currentWord: "",
       currentMessage: "",
       receivedMessage: "",
-      sender: ""
+      sender: "",
+      messages: []
     };
   },
   // CANVAS functions
@@ -134,9 +138,15 @@ export default {
       context.lineWidth = 4;
       context.stroke();
     });
+
     socket.on("messageReceived", data => {
       console.log("New message received from", data.sender, ":", data.message);
-      this.receivedMessage = data.message;
+      // const formattedMessage = `${data.sender}: ${data.message}`;
+      // this.messages.push(formattedMessage);
+      this.messages.push({
+        sender: data.sender,
+        receivedMessage: data.message
+      })
       // Here you can add logic to display the received message in the chat UI
     });
   },
@@ -178,6 +188,7 @@ export default {
       console.log("Message sent:", this.currentMessage);
       this.currentMessage = ""; // Clear the input field after sending
     },
+
     chooseRandomWord: function () {
       console.log("Choosing a new word");
       const words = this.uiWords;
@@ -185,7 +196,7 @@ export default {
       const randomWord = words[randomIndex];
       console.log("Random index:", randomIndex, "words to choose from:", words, "Chosen word:", randomWord);
       this.currentWord = randomWord;
-      socket.emit("currentWord", {currentWord: this.currentWord, gamePin: this.gamePin});
+      socket.emit("currentWord", { currentWord: this.currentWord, gamePin: this.gamePin });
     }
 
   }
@@ -199,7 +210,7 @@ export default {
   justify-content: center;
   align-items: flex-start;
   padding: 40px 0;
-  background: linear-gradient(#c8b7e8, #9c88c8);
+  /* background: linear-gradient(#c8b7e8, #9c88c8); */
   min-height: 100vh;
 }
 

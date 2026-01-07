@@ -102,6 +102,7 @@ function sockets(io, socket, data) {
 
   socket.on("newMessage", d => {
     const message = d.currentMessage;
+    //data.updateMessages(d);
     io.to(d.gamePin).emit("messageReceived", { sender: d.sender, message: message });
     console.log("New message in gamePin", d.gamePin, "from", d.sender, ":", message);
   });
