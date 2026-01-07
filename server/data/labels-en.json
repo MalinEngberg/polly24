@@ -21,5 +21,6 @@
 	"waitLabel": "Waiting for players to join the game...",
 	"goToDraw": "Lets start!",
 	"nameError": "*Please enter your name",
-	"gamePinError": "*Please create a GamePin"
+	"gamePinError": "*Please create a GamePin",
+	"chooseWord": "Choose a new word"
 }
