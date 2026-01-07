@@ -85,12 +85,21 @@ Data.prototype.participateInGame = function(gamePin, name) {
     console.log("participants now:", this.polls[gamePin].participants);
   }
 }
+
 Data.prototype.getParticipants = function(gamePin) {
   console.log("participants requested for", gamePin);
   if (this.gameExists(gamePin)) { 
     return this.polls[gamePin].participants
   }
   return [];
+}
+
+Data.prototype.getCurrentDrawer = function(gamePin) {
+  const participants = this.getParticipants(gamePin);
+  const randomIndex = Math.floor(Math.random() * participants.length);
+  const currentDrawer = participants[randomIndex].name;
+  console.log("CurrentDrawer:", currentDrawer);
+  return currentDrawer;
 }
 
 Data.prototype.addQuestion = function(gamePin, q) {
