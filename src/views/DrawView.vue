@@ -2,30 +2,29 @@
   <div class="page">
 
     <div class="timer-bar">
-        Time left: {{ timeLeft }}s
-      </div>
+      Time left: {{ timeLeft }}s
+    </div>
     <div class="game-layout">
 
       <div class="left-column">
-            <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }" >
-                <img :src="p.img" alt="Player Image" class="player-img" />
-                <div class="player-score">{{ p.name }}: {{ p.score }}p
-            </div>
-            </div>
+        <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }">
+          <img :src="p.img" alt="Player Image" class="player-img" />
+          <div class="player-score">{{ p.name }}: {{ p.score }}p
           </div>
+        </div>
+      </div>
 
-    <div class="center-column">
+      <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">Your time to paint: Ä P P L E</span>
-          <span class="word-display" v-else  v-for="i in currentWord.length":key="i" > _</span>
-          
+          <span class="word-display" v-if="drawerTool">It´s time to paint: Ä P P L E</span>
+          <span class="word-display" v-else v-for="i in currentWord.length" :key="i"> _</span>
+
         </div>
 
- 
+
 
         <div class="canvas-area">
   <canvas 
-    v-if="drawerTool"
     ref="canvas"
     @mousedown="drawerTool && drawerTool.start($event)"
     @mousemove="drawerTool && drawerTool.move($event)"
@@ -33,29 +32,25 @@
     @mouseleave="drawerTool && drawerTool.stop($event)">
   </canvas>
         </div>
-    </div>
+      </div>
 
 
       <div class="right-column">
 
         <div class="tools-box">
           <div class="colors">
-            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }" @click="drawerTool && drawerTool.getcolor(c)"></div>
+            <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"
+              @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
         </div>
 
-        <div class="info-box">
-          <p><strong>Clara is choosing a word!</strong></p>
-          <p>Hanna <span style="color: green;">+325p</span></p>
+        <div class="InputChat">
+          <input type="text" placeholder="Write something..." v-model="currentMessage" @keydown.enter="sendMessage" />
         </div>
 
-        <div class="guess-box" v-if="!drawerTool || !canDraw">
-          <input type="text"
-                 placeholder="Guess something..."
-                 v-model="currentGuess"
-                 @keydown.enter="submitGuess" />
+        <div class="MessageDisplay">
+          <p>sender: {{ sender }}, {{ receivedMessage }}</p>
         </div>
-
       </div>
 
     </div>
@@ -78,7 +73,8 @@
   display: flex;
   justify-content: center;
   gap: 20px;
-  width: 80%;      /* <<< entire game area is 70% of screen */
+  width: 80%;
+  /* <<< entire game area is 70% of screen */
   min-width: 900px;
 }
 
@@ -119,7 +115,8 @@
   background: white;
   display: flex;
   flex-direction: column;
-  border: 2px solid #aaa;;
+  border: 2px solid #aaa;
+  ;
   padding: 10px;
   margin-left: 120px;
   font-size: 20px;
@@ -163,7 +160,7 @@
   width: 250px;
   display: flex;
   flex-direction: column;
-  border:2px solid #aaa;
+  border: 2px solid #aaa;
   background: white;
 }
 
@@ -212,89 +209,104 @@ export default {
   data() {
     return {
       gamePin: this.$route.params.gamePin,
-      name: this.$route.params.name,
+      name: this.$route.query.name,
       drawerTool: null,
-      socketId: null,
-      timeLeft: 0,         
+      //SocketId: null,
+      timeLeft: 0,
       canDraw: false,
       currentColor: "black",
-      colors: [ "black", "red", "green", "blue", "yellow"],
+      colors: ["black", "red", "green", "blue", "yellow"],
       participants: [],
       currentGuess: "",
       currentWord: "apple",
+      currentMessage: "",
+      receivedMessage: "",
+      sender: ""
     };
   },
- // CANVAS functions
- mounted() {
+  // CANVAS functions
+  mounted() {
 
-  socket.on('participantsUpdate', (participants) => {
-    this.participants = participants;
-  });
-
-  // make sure we are in the room (in case we navigated directly to draw view)
-  socket.emit('joinGame', { gamePin: this.gamePin });
-  socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
-
-  this.$nextTick(() => {
-    const canvas = this.$refs.canvas;
-    if (!canvas) return;
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
-      // Emit drawing data to the server
-      socket.emit("drawing", { gamePin: this.gamePin, ...data });
+    // make sure we are in the room (in case we navigated directly to draw view)
+    socket.emit('joinGame', { gamePin: this.gamePin });
+    socket.emit('getParticipants', { gamePin: this.gamePin });
+    //socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
+   
+    socket.on('participantsUpdate', (participants) => {
+      this.participants = participants;
     });
-  });
 
-  // Listen for drawing events from other players
-  socket.on("drawing", (data) => {
-    const canvas = this.$refs.canvas;
-    if (!canvas) return;
+    this.$nextTick(() => {
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
 
-    const context = canvas.getContext("2d");
-    context.beginPath();
-    context.moveTo(data.lastX, data.lastY);
-    context.lineTo(data.x, data.y);
-    context.strokeStyle = data.color;
-    context.lineWidth = 4;
-    context.stroke();
-  });
-},
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      this.drawerTool = createCanvasDrawer(canvas, () => true, (data) => {
+        // Emit drawing data to the server
+        socket.emit("drawing", { gamePin: this.gamePin, ...data });
+      });
+    });
+
+    // Listen for drawing events from other players
+    socket.on("drawing", (data) => {
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+
+      const context = canvas.getContext("2d");
+      context.beginPath();
+      context.moveTo(data.lastX, data.lastY);
+      context.lineTo(data.x, data.y);
+      context.strokeStyle = data.color;
+      context.lineWidth = 4;
+      context.stroke();
+    });
+    socket.on("messageReceived", data => {
+      console.log("New message received from", data.sender, ":", data.message);
+      this.receivedMessage = data.message;
+      // Here you can add logic to display the received message in the chat UI
+    });
+  },
 
 
-methods: {
+  methods: {
 
   submitGuess() {
     const guess = this.currentGuess.trim();
     console.log(this.currentGuess);
     if (!guess) return;
 
-    socket.emit("guess", {
-      guess,
-      gamePin: this.gamePin,
-      playerName: this.name
-    });
+      socket.emit("guess", {
+        guess,
+        gamePin: this.gamePin,
+        playerName: this.name
+      });
 
-    this.currentGuess = "";
-  },
+      this.currentGuess = "";
+    },
 
-onCorrectGuess(data) {
-  if (data.correct) {
-    this.canDraw = false;
+    onCorrectGuess(data) {
+      if (data.correct) {
+        this.canDraw = false;
 
-   //this.timer?.stopTimer?.();
+        //this.timer?.stopTimer?.();
 
-    this.participants = data.participants;
+        this.participants = data.participants;
 
-    console.log(
-      `${data.name} gained ${data.points} points`
-      
-    );
+        console.log(
+          `${data.name} gained ${data.points} points`
+
+        );
+      }
+    },
+    sendMessage: function () {
+      // Logic to send the message
+      socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
+      console.log("Message sent:", this.currentMessage);
+      this.currentMessage = ""; // Clear the input field after sending
+    }
   }
-  }
-}
 };
 
 </script>
