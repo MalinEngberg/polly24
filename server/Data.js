@@ -96,7 +96,8 @@ Data.prototype.getParticipants = function(gamePin) {
 
 Data.prototype.getCurrentDrawer = function(gamePin) {
   const participants = this.getParticipants(gamePin);
-  const currentDrawer = participants[0].name;
+  const randomIndex = Math.floor(Math.random() * participants.length);
+  const currentDrawer = participants[randomIndex].name;
   console.log("CurrentDrawer:", currentDrawer);
   return currentDrawer;
 }

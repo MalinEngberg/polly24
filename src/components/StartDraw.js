@@ -54,5 +54,7 @@ export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
     context.strokeStyle = color;
   }
 
+  
+
   return { start, move, stop, getcolor };
 }

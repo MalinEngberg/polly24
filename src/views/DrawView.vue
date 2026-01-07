@@ -16,9 +16,10 @@
 
       <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="drawerTool">It´s time to paint: {{ currentWord }}</span>
-          <span class="word-display" v-else v-for="i in currentWord.length" :key="i"> _</span>
-
+          <span class="word-display" v-if="currentDrawer === name">Your time to paint: {{ currentWord }}</span>
+          <div v-else>Guess the word:
+          <span class="word-display" v-for="i in currentWord.length" :key="i">_</span>
+          </div>
         </div>
 
 
@@ -28,7 +29,7 @@
             @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
             @mouseleave="drawerTool && drawerTool.stop($event)">
           </canvas>
-          <button v-on:click="chooseRandomWord" id="chooseRandomWordButton">
+          <button v-if="currentDrawer === name" v-on:click="chooseRandomWord" id="chooseRandomWordButton">
             {{ uiLabels.chooseWord }}
           </button>
         </div>
@@ -37,7 +38,7 @@
 
       <div class="right-column">
 
-        <div class="tools-box">
+        <div class="tools-box" v-if="currentDrawer === name">
           <div class="colors">
             <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"
               @click="drawerTool && drawerTool.getcolor(c)"></div>
@@ -64,6 +65,7 @@
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 import { createCanvasDrawer } from "@/components/StartDraw.js";
+import GetPoints from '../components/GetPoints';
 
 export default {
   name: 'DrawView',
@@ -110,9 +112,9 @@ export default {
     });
 
     // hämta currentDrawer
-    socket.on("currentDrawer", (currentDrawer) => {this.currentDrawer = currentDrawer; console.log("Nu är vi i drawView och vår ritare är", this.currentDrawer);});
+    socket.on("currentDrawer", (currentDrawer) => { this.currentDrawer = currentDrawer; console.log("Nu är vi i drawView och vår ritare är", this.currentDrawer); });
     console.log("Vi är nu i DrawView och vill hitta currentDrawer för", this.gamePin);
-    socket.emit("getCurrentDrawer", {gamePin: this.gamePin});
+    socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
 
     socket.on("currentWord", (currentWord) => {
       this.currentWord = currentWord;
@@ -124,7 +126,7 @@ export default {
 
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-      
+
       this.drawerTool = createCanvasDrawer(canvas, () => this.currentDrawer === this.name, (data) => {
         // Emit drawing data to the server
         socket.emit("drawing", { gamePin: this.gamePin, ...data });
@@ -192,6 +194,11 @@ export default {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
+      if (this.currentMessage===this.currentWord) {
+        console.log("vi har gissat rätt");
+        this.addPoints();
+        this.startNewRound();
+      }
       this.currentMessage = ""; // Clear the input field after sending
     },
 
@@ -203,6 +210,14 @@ export default {
       console.log("Random index:", randomIndex, "words to choose from:", words, "Chosen word:", randomWord);
       this.currentWord = randomWord;
       socket.emit("currentWord", { currentWord: this.currentWord, gamePin: this.gamePin });
+    },
+
+    addPoints: function () {
+      socket.emit('addPoints', {name: this.name, gamePin: this.gamePin});
+    },
+
+    startNewRound: function () {
+      socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
     }
 
   }
