@@ -50,11 +50,8 @@
             <b>{{ msg.sender }}:</b> {{ msg.receivedMessage }}
           </ul>
         </div>
-
-        <div class="InputChat">
-          <input type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage"
-            @keydown.enter="sendMessage" />
-        </div>
+        
+        <input class="InputChat" type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage" @keydown.enter="sendMessage" />
 
         <button v-on:click="exitGame" id="exitGameButton">
            {{ uiLabels.exitGame }}
@@ -401,6 +398,7 @@ export default {
 .InputChat {
   background: white;
   border: 2px solid #aaa;
+  height: 8%;
 }
 
 #chooseRandomWordButton {
@@ -408,7 +406,6 @@ export default {
   /*border: 2px solid #FF1493;*/
   font-family: 'Caveat', cursive;
   font-size: 1.5rem;
-  padding: 20px 90px;
   width: fit-content;
   padding: 15px 90px;
   border-radius: 100px;
@@ -447,6 +444,8 @@ export default {
   text-decoration: none;
   color: black;
   font-weight: bold;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
 }
 
 #language-button {
