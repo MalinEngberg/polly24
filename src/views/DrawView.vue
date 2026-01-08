@@ -232,7 +232,7 @@ export default {
       localStorage.setItem("lang", this.lang);
       socket.emit("getUILabels", this.lang);
     },
-    
+
     exitGame: function() {
       socket.emit("leaveGame", {gamePin: this.gamePin, name: this.name});
       this.$router.push("/");
@@ -455,6 +455,11 @@ export default {
 
   .right-column {
     width: 100%;
+  }
+
+  .MessageDisplay{
+    width: 98.6%;
+    padding: 6px;
   }
 
   .canvas-area {
