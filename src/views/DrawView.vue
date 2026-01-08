@@ -279,6 +279,7 @@ export default {
 .players {
   background: white;
   border: 2px solid #aaa;
+  font-size: 1.4rem;
   text-align: center;
   padding: 10px;
 }
@@ -356,7 +357,7 @@ export default {
 
 .right-column {
   width: 250px;
-  height: 86vh;
+  height: 84vh;
   display: flex;
   flex-direction: column;
 }
@@ -403,35 +404,40 @@ export default {
 }
 
 #chooseRandomWordButton {
-  /*display: inline-block;*/
   background-color: #39FF14;
   /*border: 2px solid #FF1493;*/
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
   padding: 20px 90px;
+  width: fit-content;
+  padding: 15px 90px;
   border-radius: 100px;
   margin: 25px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
+  font-weight: bold;
+  align-self: center;
+  display: inline-block;
 }
 
 #exitGameButton {
   /*display: inline-block;*/
   background-color: red;
   border: 2px solid black;
-  padding: 20px 40px;
+  padding: 15px 5px;
   border-radius: 100px;
   margin: 25px;
   /*gap: 10px;*/
   /*font-size: 18px;*/
   /*align-items: center;*/
   text-decoration: none;
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
   color: black;
+  font-weight: bold;
 }
 
 #clearCanvasButton {
   /*display: inline-block;*/
   background-color: yellow;
-  border: 2px solid black;
   padding: 10px 10px;
   border-radius: 100px;
   margin: 10px;
@@ -439,8 +445,8 @@ export default {
   /*font-size: 18px;*/
   /*align-items: center;*/
   text-decoration: none;
-  font-weight: bold;
   color: black;
+  font-weight: bold;
 }
 
 #language-button {
@@ -453,7 +459,8 @@ export default {
   padding: 0.25rem 1rem;
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
 }
