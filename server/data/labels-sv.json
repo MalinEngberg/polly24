@@ -27,5 +27,6 @@
 	"timeToPaint": "Din tur att rita",
 	"guessWord":"Gissa ordet:",
 	"exitGame": "Avsluta spel",
-	"clearCanvas": "Rensa målarduk"
+	"clearCanvas": "Rensa målarduk",
+	"welcomeGame": "Välkommen till spelet:"
 }

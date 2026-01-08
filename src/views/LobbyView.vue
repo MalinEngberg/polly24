@@ -22,8 +22,7 @@
     <div v-else>
       <h1>{{ uiLabels.waitLabel }}</h1>
       <p>[{{participants.map(p => p.name).join(', ')}}]</p>
-      <p>Welcome to game</p>
-      <p>{{ gamePin }}</p>
+      <p>{{uiLabels.welcomeGame}} {{ gamePin }}</p>
 
       <button v-on:click="startDraw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}

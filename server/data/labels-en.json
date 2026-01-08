@@ -27,5 +27,6 @@
 	"timeToPaint": "Your time to paint",
 	"guessWord":"Guess the word:",
 	"exitGame": "Exit Game",
-	"clearCanvas": "Clear canvas"
+	"clearCanvas": "Clear canvas",
+	"welcomeGame": "Welcome to the game:"
 }
