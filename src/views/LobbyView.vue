@@ -9,8 +9,10 @@
       <h1>{{ uiLabels.enterGame }}</h1>
 
       <input type="text" v-bind:placeholder="uiLabels.nameInsert" v-model="name">
+      <p v-if="nameError" class="error">{{ nameError }}</p>
 
       <input type="text" placeholder="Game Pin" v-model="gamePin">
+      <p v-if="gamePinError" class="error">{{ gamePinError }}</p>
 
       <br>
       <button v-on:click="participateInGame">
@@ -26,11 +28,6 @@
       <button v-on:click="startDraw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}
       </button>
-      <!--<router-link to="/draw" id="goToDrawLink">
-        {{ uiLabels.goToDraw }}
-      </router-link>-->
-
-
     </div>
   </div>
 </template>
@@ -47,7 +44,9 @@ export default {
       gamePin: this.$route.params.gamePin || "",
       uiLabels: {},
       lang: localStorage.getItem("lang") || "en",
-      participants: []
+      participants: [],
+      nameError: '',
+      gamePinError: ''
     }
   },
   created: function () {
@@ -60,7 +59,7 @@ export default {
       console.log("GAME STARTED")
       this.$router.push({
         path: `/draw/${this.gamePin}`,
-        query:{name: this.name}
+        query: { name: this.name }
       });
     }),
 
@@ -74,6 +73,19 @@ export default {
   },
   methods: {
     participateInGame: function () {
+      this.nameError = "";
+      this.gamePinError = "";
+
+      if (!this.name) {
+        this.nameError = this.uiLabels.nameError;
+        return;
+      }
+      if (!this.gamePin) {
+        this.gamePinError = this.uiLabels.gamePinError;
+        return;
+      }
+      if (this.nameError || this.gamePinError) return;
+
       //localStorage.setItem("name", this.name);
       //socket.emit("joinGame", this.gamePin);
       socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name });
@@ -83,7 +95,7 @@ export default {
       console.log("Start game clicked")
       socket.emit("startGame", { gamePin: this.gamePin })
     },
-switchLanguage: function () {
+    switchLanguage: function () {
       if (this.lang === "en") {
         this.lang = "sv"
       }
@@ -160,17 +172,22 @@ switchLanguage: function () {
 }
 
 #language-button {
-  position: absolute;  /* placera knappen absolut inom .right-column */
-  top: 1rem;           /* avstånd från toppen */
-  right: 1rem;          /* avstånd från vänster kant */
-  
+  position: absolute;
+  /* placera knappen absolut inom .right-column */
+  top: 1rem;
+  /* avstånd från toppen */
+  right: 1rem;
+  /* avstånd från vänster kant */
+
   color: black;
   text-decoration: none;
-  padding: 0.25rem 1rem;       /* halverad */
+  padding: 0.25rem 1rem;
+  /* halverad */
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;          /* halverad */
+  font-size: 0.75rem;
+  /* halverad */
   font-weight: bold;
-  line-height: 2rem; 
+  line-height: 2rem;
 }
 </style>

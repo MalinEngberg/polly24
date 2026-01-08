@@ -217,8 +217,9 @@ export default {
     },
 
     startNewRound: function () {
-      socket.emit("startNewRound", {gamePin: this.gamePin});
+      socket.emit("clearCanvas", {gamePin: this.gamePin});
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
+      this.chooseRandomWord();
     },
     
     switchLanguage: function () {
@@ -350,7 +351,7 @@ export default {
 
 .right-column {
   width: 250px;
-  height: 726px;
+  height: 80vh;
   display: flex;
   flex-direction: column;
 }
