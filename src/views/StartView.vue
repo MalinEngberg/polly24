@@ -95,7 +95,7 @@ header {
 
 .logo img {
   background-color: #AA87BF;
-  height: 15vh;
+  height: 10vh;
   vertical-align: bottom;
   margin-right: 0.5rem;
 }
@@ -167,7 +167,7 @@ h2 {
   line-height: 2rem;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1000px) {
 #language-button {
     top: auto; 
     bottom: 10px;
