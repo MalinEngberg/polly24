@@ -159,8 +159,9 @@ function sockets(io, socket, data) {
     socket.to(data.gamePin).emit("drawing", data);
   });
 
-
-  socket
+  socket.on("startNewRound", (d) => {
+    io.to(d.gamePin).emit("clearCanvas");
+  })
 }
 
 export { sockets };

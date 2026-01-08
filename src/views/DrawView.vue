@@ -1,10 +1,11 @@
 <template>
   <div class="page">
 
-    <div class="timer-bar">
-      Time left: {{ timeLeft }}s
-    </div>
     <div class="game-layout">
+
+      <!-- <div class="timer-bar">
+      Time left: {{ timeLeft }}s
+      </div> -->
 
       <div class="left-column">
         <div class="players" v-for="p in participants" :key="p.name">
@@ -20,27 +21,28 @@
           </div>
         </div>
 
-
-
         <div class="canvas-area">
           <canvas ref="canvas" @mousedown="drawerTool && drawerTool.start($event)"
             @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
             @mouseleave="drawerTool && drawerTool.stop($event)">
           </canvas>
-          <button v-if="currentDrawer === name" v-on:click="chooseRandomWord" id="chooseRandomWordButton">
-            {{ uiLabels.chooseWord }}
-          </button>
         </div>
+
+        <button v-if="currentDrawer === name" v-on:click="chooseRandomWord" id="chooseRandomWordButton">
+          {{ uiLabels.chooseWord }}
+        </button>
       </div>
 
 
       <div class="right-column">
-
         <div class="tools-box" v-if="currentDrawer === name">
           <div class="colors">
             <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"
               @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
+          <button> 
+            
+          </button>
         </div>
 
         <div class="MessageDisplay">
@@ -120,6 +122,9 @@ export default {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
+      // canvas.width = 1000;
+      // canvas.height = 800;
+
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
@@ -142,6 +147,12 @@ export default {
       context.lineWidth = 4;
       context.stroke();
     });
+
+    socket.on("clearCanvas", () => {
+      if (this.drawerTool) {
+        this.drawerTool.clear();
+      }
+    })
 
     socket.on("messageReceived", data => {
       console.log("New message received from", data.sender, ":", data.message);
@@ -200,6 +211,7 @@ export default {
     },
 
     startNewRound: function () {
+      socket.emit("startNewRound", {gamePin: this.gamePin});
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
     }
 
@@ -285,12 +297,33 @@ export default {
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
-  height: 550px;
+  /* height: 550px; */
+}
+
+@media only screen and (max-width: 700px) {
+  .game-layout {
+    flex-direction: column; /* Lägg kolumnerna under varandra */      
+    width: 95%;      /* Ta upp mer av skärmbredden */
+    min-width: 0;           /* Ta bort tidigare min-width restriktioner */
+  }
+
+  .left-column {
+    width: 100%;            /* Låt sidokolumnerna ta hela bredden */
+  }
+
+  .right-column {
+    width: 100%;
+  }
+
+  .canvas-area {
+    height: 400px;         /* Gör canvasen lite lägre på mobilen */
+    width: 100%;
+  }
 }
 
 .canvas-area canvas {
   width: 100%;
-  height: 100%;
+  height: 60vh;
   display: block;
 }
 
