@@ -4,15 +4,9 @@
     <div class="input-field" v-if="!$route.params.gamePin">
       <h1>{{ uiLabels.enterGame }}</h1>
 
-      <input
-        type="text"
-        v-bind:placeholder= "uiLabels.nameInsert"
-        v-model="name">
+      <input type="text" v-bind:placeholder="uiLabels.nameInsert" v-model="name">
 
-      <input 
-        type="text"
-        placeholder="Game Pin"
-        v-model="gamePin">
+      <input type="text" placeholder="Game Pin" v-model="gamePin">
 
       <br>
       <button v-on:click="participateInGame">
@@ -21,7 +15,9 @@
     </div>
     <div v-else>
       <h1>{{ uiLabels.waitLabel }}</h1>
-      <p>[{{ participants.map(p => p.name).join(', ') }}]</p>
+      <p>[{{participants.map(p => p.name).join(', ')}}]</p>
+      <p>Welcome to game</p>
+      <p>{{ gamePin }}</p>
 
       <button v-on:click="startDraw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}
@@ -29,8 +25,8 @@
       <!--<router-link to="/draw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}
       </router-link>-->
-      
-      
+
+
     </div>
   </div>
 </template>
@@ -44,45 +40,44 @@ export default {
   data: function () {
     return {
       name: this.$route.query.name || "",
-      gamePin: "",
-      socketId: socket.id,
+      gamePin: this.$route.params.gamePin || "",
       uiLabels: {},
       lang: localStorage.getItem("lang") || "en",
       participants: []
     }
   },
   created: function () {
-    //this.name = localStorage.getItem("name") || "";
-    socket.on( "uiLabels", labels => this.uiLabels = labels );
-    socket.on( "participantsUpdate", p => this.participants = p );
-    
+    socket.on("uiLabels", labels => this.uiLabels = labels);
+    socket.on("participantsUpdate", p => {
+      this.participants = p;
+    });
+
     socket.on("gameStarted", () => {
       console.log("GAME STARTED")
       this.$router.push({
-      path: `/draw/${this.gamePin}`, 
-      query:{name: this.name}
+        path: `/draw/${this.gamePin}`,
+        query:{name: this.name}
       });
     }),
 
-    socket.emit( "getUILabels", this.lang );
+      socket.emit("getUILabels", this.lang);
 
     if (this.$route.params.gamePin) {
       this.gamePin = this.$route.params.gamePin;
-      socket.emit("joinGame", this.gamePin)
-      console.log("Joining game room:", this.gamePin)
-      
+      socket.emit("joinGame", { gamePin: this.gamePin });
+      socket.emit("getParticipants", { gamePin: this.gamePin });
     }
   },
   methods: {
     participateInGame: function () {
       //localStorage.setItem("name", this.name);
-      socket.emit("joinGame", this.gamePin);
-      socket.emit( "participateInGame", {gamePin: this.gamePin, name: this.name} );
-      this.$router.push('/lobby/'+ this.gamePin);
+      //socket.emit("joinGame", this.gamePin);
+      socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name });
+      this.$router.push('/lobby/' + this.gamePin);
     },
     startDraw() {
       console.log("Start game clicked")
-      socket.emit("startGame", {gamePin: this.gamePin, participants: this.participants})
+      socket.emit("startGame", { gamePin: this.gamePin })
     }
 
   }
@@ -91,7 +86,6 @@ export default {
 </script>
 
 <style scoped>
-
 .lobby-view {
   display: flex;
   flex-direction: column;
@@ -126,6 +120,7 @@ export default {
   border: 6px solid black;
   border-radius: 15px;
 }
+
 .input-field button {
   background-color: #514ace;
   border: 2px solid #FF1493;
@@ -136,18 +131,18 @@ export default {
   font-size: 18px;
   display: inline-flex;
   align-items: center;
-  gap:10px;
+  gap: 10px;
   font-weight: bold;
 }
-#goToDrawLink {
-        /*display: inline-block;*/
-        background-color: #39FF14;
-        /*border: 2px solid #FF1493;*/
-        padding: 20px 90px;
-        border-radius: 100px;
-        /*gap: 10px;*/
-        /*font-size: 18px;*/
-        /*align-items: center;*/
-    } 
 
+#goToDrawLink {
+  /*display: inline-block;*/
+  background-color: #39FF14;
+  /*border: 2px solid #FF1493;*/
+  padding: 20px 90px;
+  border-radius: 100px;
+  /*gap: 10px;*/
+  /*font-size: 18px;*/
+  /*align-items: center;*/
+}
 </style>

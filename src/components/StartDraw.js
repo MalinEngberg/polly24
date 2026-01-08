@@ -1,4 +1,5 @@
 export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
+  console.log("Nu är vi i StartDraw");
   const context = canvas.getContext("2d");
 
   context.lineCap = "round";
@@ -12,9 +13,13 @@ export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
 
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
+
+    const scaleX = canvas.width / rect.width; // fanns ej förut
+    const scaleY = canvas.height / rect.height; // fanns ej förut
+
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: (e.clientX - rect.left) * scaleX, // utan scaleX
+      y: (e.clientY - rect.top) * scaleY, // utan scaleY
     };
   }
 
@@ -53,5 +58,9 @@ export function createCanvasDrawer(canvas, canDrawSignal, emitDrawing) {
     context.strokeStyle = color;
   }
 
-  return { start, move, stop, getcolor };
+  function clear() {
+    context.clearRect (0, 0, canvas.width, canvas.height); // var satt till canvas.width och canvas.height innan
+  }
+
+  return { start, move, stop, getcolor, clear };
 }

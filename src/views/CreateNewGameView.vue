@@ -108,7 +108,6 @@ export default {
             }
             if (this.nameError || this.gamePinError) return;
 
-            // localStorage.setItem("name", this.name);
             socket.emit("createGame", { gamePin: this.gamePin, lang: this.lang })
             socket.emit("joinGame", { gamePin: this.gamePin });
             socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name, joined: this.joined });
