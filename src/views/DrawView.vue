@@ -382,7 +382,6 @@ export default {
 
 #chooseRandomWordButton {
   background-color: #39FF14;
-  /*border: 2px solid #FF1493;*/
   font-family: 'Caveat', cursive;
   font-size: 1.5rem;
   width: fit-content;
