@@ -167,28 +167,6 @@ h2 {
   line-height: 2rem;
 }
 
-@media screen and (max-width:150em) {
-  .logo {
-    font-size: 5vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hamburger::before {
-    content: "☰";
-  }
-
-  .close::before {
-    content: "✕";
-  }
-
-  .hide {
-    left: -12em;
-  }
-
-}
-
 @media screen and (max-width: 800px) {
 #language-button {
     top: auto; 
