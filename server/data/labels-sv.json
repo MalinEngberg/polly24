@@ -23,5 +23,8 @@
 	"nameError": "*Skriv in ditt namn",
 	"gamePinError": "*Skapa ett GamePin",
 	"chooseWord": "Välj ett nytt ord",
+	"chatInput": "Gissa eller chatta",
+	"timeToPaint": "Din tur att rita",
+	"guessWord":"Gissa ordet:",
 	"exitGame": "Avsluta spel"
 }

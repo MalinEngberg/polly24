@@ -23,5 +23,8 @@
 	"nameError": "*Please enter your name",
 	"gamePinError": "*Please create a GamePin",
 	"chooseWord": "Choose a new word",
+	"chatInput": "Guess or chat",
+	"timeToPaint": "Your time to paint",
+	"guessWord":"Guess the word:",
 	"exitGame": "Exit Game"
 }

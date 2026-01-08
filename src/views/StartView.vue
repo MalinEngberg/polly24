@@ -9,9 +9,6 @@
     </div>
   </header>
   <ResponsiveNav v-bind:hideNav="hideNav">
-    <button v-on:click="switchLanguage">
-      {{ uiLabels.changeLanguage }}
-    </button>
 
     <router-link to="/about/">
       {{ uiLabels.about }}
@@ -32,6 +29,13 @@
       {{ uiLabels.CreateGameButton }}
     </router-link>
   </div>
+
+  <div class="left-column">
+    <button id="language-button" v-on:click="switchLanguage">
+      {{ uiLabels.changeLanguage }}
+    </button>
+  </div>
+
 </template>
 
 <script>
@@ -136,7 +140,7 @@ h2 {
   line-height: 4rem;
 }
 
-#join-link{
+#join-link {
   color: black;
   text-decoration: none;
   padding: 0.5rem 2rem;
@@ -147,9 +151,22 @@ h2 {
   line-height: 4rem;
 }
 
-label {
+#language-button {
+  position: absolute; 
+  top: 1rem;           
+  right: 1rem;  
 
+  color: black;
+  text-decoration: none;
+  padding: 0.25rem 1rem;       
+  background-color: rgb(224, 151, 255);
+  border-radius: 999px;
+  font-size: 0.75rem;          
+  font-weight: bold;
+  line-height: 2rem;           
 }
+
+label {}
 
 @media screen and (max-width:150em) {
   .logo {
