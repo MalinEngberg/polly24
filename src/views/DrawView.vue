@@ -279,6 +279,7 @@ export default {
 .players {
   background: white;
   border: 2px solid #aaa;
+  font-size: 1.4rem;
   text-align: center;
   padding: 10px;
 }
@@ -404,6 +405,10 @@ export default {
 
 #chooseRandomWordButton {
   background-color: #39FF14;
+  /*border: 2px solid #FF1493;*/
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  padding: 20px 90px;
   width: fit-content;
   padding: 15px 90px;
   border-radius: 100px;
@@ -424,6 +429,8 @@ export default {
   /*font-size: 18px;*/
   /*align-items: center;*/
   text-decoration: none;
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
   color: black;
   font-weight: bold;
 }
@@ -452,7 +459,8 @@ export default {
   padding: 0.25rem 1rem;
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
 }

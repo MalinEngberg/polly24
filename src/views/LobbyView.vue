@@ -15,7 +15,7 @@
       <p v-if="gamePinError" class="error">{{ gamePinError }}</p>
 
       <br>
-      <button v-on:click="participateInGame">
+      <button v-on:click="tryJoinGame">
         {{ uiLabels.participateInGame }}
       </button>
     </div>
@@ -62,7 +62,16 @@ export default {
       });
     }),
 
-      socket.emit("getUILabels", this.lang);
+      socket.on("gameExists", (exists) => {
+        if (exists) {
+          this.participateInGame();
+        }
+        else {
+          this.gamePinError = this.uiLabels.gamePinNotExistError;
+        }
+      });
+
+    socket.emit("getUILabels", this.lang);
 
     if (this.$route.params.gamePin) {
       this.gamePin = this.$route.params.gamePin;
@@ -71,7 +80,7 @@ export default {
     }
   },
   methods: {
-    participateInGame: function () {
+    tryJoinGame: function () {
       this.nameError = "";
       this.gamePinError = "";
 
@@ -85,15 +94,21 @@ export default {
       }
       if (this.nameError || this.gamePinError) return;
 
+      socket.emit("gameExists", { gamePin: this.gamePin });
+    },
+
+    participateInGame: function () {
       //localStorage.setItem("name", this.name);
       //socket.emit("joinGame", this.gamePin);
       socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name });
       this.$router.push('/lobby/' + this.gamePin);
     },
+
     startDraw() {
       console.log("Start game clicked")
       socket.emit("startGame", { gamePin: this.gamePin })
     },
+
     switchLanguage: function () {
       if (this.lang === "en") {
         this.lang = "sv"
@@ -152,11 +167,23 @@ export default {
   border-radius: 100px;
   cursor: pointer;
   gap: 10px;
-  font-size: 18px;
+  font-size: 1.5rem;
+  font-family: 'Caveat', cursive;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  font-family: "Times New Roman";
+  font-size: 1rem;
+  grid-column: 2 / span 1;
+  text-align: left;
+  margin-top: -20px;
+  margin-bottom: 20px;
 }
 
 #goToDrawLink {
@@ -184,8 +211,9 @@ export default {
   /* halverad */
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 1rem;
   /* halverad */
+  font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
 }

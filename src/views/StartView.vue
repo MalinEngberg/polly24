@@ -161,7 +161,8 @@ h2 {
   padding: 0.25rem 1rem;       
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;          
+  font-size: 1rem;  
+  font-family: 'Caveat', cursive;        
   font-weight: bold;
   line-height: 2rem;           
 }

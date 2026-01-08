@@ -8,6 +8,12 @@ function sockets(io, socket, data) {
     socket.emit('uiWords', data.getUIWords(lang));
   });
 
+  socket.on('gameExists', function(d) {
+    const gameExists = data.gameExists(d.gamePin);
+    console.log("Existerar spelet redan?", gameExists);
+    socket.emit('gameExists', gameExists);
+  });
+
   socket.on('createGame', function(d) {
     data.createGame(d.gamePin, d.lang)
     socket.emit('pollData', data.getGame(d.gamePin));
