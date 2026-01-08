@@ -22,47 +22,6 @@
                     v-bind:placeholder="uiLabels.GamePinInsert">
             </div>
             <p v-if="gamePinError" class="error">{{ gamePinError }}</p>
-
-            <label class="label" for="language">{{ uiLabels.LanguageOption }}</label>
-            <div class="option">
-                <label class="choice"><span>Svenska</span>
-                    <input type="radio" id="svenska" v-model="language" value="Svenska">
-                </label>
-
-                <label class="choice"><span>English</span>
-                    <input type="radio" id="english" v-model="language" value="English">
-                </label>
-            </div>
-
-            <label class="label" for="DrawTime">{{ uiLabels.DrawTimeOption }}</label>
-            <div class="option">
-                <label class="choice"><span>30s</span>
-                    <input type="radio" id="30" v-model="DrawTime" value="30s">
-                </label>
-
-                <label class="choice"><span>45s</span>
-                    <input type="radio" id="45" v-model="DrawTime" value="45s">
-                </label>
-
-                <label class="choice"><span>60s</span>
-                    <input type="radio" id="60" v-model="DrawTime" value="60s">
-                </label>
-            </div>
-
-            <label class="label" for="Rounds">{{ uiLabels.RoundsOption }}</label>
-            <div class="option">
-                <label class="choice"><span>2</span>
-                    <input type="radio" id="2rounds" v-model="Rounds" value="2rounds">
-                </label>
-
-                <label class="choice"><span>3</span>
-                    <input type="radio" id="3rounds" v-model="Rounds" value="3rounds">
-                </label>
-
-                <label class="choice"><span>5</span>
-                    <input type="radio" id="5rounds" v-model="Rounds" value="5rounds">
-                </label>
-            </div>
         </main>
 
         <button type="button" v-on:click="createGame">
@@ -81,10 +40,7 @@ export default {
         return {
             lang: localStorage.getItem("lang") || "en",
             uiLabels: {},
-            language: 'English',
             name: '',
-            DrawTime: '60s',
-            Rounds: '3rounds',
             gamePin: '',
             joined: true,
             nameError: '',
