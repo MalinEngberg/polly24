@@ -50,7 +50,7 @@
             <b>{{ msg.sender }}:</b> {{ msg.receivedMessage }}
           </ul>
         </div>
-        
+
         <input class="InputChat" type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage" @keydown.enter="sendMessage" />
 
         <button v-on:click="exitGame" id="exitGameButton">
@@ -189,7 +189,7 @@ export default {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
-      if (this.currentMessage === this.currentWord) {
+      if (this.currentMessage === this.currentWord && this.name !== this.currentDrawer) {
         console.log("vi har gissat rätt");
         this.addScore();
         this.startNewRound();
@@ -325,27 +325,6 @@ export default {
   /* height: 550px; */
 }
 
-@media only screen and (max-width: 700px) {
-  .game-layout {
-    flex-direction: column; /* Lägg kolumnerna under varandra */      
-    width: 95%;      /* Ta upp mer av skärmbredden */
-    min-width: 0;           /* Ta bort tidigare min-width restriktioner */
-  }
-
-  .left-column {
-    width: 100%;            /* Låt sidokolumnerna ta hela bredden */
-  }
-
-  .right-column {
-    width: 100%;
-  }
-
-  .canvas-area {
-    height: 400px;         /* Gör canvasen lite lägre på mobilen */
-    width: 100%;
-  }
-}
-
 .canvas-area canvas {
   width: 100%;
   height: 60vh;
@@ -462,5 +441,26 @@ export default {
   font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
+}
+
+@media only screen and (max-width: 900px) {
+  .game-layout {
+    flex-direction: column; /* Lägg kolumnerna under varandra */      
+    width: 95%;      /* Ta upp mer av skärmbredden */
+    min-width: 0;    /* Ta bort tidigare min-width restriktioner */
+  }
+
+  .left-column {
+    width: 100%;     /* Låt sidokolumnerna ta hela bredden */
+  }
+
+  .right-column {
+    width: 100%;
+  }
+
+  .canvas-area {
+    height: 400px;   /* Gör canvasen lite lägre på mobilen */
+    width: 100%;
+  }
 }
 </style>
