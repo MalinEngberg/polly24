@@ -333,7 +333,7 @@ export default {
 
 .right-column {
   width: 250px;
-  height: 84vh;
+  height: 86.5vh;
   display: flex;
   flex-direction: column;
 }
@@ -377,7 +377,7 @@ export default {
 .InputChat {
   background: white;
   border: 2px solid #aaa;
-  height: 8%;
+  height: 10%;
 }
 
 #chooseRandomWordButton {
