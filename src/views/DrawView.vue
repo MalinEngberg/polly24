@@ -178,7 +178,7 @@ export default {
       console.log("Message sent:", this.currentMessage);
       if (this.currentMessage===this.currentWord) {
         console.log("vi har gissat rätt");
-        this.addPoints();
+        this.addScore();
         this.startNewRound();
       }
       this.currentMessage = ""; // Clear the input field after sending
@@ -194,8 +194,9 @@ export default {
       socket.emit("currentWord", { currentWord: this.currentWord, gamePin: this.gamePin });
     },
 
-    addPoints: function () {
-      socket.emit('addPoints', {name: this.name, gamePin: this.gamePin});
+    addScore: function () {
+      socket.emit('addScore', {name: this.name, gamePin: this.gamePin});
+      console.log("Nu har addScore triggats igång i Drawview");
     },
 
     startNewRound: function () {

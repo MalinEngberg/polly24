@@ -60,7 +60,6 @@ function sockets(io, socket, data) {
     console.log("Emitted iCreated for room:", d.gamePin)
   });
 
-
   socket.on('getParticipants', (d) => {
     const participants = data.getParticipants(d.gamePin);
     console.log("Sending participants for", d.gamePin, ":", participants);
@@ -72,10 +71,6 @@ function sockets(io, socket, data) {
     console.log("Currentdrawer i socket är", currentDrawer);
     io.to(d.gamePin).emit("currentDrawer", currentDrawer);
   });
-
-  //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
-
-  //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})
 
   socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
@@ -118,7 +113,15 @@ function sockets(io, socket, data) {
     const currentWord = d.currentWord;
     io.to(d.gamePin).emit("currentWord", currentWord);
     console.log("Current word sending to all:", currentWord);
-  })
+  });
+
+  socket.on("addScore", d => {
+    data.addScore(d.gamePin, d.name);
+    const participants = data.getParticipants(d.gamePin);
+    console.log("Uppdaterad participants:", participants);
+    io.to(d.gamePin).emit('participantsUpdate', participants);
+    console.log("Nu har addScore körts i sockets");
+  });
 
   function startRound(io, data, gamePin) {
     const poll = data.getPoll(gamePin);
