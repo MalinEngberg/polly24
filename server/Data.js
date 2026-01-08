@@ -102,6 +102,17 @@ Data.prototype.getCurrentDrawer = function(gamePin) {
   return currentDrawer;
 }
 
+Data.prototype.addScore = function(gamePin, name) {
+  const participants = this.getParticipants(gamePin);
+  for (const p of participants) {
+    if (p.name === name) {
+      p.score += 10;
+      console.log("Uppdaterad score:", p.score);
+    }
+  }
+  console.log("Nu har score uppdaterats för den som gissade rätt!");
+}
+
 Data.prototype.addQuestion = function(gamePin, q) {
   if (this.gameExists(gamePin)) {
     this.polls[gamePin].questions.push(q);

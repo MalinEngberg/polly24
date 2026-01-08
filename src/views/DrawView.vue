@@ -1,16 +1,15 @@
 <template>
   <div class="page">
 
-    <div class="timer-bar">
-      Time left: {{ timeLeft }}s
-    </div>
     <div class="game-layout">
 
+      <!-- <div class="timer-bar">
+      Time left: {{ timeLeft }}s
+      </div> -->
+
       <div class="left-column">
-        <div class="players" v-for="p in participants" :key="p.name" :style="{ background: p.img }">
-          <img :src="p.img" alt="Player Image" class="player-img" />
-          <div class="player-score">{{ p.name }}: {{ p.score }}p
-          </div>
+        <div class="players" v-for="p in participants" :key="p.name">
+          <div>{{ p.name }}: {{ p.score }}p</div>
         </div>
       </div>
 
@@ -22,27 +21,28 @@
           </div>
         </div>
 
-
-
         <div class="canvas-area">
           <canvas ref="canvas" @mousedown="drawerTool && drawerTool.start($event)"
             @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
             @mouseleave="drawerTool && drawerTool.stop($event)">
           </canvas>
-          <button v-if="currentDrawer === name" v-on:click="chooseRandomWord" id="chooseRandomWordButton">
-            {{ uiLabels.chooseWord }}
-          </button>
         </div>
+
+        <button v-if="currentDrawer === name" v-on:click="chooseRandomWord" id="chooseRandomWordButton">
+          {{ uiLabels.chooseWord }}
+        </button>
       </div>
 
 
       <div class="right-column">
-
         <div class="tools-box" v-if="currentDrawer === name">
           <div class="colors">
             <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"
               @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
+          <button> 
+            
+          </button>
         </div>
 
         <div class="MessageDisplay">
@@ -77,9 +77,7 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.query.name,
       drawerTool: null,
-      //SocketId: null,
       timeLeft: 0,
-      canDraw: false,
       currentColor: "black",
       colors: ["black", "red", "green", "blue", "yellow"],
       participants: [],
@@ -124,6 +122,9 @@ export default {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
+      // canvas.width = 1000;
+      // canvas.height = 800;
+
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
@@ -146,6 +147,12 @@ export default {
       context.lineWidth = 4;
       context.stroke();
     });
+
+    socket.on("clearCanvas", () => {
+      if (this.drawerTool) {
+        this.drawerTool.clear();
+      }
+    })
 
     socket.on("messageReceived", data => {
       console.log("New message received from", data.sender, ":", data.message);
@@ -176,27 +183,13 @@ export default {
       this.currentGuess = "";
     },
 
-    onCorrectGuess(data) {
-      if (data.correct) {
-        this.canDraw = false;
-
-        //this.timer?.stopTimer?.();
-
-        this.participants = data.participants;
-
-        console.log(
-          `${data.name} gained ${data.points} points`
-
-        );
-      }
-    },
     sendMessage: function () {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
       if (this.currentMessage===this.currentWord) {
         console.log("vi har gissat rätt");
-        this.addPoints();
+        this.addScore();
         this.startNewRound();
       }
       this.currentMessage = ""; // Clear the input field after sending
@@ -212,11 +205,13 @@ export default {
       socket.emit("currentWord", { currentWord: this.currentWord, gamePin: this.gamePin });
     },
 
-    addPoints: function () {
-      socket.emit('addPoints', {name: this.name, gamePin: this.gamePin});
+    addScore: function () {
+      socket.emit('addScore', {name: this.name, gamePin: this.gamePin});
+      console.log("Nu har addScore triggats igång i Drawview");
     },
 
     startNewRound: function () {
+      socket.emit("startNewRound", {gamePin: this.gamePin});
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
     }
 
@@ -258,18 +253,7 @@ export default {
   background: white;
   border: 2px solid #aaa;
   text-align: center;
-  padding-bottom: 5px;
-}
-
-.player-img {
-  width: 100%;
-  height: auto;
-}
-
-.player-score {
-  background: #e9e9e9;
-  padding: 5px 0;
-  border-top: 2px solid #aaa;
+  padding: 10px;
 }
 
 /* CENTER COLUMN */
@@ -284,7 +268,6 @@ export default {
   display: flex;
   flex-direction: column;
   border: 2px solid #aaa;
-  ;
   padding: 10px;
   margin-left: 120px;
   font-size: 20px;
@@ -314,15 +297,35 @@ export default {
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
-  height: 550px;
+  /* height: 550px; */
+}
+
+@media only screen and (max-width: 700px) {
+  .game-layout {
+    flex-direction: column; /* Lägg kolumnerna under varandra */      
+    width: 95%;      /* Ta upp mer av skärmbredden */
+    min-width: 0;           /* Ta bort tidigare min-width restriktioner */
+  }
+
+  .left-column {
+    width: 100%;            /* Låt sidokolumnerna ta hela bredden */
+  }
+
+  .right-column {
+    width: 100%;
+  }
+
+  .canvas-area {
+    height: 400px;         /* Gör canvasen lite lägre på mobilen */
+    width: 100%;
+  }
 }
 
 .canvas-area canvas {
   width: 100%;
-  height: 100%;
+  height: 60vh;
   display: block;
 }
-
 
 .right-column {
   width: 250px;
