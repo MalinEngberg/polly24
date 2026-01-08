@@ -22,5 +22,6 @@
 	"goToDraw": "Lets start!",
 	"nameError": "*Please enter your name",
 	"gamePinError": "*Please create a GamePin",
-	"chooseWord": "Choose a new word"
+	"chooseWord": "Choose a new word",
+	"exitGame": "Exit Game"
 }

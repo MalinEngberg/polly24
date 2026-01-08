@@ -33,6 +33,26 @@ function sockets(io, socket, data) {
     }
   });
 
+  socket.on('leaveGame', function (d) {
+     if (d && d.gamePin && d.name) {
+        console.log("nu är vi i leaveGame i socket")
+
+        data.removeParticipant(d.gamePin, d.name);
+
+        const participants = data.getParticipants(d.gamePin);
+        io.to(d.gamePin).emit('participantsUpdate', participants);
+
+        socket.leave(d.gamePin);
+
+        console.log("lämnar spelet:", d.name, "Och participants kvar:", participants)
+
+        if(participants.length === 0) {
+            data.removeGame(d.gamePin);
+        }
+     }
+  });
+
+
   socket.on('participateInGame', function (d) {
     socket.join(d.gamePin);
     data.participateInGame(d.gamePin, d.name);

@@ -22,5 +22,6 @@
 	"goToDraw": "Nu kör vi!",
 	"nameError": "*Skriv in ditt namn",
 	"gamePinError": "*Skapa ett GamePin",
-	"chooseWord": "Välj ett nytt ord"
+	"chooseWord": "Välj ett nytt ord",
+	"exitGame": "Avsluta spel"
 }
