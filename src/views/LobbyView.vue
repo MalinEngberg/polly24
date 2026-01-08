@@ -111,6 +111,7 @@ export default {
 </script>
 
 <style scoped>
+
 .lobby-view {
   display: flex;
   flex-direction: column;
@@ -134,6 +135,15 @@ export default {
   font-size: 50px;
 }
 
+@media screen and (max-width:600px) {
+  .input-field h1 {
+    font-size: 10vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .input-field input {
   background-color: #AA87BF;
   font-size: 1.5rem;
@@ -144,6 +154,16 @@ export default {
   /*text-align: center;*/
   border: 6px solid black;
   border-radius: 15px;
+}
+
+@media screen and (max-width:600px) {
+  .input-field input {
+    font-size: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20rem;
+  }
 }
 
 .input-field button {
