@@ -34,15 +34,14 @@
         </button>
       </div>
 
-
       <div class="right-column">
         <div class="tools-box" v-if="currentDrawer === name">
           <div class="colors">
             <div class="color" v-for="c in colors" :key="c" :style="{ background: c }"
               @click="drawerTool && drawerTool.getcolor(c)"></div>
           </div>
-          <button> 
-            
+          <button v-on:click="clearCanvas" id="clearCanvasButton">
+            {{ uiLabels.clearCanvas }}
           </button>
         </div>
 
@@ -221,6 +220,10 @@ export default {
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
       this.chooseRandomWord();
     },
+
+    clearCanvas: function () {
+      socket.emit("clearCanvas", {gamePin: this.gamePin});
+    },
     
     switchLanguage: function () {
       if (this.lang === "en") {
@@ -236,7 +239,9 @@ export default {
     exitGame: function() {
       socket.emit("leaveGame", {gamePin: this.gamePin, name: this.name});
       this.$router.push("/");
-    }
+    },
+
+
   }
 }
 
@@ -352,13 +357,13 @@ export default {
 
 .right-column {
   width: 250px;
-  height: 80vh;
+  height: 84vh;
   display: flex;
   flex-direction: column;
 }
 
 .tools-box {
-  height: 52px;
+  height: 80px;
   background: white;
   border: 2px solid #aaa;
   padding: 10px;
@@ -399,24 +404,25 @@ export default {
 }
 
 #chooseRandomWordButton {
-  /*display: inline-block;*/
   background-color: #39FF14;
   /*border: 2px solid #FF1493;*/
   font-family: 'Caveat', cursive;
   font-size: 1.5rem;
   padding: 20px 90px;
+  width: fit-content;
+  padding: 15px 90px;
   border-radius: 100px;
   margin: 25px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
+  font-weight: bold;
+  align-self: center;
+  display: inline-block;
 }
 
 #exitGameButton {
   /*display: inline-block;*/
   background-color: red;
   border: 2px solid black;
-  padding: 20px 40px;
+  padding: 15px 5px;
   border-radius: 100px;
   margin: 25px;
   /*gap: 10px;*/
@@ -425,8 +431,22 @@ export default {
   text-decoration: none;
   font-family: 'Caveat', cursive;
   font-size: 1.5rem;
-  font-weight: bold;
   color: black;
+  font-weight: bold;
+}
+
+#clearCanvasButton {
+  /*display: inline-block;*/
+  background-color: yellow;
+  padding: 10px 10px;
+  border-radius: 100px;
+  margin: 10px;
+  /*gap: 10px;*/
+  /*font-size: 18px;*/
+  /*align-items: center;*/
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
 }
 
 #language-button {

@@ -28,5 +28,7 @@
 	"chatInput": "Gissa eller chatta",
 	"timeToPaint": "Din tur att rita",
 	"guessWord":"Gissa ordet:",
-	"exitGame": "Avsluta spel"
+	"exitGame": "Avsluta spel",
+	"clearCanvas": "Rensa målarduk",
+	"welcomeGame": "Välkommen till spelet:"
 }

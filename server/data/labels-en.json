@@ -28,5 +28,7 @@
 	"chatInput": "Guess or chat",
 	"timeToPaint": "Your time to paint",
 	"guessWord":"Guess the word:",
-	"exitGame": "Exit Game"
+	"exitGame": "Exit Game",
+	"clearCanvas": "Clear canvas",
+	"welcomeGame": "Welcome to the game:"
 }
