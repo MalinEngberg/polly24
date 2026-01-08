@@ -123,8 +123,27 @@ export default {
     justify-content: center;
 }
 
+@media screen and (max-width:600px) {
+  .gridContainer {
+    width: 70%;
+    margin: 8vw;
+    row-gap: 10vw;
+    column-gap: 2vw;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+
 .title {
     font-size: 2.2rem;
+}
+
+@media screen and (max-width: 800px) {
+.title {
+    font-size: 8vw;
+  }
 }
 
 .label {
@@ -148,11 +167,13 @@ export default {
     grid-column: 2;
 }
 
-.option input {
-    padding: 6px 10px;
-    font-size: 1rem;
-    border: 1.5px solid black;
+@media screen and (max-width:600px) {
+  .option {
+    gap: 2px;
+    font-size: 5vw;
+  }
 }
+
 
 .choice {
     display: flex;
@@ -163,6 +184,23 @@ export default {
 .choice span {
     margin: 20px;
     margin-bottom: 5px;
+}
+
+
+.option input {
+    padding: 6px 10px;
+    font-size: 1rem;
+    border: 1.5px solid black;
+}
+
+@media screen and (max-width:600px) {
+  .option input {
+    font-size: 5vw;
+    display: flex;
+    align-items: center;
+    padding: 6px 1px;
+    justify-content: center;
+  }
 }
 
 button {
@@ -176,6 +214,22 @@ button {
     cursor: pointer;
     margin: 40px;
 }
+
+@media screen and (max-width:600px) {
+  button {
+    border-radius: 100px;
+    padding: 5vw 20vw;
+    background-color: #39FF14;
+    font-size: 5vw;
+    font-weight: bold;
+    font-family: 'Caveat', cursive;
+    border: 2px solid black;
+    cursor: pointer;
+    margin: 20px;
+  }
+}
+
+
 
 .error {
     color: red;
@@ -202,4 +256,12 @@ button {
     font-weight: bold;
     line-height: 2rem;
 }
+
+@media screen and (max-width: 800px) {
+#language-button {
+    top: auto;
+    bottom: 10px;
+  }
+}
+
 </style>
