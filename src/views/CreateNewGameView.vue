@@ -3,6 +3,9 @@
         <div class="title">
             <h1>{{ uiLabels.CreatingNewGame }}</h1>
         </div>
+        <button id="language-button" v-on:click="switchLanguage">
+            {{ uiLabels.changeLanguage }}
+        </button>
     </header>
     <div class="page">
         <main class="gridContainer">
@@ -114,6 +117,20 @@ export default {
                 path: `/lobby/${this.gamePin}`,
                 query: { name: this.name }
             });
+        },
+
+        switchLanguage: function () {
+            if (this.lang === "en") {
+                this.lang = "sv"
+            }
+            else {
+                this.lang = "en"
+            }
+            localStorage.setItem("lang", this.lang);
+            socket.emit("getUILabels", this.lang);
+        },
+        toggleNav: function () {
+            this.hideNav = !this.hideNav;
         }
     }
 }
@@ -201,5 +218,20 @@ button {
     text-align: left;
     margin-top: -30px;
     margin-bottom: 0px;
+}
+
+#language-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;  
+
+    color: black;
+    text-decoration: none;
+    padding: 0.25rem 1rem;
+    background-color: rgb(224, 151, 255);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 2rem;
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
   <div class="lobby-view">
 
+    <button id="language-button" v-on:click="switchLanguage">
+      {{ uiLabels.changeLanguage }}
+    </button>
+
     <div class="input-field" v-if="!$route.params.gamePin">
       <h1>{{ uiLabels.enterGame }}</h1>
 
@@ -78,8 +82,17 @@ export default {
     startDraw() {
       console.log("Start game clicked")
       socket.emit("startGame", { gamePin: this.gamePin })
+    },
+switchLanguage: function () {
+      if (this.lang === "en") {
+        this.lang = "sv"
+      }
+      else {
+        this.lang = "en"
+      }
+      localStorage.setItem("lang", this.lang);
+      socket.emit("getUILabels", this.lang);
     }
-
   }
 
 }
@@ -144,5 +157,20 @@ export default {
   /*gap: 10px;*/
   /*font-size: 18px;*/
   /*align-items: center;*/
+}
+
+#language-button {
+  position: absolute;  /* placera knappen absolut inom .right-column */
+  top: 1rem;           /* avstånd från toppen */
+  right: 1rem;          /* avstånd från vänster kant */
+  
+  color: black;
+  text-decoration: none;
+  padding: 0.25rem 1rem;       /* halverad */
+  background-color: rgb(224, 151, 255);
+  border-radius: 999px;
+  font-size: 0.75rem;          /* halverad */
+  font-weight: bold;
+  line-height: 2rem; 
 }
 </style>
