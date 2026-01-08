@@ -356,7 +356,7 @@ export default {
 
 .right-column {
   width: 250px;
-  height: 86vh;
+  height: 84vh;
   display: flex;
   flex-direction: column;
 }
@@ -403,22 +403,21 @@ export default {
 }
 
 #chooseRandomWordButton {
-  /*display: inline-block;*/
   background-color: #39FF14;
-  /*border: 2px solid #FF1493;*/
-  padding: 20px 90px;
+  width: fit-content;
+  padding: 15px 90px;
   border-radius: 100px;
   margin: 25px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
+  font-weight: bold;
+  align-self: center;
+  display: inline-block;
 }
 
 #exitGameButton {
   /*display: inline-block;*/
   background-color: red;
   border: 2px solid black;
-  padding: 20px 40px;
+  padding: 15px 5px;
   border-radius: 100px;
   margin: 25px;
   /*gap: 10px;*/
@@ -426,12 +425,12 @@ export default {
   /*align-items: center;*/
   text-decoration: none;
   color: black;
+  font-weight: bold;
 }
 
 #clearCanvasButton {
   /*display: inline-block;*/
   background-color: yellow;
-  border: 2px solid black;
   padding: 10px 10px;
   border-radius: 100px;
   margin: 10px;
@@ -439,8 +438,8 @@ export default {
   /*font-size: 18px;*/
   /*align-items: center;*/
   text-decoration: none;
-  font-weight: bold;
   color: black;
+  font-weight: bold;
 }
 
 #language-button {
