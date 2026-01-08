@@ -1,6 +1,8 @@
 <template>
   <div class="page">
-
+    <button id="language-button" v-on:click="switchLanguage">
+      {{ uiLabels.changeLanguage }}
+    </button>
     <div class="timer-bar">
       Time left: {{ timeLeft }}s
     </div>
@@ -16,9 +18,9 @@
 
       <div class="center-column">
         <div class="top-bar">
-          <span class="word-display" v-if="currentDrawer === name">Your time to paint: {{ currentWord }}</span>
-          <div v-else>Guess the word:
-          <span class="word-display" v-for="i in currentWord.length" :key="i">_</span>
+          <span class="word-display" v-if="currentDrawer === name"> {{ uiLabels.timeToPaint }}: {{ currentWord }}</span>
+          <div v-else> {{ uiLabels.guessWord }}
+            <span class="word-display" v-for="i in currentWord.length" :key="i">_</span>
           </div>
         </div>
 
@@ -52,7 +54,8 @@
         </div>
 
         <div class="InputChat">
-          <input type="text" placeholder="Write something..." v-model="currentMessage" @keydown.enter="sendMessage" />
+          <input type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage"
+            @keydown.enter="sendMessage" />
         </div>
 
       </div>
@@ -194,7 +197,7 @@ export default {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
-      if (this.currentMessage===this.currentWord) {
+      if (this.currentMessage === this.currentWord) {
         console.log("vi har gissat rätt");
         this.addPoints();
         this.startNewRound();
@@ -213,13 +216,22 @@ export default {
     },
 
     addPoints: function () {
-      socket.emit('addPoints', {name: this.name, gamePin: this.gamePin});
+      socket.emit('addPoints', { name: this.name, gamePin: this.gamePin });
     },
 
     startNewRound: function () {
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
+    },
+    switchLanguage: function () {
+      if (this.lang === "en") {
+        this.lang = "sv"
+      }
+      else {
+        this.lang = "en"
+      }
+      localStorage.setItem("lang", this.lang);
+      socket.emit("getUILabels", this.lang);
     }
-
   }
 };
 
@@ -378,5 +390,20 @@ export default {
   /*gap: 10px;*/
   /*font-size: 18px;*/
   /*align-items: center;*/
+}
+
+#language-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+
+  color: black;
+  text-decoration: none;
+  padding: 0.25rem 1rem;
+  background-color: rgb(224, 151, 255);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 2rem;
 }
 </style>
