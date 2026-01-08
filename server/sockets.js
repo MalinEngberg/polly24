@@ -33,6 +33,26 @@ function sockets(io, socket, data) {
     }
   });
 
+  socket.on('leaveGame', function (d) {
+     if (d && d.gamePin && d.name) {
+        console.log("nu är vi i leaveGame i socket")
+
+        data.removeParticipant(d.gamePin, d.name);
+
+        const participants = data.getParticipants(d.gamePin);
+        io.to(d.gamePin).emit('participantsUpdate', participants);
+
+        socket.leave(d.gamePin);
+
+        console.log("lämnar spelet:", d.name, "Och participants kvar:", participants)
+
+        if(participants.length === 0) {
+            data.removeGame(d.gamePin);
+        }
+     }
+  });
+
+
   socket.on('participateInGame', function (d) {
     socket.join(d.gamePin);
     data.participateInGame(d.gamePin, d.name);
@@ -60,7 +80,6 @@ function sockets(io, socket, data) {
     console.log("Emitted iCreated for room:", d.gamePin)
   });
 
-
   socket.on('getParticipants', (d) => {
     const participants = data.getParticipants(d.gamePin);
     console.log("Sending participants for", d.gamePin, ":", participants);
@@ -72,10 +91,6 @@ function sockets(io, socket, data) {
     console.log("Currentdrawer i socket är", currentDrawer);
     io.to(d.gamePin).emit("currentDrawer", currentDrawer);
   });
-
-  //socket.on("joinLobbyAsHost", data => {socket.emit("hostJoined", true)});
-
-  //socket.on('startPoll', function(gamePin) {io.to(gamePin).emit('startPoll');})
 
   socket.on('runQuestion', function(d) {
     let question = data.activateQuestion(d.gamePin, d.questionNumber);
@@ -118,7 +133,15 @@ function sockets(io, socket, data) {
     const currentWord = d.currentWord;
     io.to(d.gamePin).emit("currentWord", currentWord);
     console.log("Current word sending to all:", currentWord);
-  })
+  });
+
+  socket.on("addScore", d => {
+    data.addScore(d.gamePin, d.name);
+    const participants = data.getParticipants(d.gamePin);
+    console.log("Uppdaterad participants:", participants);
+    io.to(d.gamePin).emit('participantsUpdate', participants);
+    console.log("Nu har addScore körts i sockets");
+  });
 
   function startRound(io, data, gamePin) {
     const poll = data.getPoll(gamePin);
@@ -156,8 +179,9 @@ function sockets(io, socket, data) {
     socket.to(data.gamePin).emit("drawing", data);
   });
 
-
-  socket
+  socket.on("startNewRound", (d) => {
+    io.to(d.gamePin).emit("clearCanvas");
+  })
 }
 
 export { sockets };

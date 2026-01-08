@@ -94,12 +94,44 @@ Data.prototype.getParticipants = function(gamePin) {
   return [];
 }
 
+Data.prototype.removeParticipant = function(gamePin, name) {
+  if (!this.gameExists(gamePin)) return;
+
+  const newParticipants = []
+
+  for (let i = 0; i <this.polls[gamePin].participants.length; i++) {
+    const participant = this.polls[gamePin].participants[i];
+    if (participant.name !== name){
+        newParticipants.push(participant);
+    }
+  }
+
+  console.log("Participants i Data:", newParticipants)
+
+  this.polls[gamePin].participants = newParticipants
+}
+
+Data.prototype.removeGame = function(gamePin) {
+    delete this.polls[gamePin];
+}
+
 Data.prototype.getCurrentDrawer = function(gamePin) {
   const participants = this.getParticipants(gamePin);
   const randomIndex = Math.floor(Math.random() * participants.length);
   const currentDrawer = participants[randomIndex].name;
   console.log("CurrentDrawer:", currentDrawer);
   return currentDrawer;
+}
+
+Data.prototype.addScore = function(gamePin, name) {
+  const participants = this.getParticipants(gamePin);
+  for (const p of participants) {
+    if (p.name === name) {
+      p.score += 10;
+      console.log("Uppdaterad score:", p.score);
+    }
+  }
+  console.log("Nu har score uppdaterats för den som gissade rätt!");
 }
 
 Data.prototype.addQuestion = function(gamePin, q) {
