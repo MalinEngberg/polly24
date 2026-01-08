@@ -55,9 +55,13 @@
           <input type="text" placeholder="Write something..." v-model="currentMessage" @keydown.enter="sendMessage" />
         </div>
 
+        <button v-on:click="exitGame" id="exitGameButton">
+           {{ uiLabels.exitGame }}
+        </button>
       </div>
 
     </div>
+
   </div>
 </template>
 
@@ -213,10 +217,14 @@ export default {
     startNewRound: function () {
       socket.emit("startNewRound", {gamePin: this.gamePin});
       socket.emit("getCurrentDrawer", { gamePin: this.gamePin });
-    }
+    },
 
+    exitGame: function() {
+      socket.emit("leaveGame", {gamePin: this.gamePin, name: this.name});
+      this.$router.push("/");
+    }
   }
-};
+}
 
 </script>
 
@@ -329,14 +337,13 @@ export default {
 
 .right-column {
   width: 250px;
+  height: 726px;
   display: flex;
   flex-direction: column;
-  border: 2px solid #aaa;
-  background: white;
 }
 
 .tools-box {
-  height: 100px;
+  height: 52px;
   background: white;
   border: 2px solid #aaa;
   padding: 10px;
@@ -362,13 +369,18 @@ export default {
 }
 
 .MessageDisplay {
-  width: 95%;
-  height: 450px;
+  width: 92%;
+  height: 100%;
   border: 2px solid #aaa;
   padding: 8px;
   font-size: 16px;
   background: white;
   overflow: scroll;
+}
+
+.InputChat {
+  background: white;
+  border: 2px solid #aaa;
 }
 
 #chooseRandomWordButton {
@@ -377,9 +389,24 @@ export default {
   /*border: 2px solid #FF1493;*/
   padding: 20px 90px;
   border-radius: 100px;
-  margin: 30px;
+  margin: 25px;
   /*gap: 10px;*/
   /*font-size: 18px;*/
   /*align-items: center;*/
+}
+
+#exitGameButton {
+  /*display: inline-block;*/
+  background-color: red;
+  border: 2px solid black;
+  padding: 20px 40px;
+  border-radius: 100px;
+  margin: 25px;
+  /*gap: 10px;*/
+  /*font-size: 18px;*/
+  /*align-items: center;*/
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
 }
 </style>
