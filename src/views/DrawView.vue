@@ -3,11 +3,7 @@
     <button id="language-button" v-on:click="switchLanguage">
       {{ uiLabels.changeLanguage }}
     </button>
-    <div class="timer-bar">
-      Time left: {{ timeLeft }}s
-    </div>
     <div class="game-layout">
-
       <!-- <div class="timer-bar">
       Time left: {{ timeLeft }}s
       </div> -->
