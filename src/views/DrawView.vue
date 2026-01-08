@@ -51,10 +51,7 @@
           </ul>
         </div>
 
-        <div class="InputChat">
-          <input type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage"
-            @keydown.enter="sendMessage" />
-        </div>
+        <input class="InputChat" type="text" v-bind:placeholder="uiLabels.chatInput" v-model="currentMessage" @keydown.enter="sendMessage" />
 
         <button v-on:click="exitGame" id="exitGameButton">
            {{ uiLabels.exitGame }}
@@ -192,7 +189,7 @@ export default {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
-      if (this.currentMessage === this.currentWord) {
+      if (this.currentMessage === this.currentWord && this.name !== this.currentDrawer) {
         console.log("vi har gissat rätt");
         this.addScore();
         this.startNewRound();
@@ -279,6 +276,7 @@ export default {
 .players {
   background: white;
   border: 2px solid #aaa;
+  font-size: 1.4rem;
   text-align: center;
   padding: 10px;
 }
@@ -325,27 +323,6 @@ export default {
   background: white;
   border: 2px solid #aaa;
   /* height: 550px; */
-}
-
-@media only screen and (max-width: 700px) {
-  .game-layout {
-    flex-direction: column; /* Lägg kolumnerna under varandra */      
-    width: 95%;      /* Ta upp mer av skärmbredden */
-    min-width: 0;           /* Ta bort tidigare min-width restriktioner */
-  }
-
-  .left-column {
-    width: 100%;            /* Låt sidokolumnerna ta hela bredden */
-  }
-
-  .right-column {
-    width: 100%;
-  }
-
-  .canvas-area {
-    height: 400px;         /* Gör canvasen lite lägre på mobilen */
-    width: 100%;
-  }
 }
 
 .canvas-area canvas {
@@ -400,10 +377,14 @@ export default {
 .InputChat {
   background: white;
   border: 2px solid #aaa;
+  height: 8%;
 }
 
 #chooseRandomWordButton {
   background-color: #39FF14;
+  /*border: 2px solid #FF1493;*/
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
   width: fit-content;
   padding: 15px 90px;
   border-radius: 100px;
@@ -424,6 +405,8 @@ export default {
   /*font-size: 18px;*/
   /*align-items: center;*/
   text-decoration: none;
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
   color: black;
   font-weight: bold;
 }
@@ -440,6 +423,8 @@ export default {
   text-decoration: none;
   color: black;
   font-weight: bold;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
 }
 
 #language-button {
@@ -452,8 +437,30 @@ export default {
   padding: 0.25rem 1rem;
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
+}
+
+@media only screen and (max-width: 900px) {
+  .game-layout {
+    flex-direction: column; /* Lägg kolumnerna under varandra */      
+    width: 95%;      /* Ta upp mer av skärmbredden */
+    min-width: 0;    /* Ta bort tidigare min-width restriktioner */
+  }
+
+  .left-column {
+    width: 100%;     /* Låt sidokolumnerna ta hela bredden */
+  }
+
+  .right-column {
+    width: 100%;
+  }
+
+  .canvas-area {
+    height: 400px;   /* Gör canvasen lite lägre på mobilen */
+    width: 100%;
+  }
 }
 </style>

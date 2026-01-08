@@ -24,7 +24,7 @@
             <p v-if="gamePinError" class="error">{{ gamePinError }}</p>
         </main>
 
-        <button type="button" v-on:click="createGame">
+        <button type="button" v-on:click="tryCreateGame">
             {{ uiLabels.CreateGameButton }}
         </button>
     </div>
@@ -50,9 +50,17 @@ export default {
     created: function () {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.emit("getUILabels", this.lang);
+        socket.on("gameExists", (exists) => {
+            if (exists) {
+                this.gamePinError = this.uiLabels.gamePinExistsError;
+            }
+            else {
+                this.createGame();
+            }
+        });
     },
     methods: {
-        createGame: function () {
+        tryCreateGame: function () {
             this.nameError = "";
             this.gamePinError = "";
 
@@ -66,6 +74,10 @@ export default {
             }
             if (this.nameError || this.gamePinError) return;
 
+            socket.emit("gameExists", { gamePin: this.gamePin });
+        },
+
+        createGame: function () {
             socket.emit("createGame", { gamePin: this.gamePin, lang: this.lang })
             socket.emit("joinGame", { gamePin: this.gamePin });
             socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name, joined: this.joined });
@@ -195,7 +207,7 @@ button {
     border-radius: 999px;
     padding: 30px 60px;
     background-color: #39FF14;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: bold;
     font-family: 'Caveat', cursive;
     border: 2px solid black;
@@ -233,14 +245,14 @@ button {
 #language-button {
     position: absolute;
     top: 1rem;
-    right: 1rem;  
+    right: 1rem;
 
     color: black;
     text-decoration: none;
     padding: 0.25rem 1rem;
     background-color: rgb(224, 151, 255);
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: bold;
     line-height: 2rem;
 }

@@ -21,11 +21,14 @@
 	"waitLabel": "Väntar på att spelare ska gå med i spelet...",
 	"goToDraw": "Nu kör vi!",
 	"nameError": "*Skriv in ditt namn",
-	"gamePinError": "*Skapa ett GamePin",
+	"gamePinError": "*Skriv in ett GamePin",
+	"gamePinExistsError": "*Detta GamePin existerar redan",
+	"gamePinNotExistError": "*Detta GamePin existerar inte",
 	"chooseWord": "Välj ett nytt ord",
 	"chatInput": "Gissa eller chatta",
 	"timeToPaint": "Din tur att rita",
 	"guessWord":"Gissa ordet:",
 	"exitGame": "Avsluta spel",
-	"clearCanvas": "Rensa målarduk"
+	"clearCanvas": "Rensa målarduk",
+	"welcomeGame": "Välkommen till spelet:"
 }

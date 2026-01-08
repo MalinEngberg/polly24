@@ -41,7 +41,7 @@
 <script>
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
-sessionStorage.setItem("serverIP", "192.168.1.143:3000");
+sessionStorage.setItem("serverIP", "localhost:3000");
 const socket = io(sessionStorage.getItem("serverIP"));
 
 export default {
@@ -95,7 +95,7 @@ header {
 
 .logo img {
   background-color: #AA87BF;
-  height: 15rem;
+  height: 15vh;
   vertical-align: bottom;
   margin-right: 0.5rem;
 }
@@ -152,41 +152,25 @@ h2 {
 }
 
 #language-button {
-  position: absolute; 
-  top: 1rem;           
-  right: 1rem;  
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 
   color: black;
   text-decoration: none;
-  padding: 0.25rem 1rem;       
+  padding: 0.25rem 1rem;
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 0.75rem;          
+  font-size: 1rem;  
+  font-family: 'Caveat', cursive;        
   font-weight: bold;
-  line-height: 2rem;           
+  line-height: 2rem;
 }
 
-label {}
-
-@media screen and (max-width:150em) {
-  .logo {
-    font-size: 5vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@media screen and (max-width: 800px) {
+#language-button {
+    top: auto; 
+    bottom: 10px;
   }
-
-  .hamburger::before {
-    content: "☰";
-  }
-
-  .close::before {
-    content: "✕";
-  }
-
-  .hide {
-    left: -12em;
-  }
-
 }
 </style>
