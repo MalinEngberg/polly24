@@ -13,7 +13,6 @@ import { RouterView } from 'vue-router'
     height: 100%;
     margin: 0;
     background-color: #AA87BF;
-    /* background: linear-gradient(#c8b7e8, #9c88c8); */
     font-family: 'Caveat', cursive;
   }
 </style>

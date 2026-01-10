@@ -4,10 +4,6 @@
       {{ uiLabels.changeLanguage }}
     </button>
     <div class="game-layout">
-      <!-- <div class="timer-bar">
-      Time left: {{ timeLeft }}s
-      </div> -->
-
       <div class="left-column">
         <div class="players" v-for="p in participants" :key="p.name">
           <div>{{ p.name }}: {{ p.score }}p</div>
@@ -67,7 +63,7 @@
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 import { createCanvasDrawer } from "@/components/StartDraw.js";
-import GetPoints from '../components/GetPoints';
+
 
 export default {
   name: 'DrawView',
@@ -79,12 +75,10 @@ export default {
       gamePin: this.$route.params.gamePin,
       name: this.$route.query.name,
       drawerTool: null,
-      timeLeft: 0,
       currentColor: "black",
       colors: ["black", "red", "green", "blue", "yellow"],
       participants: [],
       currentDrawer: "",
-      currentGuess: "",
       currentWord: "",
       currentMessage: "",
       receivedMessage: "",
@@ -105,7 +99,6 @@ export default {
     // make sure we are in the room (in case we navigated directly to draw view)
     socket.emit('joinGame', { gamePin: this.gamePin });
     socket.emit('getParticipants', { gamePin: this.gamePin });
-    //socket.emit('participateInGame', { gamePin: this.gamePin, name: this.name });
 
     socket.on('participantsUpdate', (participants) => {
       this.participants = participants;
@@ -123,9 +116,6 @@ export default {
     this.$nextTick(() => {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
-
-      // canvas.width = 1000;
-      // canvas.height = 800;
 
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -158,32 +148,15 @@ export default {
 
     socket.on("messageReceived", data => {
       console.log("New message received from", data.sender, ":", data.message);
-      // const formattedMessage = `${data.sender}: ${data.message}`;
-      // this.messages.push(formattedMessage);
       this.messages.push({
         sender: data.sender,
         receivedMessage: data.message
       })
-      // Here you can add logic to display the received message in the chat UI
     });
   },
 
 
   methods: {
-
-    submitGuess() {
-      const guess = this.currentGuess.trim();
-      console.log(this.currentGuess);
-      if (!guess) return;
-
-      socket.emit("guess", {
-        guess,
-        gamePin: this.gamePin,
-        playerName: this.name
-      });
-
-      this.currentGuess = "";
-    },
 
     sendMessage: function () {
       // Logic to send the message
@@ -250,7 +223,6 @@ export default {
   justify-content: center;
   align-items: flex-start;
   padding: 40px 0;
-  /* background: linear-gradient(#c8b7e8, #9c88c8); */
   min-height: 100vh;
 }
 
@@ -286,19 +258,6 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-.timer-bar {
-  background: white;
-  display: flex;
-  flex-direction: column;
-  border: 2px solid #aaa;
-  padding: 10px;
-  margin-left: 120px;
-  font-size: 20px;
-  color: purple;
-  font-weight: bold;
-  text-align: center;
 }
 
 /* TOP BAR */
@@ -358,11 +317,11 @@ export default {
   border: 1px solid black;
 }
 
-.info-box {
+/* .info-box {
   background: white;
   border: 2px solid #aaa;
   padding: 10px;
-}
+} */
 
 .MessageDisplay {
   width: 92%;
@@ -394,15 +353,11 @@ export default {
 }
 
 #exitGameButton {
-  /*display: inline-block;*/
   background-color: red;
   border: 2px solid black;
   padding: 15px 5px;
   border-radius: 100px;
   margin: 25px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
   text-decoration: none;
   font-family: 'Caveat', cursive;
   font-size: 1.5rem;
@@ -411,14 +366,10 @@ export default {
 }
 
 #clearCanvasButton {
-  /*display: inline-block;*/
   background-color: yellow;
   padding: 10px 10px;
   border-radius: 100px;
   margin: 10px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
   text-decoration: none;
   color: black;
   font-weight: bold;
@@ -430,7 +381,6 @@ export default {
   position: absolute;
   top: 1rem;
   right: 1rem;
-
   color: black;
   text-decoration: none;
   padding: 0.25rem 1rem;
@@ -444,13 +394,13 @@ export default {
 
 @media only screen and (max-width: 900px) {
   .game-layout {
-    flex-direction: column; /* Lägg kolumnerna under varandra */      
-    width: 95%;      /* Ta upp mer av skärmbredden */
-    min-width: 0;    /* Ta bort tidigare min-width restriktioner */
+    flex-direction: column;     
+    width: 95%;      
+    min-width: 0;    
   }
 
   .left-column {
-    width: 100%;     /* Låt sidokolumnerna ta hela bredden */
+    width: 100%;     
   }
 
   .right-column {
@@ -463,7 +413,7 @@ export default {
   }
 
   .canvas-area {
-    height: 400px;   /* Gör canvasen lite lägre på mobilen */
+    height: 400px;   
     width: 100%;
   }
 }

@@ -1,34 +1,15 @@
 'use strict';
 import {readFileSync} from "fs";
-import GetPoints from "../src/components/GetPoints.js";
-// Store data in an object to keep the global namespace clean. In an actual implementation this would be interfacing a database...
+
 function Data() {
-  this.polls = {};
-  this.polls['test'] = {
-    lang: "en",
-    timer:0,
-    timeleft:0,
-    currentWord:"apple",
-    isRunning: false,
-    answers: [],
-    score: 0,
-    currentQuestion: 0,
-    participants: []
-  }
+  this.games = {};
 }
 
-/***********************************************
-For performance reasons, methods are added to the
-prototype of the Data object/class
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
-***********************************************/
-
 Data.prototype.gameExists = function (gamePin) {
-  return typeof this.polls[gamePin] !== "undefined"
+  return typeof this.games[gamePin] !== "undefined"
 }
 
 Data.prototype.getUILabels = function (lang) {
-  //check if lang is valid before trying to load the dictionary file
   if (!["en", "sv"].some( el => el === lang))
     lang = "en";
   const labels = readFileSync("./server/data/labels-" + lang + ".json");
@@ -36,7 +17,6 @@ Data.prototype.getUILabels = function (lang) {
 }
 
 Data.prototype.getUIWords = function (lang) {
-  //check if lang is valid before trying to load the dictionary file
   if (!["en", "sv"].some( el => el === lang))
     lang = "en";
   const words = readFileSync("./server/data/words-" + lang + ".json");
@@ -45,51 +25,38 @@ Data.prototype.getUIWords = function (lang) {
 
 Data.prototype.createGame = function(gamePin, lang="en") {
   if (!this.gameExists(gamePin)) {
-    let poll = {};
-    poll.lang = lang;  
-    poll.questions = [];
-    poll.answers = [];
-    poll.participants = [];
-    poll.currentQuestion = 0;             
-    this.polls[gamePin] = poll;
-    console.log("poll created", gamePin, poll);
+    let game = {};
+    game.lang = lang;  
+    game.participants = [];            
+    this.games[gamePin] = game;
+    console.log("game created", gamePin, game);
   }
-  return this.polls[gamePin];
+  return this.games[gamePin];
 }
 
 Data.prototype.getGame = function(gamePin) {
   if (this.gameExists(gamePin)) {
-    return this.polls[gamePin];
+    return this.games[gamePin];
   }
   return {};
 }
 
-//Data.prototype.participateInPoll = function(gamePin, name, joined) {
-  //console.log("participant will be added to:", gamePin, name, joined);
-  //if (this.gameExists(gamePin)) {
-    //this.createGame
-    //this.polls[gamePin].participants.push({name: name, answers: [], joined: joined})
-    //console.log("participants now:", this.polls[gamePin].participants);
-  //}
-//},
+
 Data.prototype.participateInGame = function(gamePin, name) {
-  //console.log("participant will be added to:", gamePin, name);
   if (this.gameExists(gamePin)) {
-    // store socketId so server can know which socket belongs to whom
-    this.polls[gamePin].participants.push({
+    this.games[gamePin].participants.push({
       name: name,
       score: 0,
       gamePin: gamePin,
-      drawer: true
     });
-    console.log("participants now:", this.polls[gamePin].participants);
+    console.log("participants now:", this.games[gamePin].participants);
   }
 }
 
 Data.prototype.getParticipants = function(gamePin) {
   console.log("participants requested for", gamePin);
   if (this.gameExists(gamePin)) { 
-    return this.polls[gamePin].participants
+    return this.games[gamePin].participants
   }
   return [];
 }
@@ -99,20 +66,17 @@ Data.prototype.removeParticipant = function(gamePin, name) {
 
   const newParticipants = []
 
-  for (let i = 0; i <this.polls[gamePin].participants.length; i++) {
-    const participant = this.polls[gamePin].participants[i];
+  for (let i = 0; i <this.games[gamePin].participants.length; i++) {
+    const participant = this.games[gamePin].participants[i];
     if (participant.name !== name){
         newParticipants.push(participant);
     }
   }
-
-  console.log("Participants i Data:", newParticipants)
-
-  this.polls[gamePin].participants = newParticipants
+  this.games[gamePin].participants = newParticipants
 }
 
 Data.prototype.removeGame = function(gamePin) {
-    delete this.polls[gamePin];
+    delete this.games[gamePin];
 }
 
 Data.prototype.getCurrentDrawer = function(gamePin) {
@@ -130,56 +94,6 @@ Data.prototype.addScore = function(gamePin, name) {
       p.score += 10;
       console.log("Uppdaterad score:", p.score);
     }
-  }
-  console.log("Nu har score uppdaterats för den som gissade rätt!");
-}
-
-Data.prototype.addQuestion = function(gamePin, q) {
-  if (this.gameExists(gamePin)) {
-    this.polls[gamePin].questions.push(q);
-  }
-}
-
-Data.prototype.activateQuestion = function(gamePin, qId = null) {
-  if (this.gameExists(gamePin)) {
-    const poll = this.polls[gamePin];
-    if (qId !== null) {
-      poll.currentQuestion = qId;
-    }
-    return poll.questions[poll.currentQuestion];
-  }
-  return {}
-}
-
-Data.prototype.getSubmittedAnswers = function(gamePin) {
-  if (this.gameExists(gamePin)) {
-    const poll = this.polls[gamePin];
-    //const answers = poll.answers[poll.currentQuestion];
-    if (typeof poll.questions[poll.currentQuestion] !== 'undefined') {
-      return answers;
-    }
-  }
-  return {}
-}
-
-Data.prototype.submitAnswer = function(gamePin, answer) {
-  if (this.gameExists(gamePin)) {
-    const poll = this.polls[gamePin];
-    let answers = poll.answers[poll.currentQuestion];
-    // create answers object if no answers have yet been submitted
-    if (typeof answers !== 'object') {
-      answers = {};
-      answers[answer] = 1;
-      poll.answers.push(answers);
-    }
-    // create answer property if that specific answer has not yet been submitted
-    else if (typeof answers[answer] === 'undefined') {
-      answers[answer] = 1;
-    }
-    // if the property already exists, increase the number
-    else
-      answers[answer] += 1
-    console.log("answers looks like ", answers, typeof answers);
   }
 }
 

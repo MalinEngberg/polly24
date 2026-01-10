@@ -98,8 +98,6 @@ export default {
     },
 
     participateInGame: function () {
-      //localStorage.setItem("name", this.name);
-      //socket.emit("joinGame", this.gamePin);
       socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name });
       this.$router.push('/lobby/' + this.gamePin);
     },
@@ -165,7 +163,6 @@ export default {
   padding: 0.5rem;
   margin-bottom: 2rem;
   width: 30rem;
-  /*text-align: center;*/
   border: 6px solid black;
   border-radius: 15px;
 }
@@ -207,32 +204,22 @@ export default {
 }
 
 #goToDrawLink {
-  /*display: inline-block;*/
   background-color: #39FF14;
-  /*border: 2px solid #FF1493;*/
   padding: 20px 90px;
   border-radius: 100px;
-  /*gap: 10px;*/
-  /*font-size: 18px;*/
-  /*align-items: center;*/
 }
 
 #language-button {
   position: absolute;
-  /* placera knappen absolut inom .right-column */
   top: 1rem;
-  /* avstånd från toppen */
   right: 1rem;
-  /* avstånd från vänster kant */
 
   color: black;
   text-decoration: none;
   padding: 0.25rem 1rem;
-  /* halverad */
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
   font-size: 1rem;
-  /* halverad */
   font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
