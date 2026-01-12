@@ -7,6 +7,8 @@
             Fyra studenter på universitetet som gjort en
             hemsida där du kan spela rita och gissa.
         </h2>
+        <br>
+        <div> Malin, Camila, Hanna, Taiga och Clara</div>
     </header>
 
 </template>

@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div v-bind:class="['hamburger', { 'close': !hideNav }]" v-on:click="toggleNav">
+    <div v-bind:class="['info', { 'close': !hideNav }]" v-on:click="toggleNav">
     </div>
     <div class="logo">
       <img src="/img/pencil.png">
@@ -14,8 +14,6 @@
       {{ uiLabels.about }}
     </router-link>
 
-
-    <a href="">FAQ</a>
   </ResponsiveNav>
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
@@ -97,21 +95,26 @@ header {
   background-color: #AA87BF;
   height: 10vh;
   vertical-align: bottom;
-  margin-right: 0.5rem;
+  /* margin-right: 0.5rem; */
 }
 
-.hamburger {
+.info {
   color: white;
   width: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  padding: 0.5rem;
-  top: 0;
-  left: 0;
-  height: 2rem;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.65rem;
+}
+
+.info::before {
+  content: "☰";
+}
+
+.close::before {
+  content: "✕";
+}
+
+.hide {
+  left: -12em;
 }
 
 .name {
@@ -161,16 +164,27 @@ h2 {
   padding: 0.25rem 1rem;
   background-color: rgb(224, 151, 255);
   border-radius: 999px;
-  font-size: 1rem;  
-  font-family: 'Caveat', cursive;        
+  font-size: 1rem;
+  font-family: 'Caveat', cursive;
   font-weight: bold;
   line-height: 2rem;
 }
 
 @media screen and (max-width: 1000px) {
-#language-button {
-    top: auto; 
+  #language-button {
+    top: auto;
     bottom: 10px;
   }
+  h1 {
+  font-size: 2rem;
+  margin-top: 2rem;
+}
+.logo{
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+}
+.logo img {
+  height: 7vh;
+}
 }
 </style>
