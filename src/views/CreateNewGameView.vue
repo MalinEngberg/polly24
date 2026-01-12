@@ -120,27 +120,8 @@ export default {
     justify-content: center;
 }
 
-@media screen and (max-width:600px) {
-  .gridContainer {
-    width: 70%;
-    margin: 8vw;
-    row-gap: 10vw;
-    column-gap: 2vw;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-
-
 .title {
     font-size: 2.2rem;
-}
-
-@media screen and (max-width: 800px) {
-.title {
-    font-size: 8vw;
-  }
 }
 
 .label {
@@ -164,14 +145,6 @@ export default {
     grid-column: 2;
 }
 
-@media screen and (max-width:600px) {
-  .option {
-    gap: 2px;
-    font-size: 5vw;
-  }
-}
-
-
 .choice {
     display: flex;
     flex-direction: column;
@@ -190,16 +163,6 @@ export default {
     border: 1.5px solid black;
 }
 
-@media screen and (max-width:600px) {
-  .option input {
-    font-size: 5vw;
-    display: flex;
-    align-items: center;
-    padding: 6px 1px;
-    justify-content: center;
-  }
-}
-
 button {
     border-radius: 999px;
     padding: 30px 60px;
@@ -211,22 +174,6 @@ button {
     cursor: pointer;
     margin: 40px;
 }
-
-@media screen and (max-width:600px) {
-  button {
-    border-radius: 100px;
-    padding: 5vw 20vw;
-    background-color: #39FF14;
-    font-size: 5vw;
-    font-weight: bold;
-    font-family: 'Caveat', cursive;
-    border: 2px solid black;
-    cursor: pointer;
-    margin: 20px;
-  }
-}
-
-
 
 .error {
     color: red;
@@ -254,11 +201,38 @@ button {
     line-height: 2rem;
 }
 
-@media screen and (max-width: 800px) {
-#language-button {
-    top: auto;
-    bottom: 10px;
-  }
+  @media only screen and (max-width: 1100px) {
+      .gridContainer {
+        margin: 5vh;
+        row-gap: 10vh;
+        column-gap: 3vh;
+      }
+
+      .title {
+        font-size: 3vh;
+      }
+
+      .option {
+        gap: 2px;
+        font-size: 5vw;
+      }
+
+      .option input {
+        font-size: 2vh;
+        padding: 6px 1px;
+      }
+
+      button {
+        padding: 4vh 10vh;
+        font-size: 4vw;
+        margin: 20px;
+      }
+
+      #language-button {
+        top: auto;
+        bottom: 10px;
+      }
+
 }
 
 </style>
