@@ -23,5 +23,7 @@
 	"guessWord":"Guess the word:",
 	"exitGame": "Exit Game",
 	"clearCanvas": "Clear canvas",
-	"welcomeGame": "Welcome to the game:"
+	"welcomeGame": "Welcome to the game:",
+	"goBack": " Go Back",
+	"getPoints": "has gotten +10 points!"
 }

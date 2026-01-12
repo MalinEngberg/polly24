@@ -4,7 +4,7 @@
 	"changeLanguage": "Change to English",
 	"startButton": "Starta spel!",
 	"about": "Om oss",
-	"participateInGame": "Gå med",
+	"participateInGame": "Gå med i ett spel",
 	"enterGame": "Skriv in namn och Game Pin:",
 	"nameInsert": "Namn",
 	"namePlaceHolder": "Skriv in ditt namn",
@@ -23,5 +23,7 @@
 	"guessWord":"Gissa ordet:",
 	"exitGame": "Avsluta spel",
 	"clearCanvas": "Rensa målarduk",
-	"welcomeGame": "Välkommen till spelet:"
+	"welcomeGame": "Välkommen till spelet:",
+	"goBack": "Tillbaka",
+	"getPoints": "har fått +10 poäng!"
 }

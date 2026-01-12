@@ -6,6 +6,10 @@
     </button>
 
     <div class="input-field" v-if="!$route.params.gamePin">
+      <button id="go-back-button" v-on:click="goBack">
+        {{ uiLabels.goBack }}
+      </button>
+
       <h1>{{ uiLabels.enterGame }}</h1>
 
       <input type="text" v-bind:placeholder="uiLabels.nameInsert" v-model="name">
@@ -22,7 +26,7 @@
     <div v-else>
       <h1>{{ uiLabels.waitLabel }}</h1>
       <p>[{{participants.map(p => p.name).join(', ')}}]</p>
-      <p>{{uiLabels.welcomeGame}} {{ gamePin }}</p>
+      <p>{{ uiLabels.welcomeGame }} {{ gamePin }}</p>
 
       <button v-on:click="startDraw" id="goToDrawLink">
         {{ uiLabels.goToDraw }}
@@ -64,7 +68,7 @@ export default {
 
       socket.on("gameExists", (exists) => {
         if (exists) {
-          this.participateInGame();
+          this.joinGame();
         }
         else {
           this.gamePinError = this.uiLabels.gamePinNotExistError;
@@ -97,7 +101,7 @@ export default {
       socket.emit("gameExists", { gamePin: this.gamePin });
     },
 
-    participateInGame: function () {
+    joinGame: function () {
       socket.emit("participateInGame", { gamePin: this.gamePin, name: this.name });
       this.$router.push('/lobby/' + this.gamePin);
     },
@@ -116,6 +120,10 @@ export default {
       }
       localStorage.setItem("lang", this.lang);
       socket.emit("getUILabels", this.lang);
+    },
+
+    goBack: function () {
+      this.$router.push("/");
     }
   }
 
@@ -123,7 +131,6 @@ export default {
 </script>
 
 <style scoped>
-
 .lobby-view {
   display: flex;
   flex-direction: column;
@@ -178,8 +185,8 @@ export default {
 }
 
 .input-field button {
-  background-color: #514ace;
-  border: 2px solid #FF1493;
+  background-color: #39FF14;
+  border: 2px solid black;
   padding: 20px 90px;
   border-radius: 100px;
   cursor: pointer;
@@ -190,6 +197,22 @@ export default {
   align-items: center;
   gap: 10px;
   font-weight: bold;
+}
+
+#go-back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+
+  color: black;
+  text-decoration: none;
+  padding: 0.25rem 1rem;
+  background-color: rgb(224, 151, 255);
+  border: 2px solid #FF1493;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 2rem;
 }
 
 .error {

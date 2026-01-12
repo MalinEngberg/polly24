@@ -19,9 +19,9 @@
         </div>
 
         <div class="canvas-area">
-          <canvas ref="canvas" @mousedown="drawerTool && drawerTool.start($event)"
-            @mousemove="drawerTool && drawerTool.move($event)" @mouseup="drawerTool && drawerTool.stop($event)"
-            @mouseleave="drawerTool && drawerTool.stop($event)">
+          <canvas ref="canvas" @pointerdown="drawerTool && drawerTool.start($event)" 
+            @pointermove="drawerTool && drawerTool.move($event)" @pointerup="drawerTool && drawerTool.stop($event)"
+            @pointerleave="drawerTool && drawerTool.stop($event)">
           </canvas>
         </div>
 
@@ -61,7 +61,7 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io(sessionStorage.getItem("serverIP"));
 import { createCanvasDrawer } from "@/components/StartDraw.js";
 
 
@@ -117,8 +117,11 @@ export default {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      // canvas.width = canvas.offsetWidth;
+      // canvas.height = canvas.offsetHeight;
+
+      canvas.width = 1000;
+      canvas.height = 800;
 
       this.drawerTool = createCanvasDrawer(canvas, () => this.currentDrawer === this.name, (data) => {
         // Emit drawing data to the server
@@ -162,8 +165,10 @@ export default {
       // Logic to send the message
       socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
       console.log("Message sent:", this.currentMessage);
-      if (this.currentMessage === this.currentWord && this.name !== this.currentDrawer) {
+      if (this.currentMessage.toLowerCase() === this.currentWord && this.name !== this.currentDrawer) {
         console.log("vi har gissat rätt");
+        this.currentMessage = this.uiLabels.getPoints;
+        socket.emit("newMessage", { currentMessage: this.currentMessage, gamePin: this.gamePin, sender: this.name });
         this.addScore();
         this.startNewRound();
       }
@@ -209,9 +214,7 @@ export default {
     exitGame: function() {
       socket.emit("leaveGame", {gamePin: this.gamePin, name: this.name});
       this.$router.push("/");
-    },
-
-
+    }
   }
 }
 
@@ -281,7 +284,6 @@ export default {
 .canvas-area {
   background: white;
   border: 2px solid #aaa;
-  /* height: 550px; */
 }
 
 .canvas-area canvas {
@@ -316,12 +318,6 @@ export default {
   border-radius: 50%;
   border: 1px solid black;
 }
-
-/* .info-box {
-  background: white;
-  border: 2px solid #aaa;
-  padding: 10px;
-} */
 
 .MessageDisplay {
   width: 92%;
@@ -413,8 +409,8 @@ export default {
   }
 
   .canvas-area {
-    height: 400px;   
-    width: 100%;
+    /* width: 100%; */
+    touch-action: none;
   }
 }
 </style>

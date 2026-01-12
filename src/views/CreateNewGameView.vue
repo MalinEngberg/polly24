@@ -6,6 +6,9 @@
         <button id="language-button" v-on:click="switchLanguage">
             {{ uiLabels.changeLanguage }}
         </button>
+        <button id="go-back-button" v-on:click="goBack">
+            {{ uiLabels.goBack }}
+        </button>
     </header>
     <div class="page">
         <main class="gridContainer">
@@ -97,6 +100,10 @@ export default {
             localStorage.setItem("lang", this.lang);
             socket.emit("getUILabels", this.lang);
         },
+
+        goBack: function () {
+            this.$router.push("/");
+        }
     }
 }
 </script>
@@ -201,38 +208,58 @@ button {
     line-height: 2rem;
 }
 
-  @media only screen and (max-width: 1100px) {
-      .gridContainer {
+#go-back-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+
+    color: black;
+    text-decoration: none;
+    padding: 0.25rem 1rem;
+    background-color: rgb(224, 151, 255);
+    border: 2px solid #FF1493;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 2rem;
+}
+
+@media only screen and (max-width: 1100px) {
+    .gridContainer {
         margin: 5vh;
         row-gap: 10vh;
         column-gap: 3vh;
-      }
+    }
 
-      .title {
+    .title {
         font-size: 3vh;
-      }
+    }
 
-      .option {
+    .option {
         gap: 2px;
         font-size: 5vw;
-      }
+    }
 
-      .option input {
+    .option input {
         font-size: 2vh;
         padding: 6px 1px;
-      }
+    }
 
-      button {
+    button {
         padding: 4vh 10vh;
         font-size: 4vw;
         margin: 20px;
-      }
+    }
 
-      #language-button {
+    #language-button {
         top: auto;
         bottom: 10px;
-      }
+    }
+
+    #go-back-button {
+        top: auto;
+        bottom: 10px;
+    }
 
 }
-
 </style>
